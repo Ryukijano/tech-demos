@@ -1,0 +1,25 @@
+# deps / build
+node_modules/
+dist/
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.DS_Store
+*.egg-info/
+
+# local work / weights
+apps/*/work/
+**/*.pt
+**/*.bin
+**/*.safetensors
+**/*.gguf
+.env
+.env.*
+!.env.example
+
+# editor
+.idea/
+.vscode/
+agent-tools/

@@ -1,0 +1,36 @@
+{
+  "app": "pixelumm",
+  "task": "image-vlm",
+  "guardrails_default": "enabled for T2V; image-vlm path does not disable them",
+  "no_guardrails": "opt-in only via upstream --no-guardrails (do not use by default)",
+  "checks": {
+    "torch": {
+      "ok": true,
+      "version": "2.14.1+cu130",
+      "cuda_available": false,
+      "device_count": 0
+    },
+    "PIXELUMM_CKPT": {
+      "set": false,
+      "exists": false,
+      "path": null
+    },
+    "PIXELUMM_QWEN_DIR": {
+      "set": false,
+      "exists": false,
+      "path": null
+    },
+    "upstream_clone": {
+      "exists": false,
+      "path": "/workspace/apps/pixelumm/work/PixelUMM",
+      "inference_py": false
+    }
+  },
+  "status": "graceful-skip",
+  "next_steps": [
+    "Allocate an NVIDIA GPU with CUDA 13 + FlashAttention build",
+    "Download S8-F22-R05 + Qwen config/tokenizer per upstream CHECKPOINT.md; export PIXELUMM_CKPT and PIXELUMM_QWEN_DIR",
+    "bash scripts/setup_env.sh  # clones nv-tlabs/PixelUMM"
+  ],
+  "message": "PixelUMM image understanding is NOT runnable here yet (missing GPU and/or weights and/or upstream clone). This is expected in CPU-only CI. See README.md."
+}

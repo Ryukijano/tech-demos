@@ -1,0 +1,10 @@
+# Text-only EmbeddingGemma 2 path (~270M with vision/audio dropped).
+sentence-transformers>=6.1.0
+transformers>=4.56.0
+torch
+torchvision
+pillow
+fastapi>=0.115.0
+uvicorn[standard]>=0.32.0
+numpy>=1.26.0
+huggingface_hub>=0.26.0

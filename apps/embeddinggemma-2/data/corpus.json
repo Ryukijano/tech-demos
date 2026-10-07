@@ -1,0 +1,42 @@
+[
+  {
+    "id": "aurora",
+    "title": "Northern lights",
+    "text": "The northern lights (aurora borealis) are caused by charged particles from the sun colliding with gases in Earth's upper atmosphere."
+  },
+  {
+    "id": "photosynthesis",
+    "title": "Photosynthesis",
+    "text": "Plants convert sunlight, water, and carbon dioxide into glucose and oxygen through photosynthesis in chloroplasts."
+  },
+  {
+    "id": "llamacpp",
+    "title": "llama.cpp decision models",
+    "text": "Decision models in llama.cpp score typed options via POST /v1/systemone instead of generating free-form tokens."
+  },
+  {
+    "id": "jepa",
+    "title": "JEPA world models",
+    "text": "Joint-embedding predictive architectures learn to predict latent future states; JEPA-Anything adds orthogonal predictive factorization across domains."
+  },
+  {
+    "id": "pixelumm",
+    "title": "PixelUMM",
+    "text": "PixelUMM is an encoder-free multimodal model that understands and generates images and video directly in pixel space with a Qwen3-8B backbone."
+  },
+  {
+    "id": "embeddings",
+    "title": "Vector embeddings",
+    "text": "Embedding models map text or other modalities into dense vectors so cosine similarity can rank related documents for search and RAG."
+  },
+  {
+    "id": "bun",
+    "title": "Bun runtime",
+    "text": "Bun is a fast JavaScript runtime and package manager often used as a drop-in alternative to Node for Vite apps."
+  },
+  {
+    "id": "matryoshka",
+    "title": "Matryoshka embeddings",
+    "text": "Matryoshka Representation Learning lets you truncate embedding dimensions (e.g. 768 to 256) and re-normalize with limited quality loss."
+  }
+]

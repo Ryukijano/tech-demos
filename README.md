@@ -1,5 +1,7 @@
 # Sticky tech-demos
 
+**[View on GitHub Pages →](https://ryukijano.github.io/tech-demos/)**
+
 One monorepo for sticky / bookmark-worthy tech demos. Prefer adding a new `apps/<slug>/` forever — do **not** create one repo per demo.
 
 ## Layout
@@ -11,6 +13,7 @@ One monorepo for sticky / bookmark-worthy tech demos. Prefer adding a new `apps/
 | `apps/pixelumm/` | PixelUMM image-understanding kit (GPU + noncommercial weights) |
 | `apps/embeddinggemma-2/` | EmbeddingGemma 2 text similarity search (Python API + Vite UI) |
 | `tracking/seen-bookmarks.json` | Stub bookmark tracker (empty array) |
+| `docs/` | GitHub Pages showcase site (static HTML/CSS) |
 | `AGENTS.md` | Rules for future cloud agents |
 | `bunfig.toml` | Bun install policy (`minimumReleaseAge = 259200`) |
 

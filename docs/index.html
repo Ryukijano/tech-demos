@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tech Demos · Gyanateet Dutta (@Ryukijano)</title>
+  <meta name="description" content="A monorepo of small, honest kits and UIs for new AI models and runtimes: llama.cpp Decision Models, JEPA-Anything, PixelUMM and EmbeddingGemma 2.">
+  <meta property="og:title" content="Tech Demos">
+  <meta property="og:description" content="Small, honest kits and UIs for new AI models and runtimes, by Gyanateet Dutta (@Ryukijano).">
+  <meta property="og:image" content="https://ryukijano.github.io/tech-demos/assets/decision-models-ui.png">
+  <meta property="og:url" content="https://ryukijano.github.io/tech-demos/">
+  <meta name="theme-color" content="#0b0f14">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <p class="eyebrow">github.com/Ryukijano/tech-demos</p>
+      <h1>Tech Demos</h1>
+      <p class="subtitle">Small, honest kits and UIs for new AI models and runtimes, kept in one monorepo with one folder per demo.</p>
+      <div class="hero-actions">
+        <a class="btn primary" href="https://github.com/Ryukijano/tech-demos">View the repo on GitHub</a>
+        <a class="btn" href="#demos">Browse the 4 demos</a>
+      </div>
+      <p class="byline">By <a href="https://github.com/Ryukijano">Gyanateet Dutta</a> · <a href="https://github.com/Ryukijano">@Ryukijano</a></p>
+    </div>
+  </header>
+
+  <main id="demos" class="wrap">
+    <p class="note">These demos run on your own machine. This page shows recordings and status; follow each README to run them.</p>
+
+    <section class="grid">
+
+      <!-- 1. Decision Models -->
+      <article class="card">
+        <div class="media">
+          <video src="assets/decision-models-ui.mp4" poster="assets/decision-models-ui.png" muted controls playsinline preload="metadata" aria-label="Recording of the Decision Models UI in mock mode"></video>
+        </div>
+        <div class="body">
+          <div class="badges">
+            <span class="badge amber">Mock UI</span>
+            <span class="badge">Optional llama.cpp backend</span>
+            <span class="badge muted">Bun · Vite · React</span>
+          </div>
+          <h2>llama.cpp Decision Models</h2>
+          <p>Web UI for <a href="https://huggingface.co/blog/ggml-org/decision-models-in-llamacpp">Decision Models in llama.cpp</a>: send a state plus typed questions (<code>choice</code> / <code>score</code> / <code>noul</code>) to <code>POST /v1/systemone</code> and see option probabilities as bars.</p>
+          <ul class="facts">
+            <li>Mock mode is on by default (keyword heuristics, clearly labelled), so it runs without a GPU or server</li>
+            <li>Point it at a real server, e.g. Julia-1 (144M, Apache-2.0) via <code>llama serve</code></li>
+          </ul>
+          <pre><code>cd apps/llamacpp-decision-models
+bun install &amp;&amp; bun run dev</code></pre>
+          <div class="links">
+            <a href="https://github.com/Ryukijano/tech-demos/tree/main/apps/llamacpp-decision-models">App folder</a>
+            <a href="https://github.com/Ryukijano/tech-demos/blob/main/apps/llamacpp-decision-models/README.md">README</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- 2. EmbeddingGemma 2 -->
+      <article class="card">
+        <div class="media">
+          <video src="assets/embeddinggemma-ui.mp4" poster="assets/embeddinggemma-ui.png" muted controls playsinline preload="metadata" aria-label="Recording of the EmbeddingGemma 2 semantic search UI"></video>
+        </div>
+        <div class="body">
+          <div class="badges">
+            <span class="badge green">Live model</span>
+            <span class="badge amber">Mock fallback</span>
+            <span class="badge muted">FastAPI · Vite</span>
+          </div>
+          <h2>EmbeddingGemma 2</h2>
+          <p>Semantic search with <a href="https://huggingface.co/google/embeddinggemma-2">google/embeddinggemma-2</a>: text to 768-d cosine similarity over a tiny local corpus, with a FastAPI server and a Vite UI that ranks matches with scores.</p>
+          <ul class="facts">
+            <li>Loads the model text-only through Sentence Transformers (vision and audio encoders dropped)</li>
+            <li>If the model can't download, it falls back to a hash embedder that the UI labels <strong>MOCK</strong></li>
+          </ul>
+          <pre><code>cd apps/embeddinggemma-2
+pip install -r requirements.txt
+python server/app.py</code></pre>
+          <div class="links">
+            <a href="https://github.com/Ryukijano/tech-demos/tree/main/apps/embeddinggemma-2">App folder</a>
+            <a href="https://github.com/Ryukijano/tech-demos/blob/main/apps/embeddinggemma-2/README.md">README</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- 3. JEPA-Anything -->
+      <article class="card">
+        <div class="media terminal" role="img" aria-label="Terminal panel showing the JEPA-Anything run paths">
+          <div class="term-bar"><span></span><span></span><span></span><em>apps/jepa-anything</em></div>
+<pre class="term"><span class="c"># always safe: no GPU, no weights</span>
+<span class="p">$</span> python3 scripts/dry_run.py
+
+<span class="c"># ~1.9 MB Synthetic Causal Dynamics checkpoint</span>
+<span class="p">$</span> python3 scripts/run_light_inference.py --download
+
+<span class="c"># or open in Colab</span>
+notebooks/jepa_anything_demo.ipynb</pre>
+        </div>
+        <div class="body">
+          <div class="badges">
+            <span class="badge blue">Colab</span>
+            <span class="badge amber">Dry-run</span>
+            <span class="badge muted">Python</span>
+          </div>
+          <h2>JEPA-Anything</h2>
+          <p>Kit for <a href="https://github.com/Gen-Verse/JEPA-Anything">Gen-Verse/JEPA-Anything</a> (<a href="https://arxiv.org/abs/2609.20800">arXiv:2609.20800</a>), domain-agnostic predictive world models via Orthogonal Predictive Factorization. Ships a Colab notebook plus local scripts, not a training stack.</p>
+          <ul class="facts">
+            <li>Dry run is the guaranteed path; it does not claim to reproduce paper benchmarks</li>
+            <li>Optional smoke inference with the lightest domain checkpoint from Hugging Face</li>
+          </ul>
+          <div class="links">
+            <a href="https://github.com/Ryukijano/tech-demos/tree/main/apps/jepa-anything">App folder</a>
+            <a href="https://github.com/Ryukijano/tech-demos/blob/main/apps/jepa-anything/README.md">README</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- 4. PixelUMM -->
+      <article class="card">
+        <div class="media terminal" role="img" aria-label="Summary of the PixelUMM smoke test report">
+          <div class="term-bar"><span></span><span></span><span></span><em>artifacts/smoke_report.json</em></div>
+<pre class="term"><span class="p">$</span> python3 scripts/smoke_test.py
+{
+  <span class="k">"task"</span>: "image-vlm",
+  <span class="k">"status"</span>: <span class="s">"graceful-skip"</span>,
+  <span class="k">"cuda_available"</span>: false,
+  <span class="k">"PIXELUMM_CKPT"</span>: { "set": false }
+}
+<span class="c"># expected without a GPU and weights</span></pre>
+        </div>
+        <div class="body">
+          <div class="badges">
+            <span class="badge amber">Smoke test · graceful skip</span>
+            <span class="badge red">Noncommercial weights</span>
+            <span class="badge muted">Python · CUDA</span>
+          </div>
+          <h2>PixelUMM</h2>
+          <p>Kit for <a href="https://nv-tlabs.github.io/PixelUMM/">nv-tlabs PixelUMM</a>, encoder-free unified image/video understanding and generation in pixel space (Qwen3-8B backbone). Targets the image-understanding task (<code>--task image-vlm</code>).</p>
+          <ul class="facts">
+            <li>Code is Apache-2.0; the checkpoint is under the NVIDIA One-Way Noncommercial License</li>
+            <li>Full runs need a high-end NVIDIA GPU, CUDA 13 and the weights; guardrails are left on by default</li>
+          </ul>
+          <div class="links">
+            <a href="https://github.com/Ryukijano/tech-demos/tree/main/apps/pixelumm">App folder</a>
+            <a href="https://github.com/Ryukijano/tech-demos/blob/main/apps/pixelumm/README.md">README</a>
+          </div>
+        </div>
+      </article>
+
+    </section>
+  </main>
+
+  <footer class="wrap footer">
+    <p>Built by <a href="https://github.com/Ryukijano">Gyanateet Dutta (@Ryukijano)</a> · Source at <a href="https://github.com/Ryukijano/tech-demos">Ryukijano/tech-demos</a>. Third-party models and weights keep their own licenses.</p>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,33 @@
+active-borylation demo — NOTICE
+
+This directory (apps/active-borylation/) is licensed GPL-3.0-or-later (see LICENSE), separately
+from the rest of the tech-demos repository, because it contains code copied from and derived from:
+
+  minotm/active-drug-discovery  (GPL-3.0)
+  https://github.com/minotm/active-drug-discovery  — commit c687cb1c52704a249f929c81bff5ca0ba21020f6
+  Software archive: Zenodo DOI 10.5281/zenodo.20783136 (v1.0.1, licence GPL-3.0)
+  Authors: Mason Minot, Yannick Stenzhorn, Jens Wolfard, Sebastian Strobel, Philippe Jablonski,
+  Daniel Zimmerli, Martin Binder, Uwe Grether, Rainer E. Martin, Alex T. Müller, David F. Nippa, et al.
+  (ETH Zurich / Roche) — full author list on the paper page. Published online 9 Oct 2026.
+
+Paper:
+  "Advancing chemical reaction prediction in data-scarce drug discovery with active and geometric
+  deep learning", Nature Computational Science (2026). https://www.nature.com/articles/s43588-026-01063-0
+  Preprint: ChemRxiv https://chemrxiv.org/engage/chemrxiv/article-details/686bd23dc1cb1ecda08876d2
+
+Derived files here:
+  src/al_bald.py      — BALD/entropy functions from src/active_learning_utils/acq_fns.py (themselves
+                        adapted from molML/traversing_chem_space) and ECFP featurisation from
+                        src/binary_utils/binary_data_utils_xgb.py; simplified retrospective loop.
+  src/regio_json.py   — wrapper that imports and runs upstream predict_regio.py.
+  shims/              — minimal CPU stand-ins for torch_scatter/torch_sparse/torch_cluster (original).
+
+Not redistributed here (downloaded by setup.sh):
+  - Upstream source tree (cloned at the pinned commit into upstream/).
+  - Model weights: GitHub release v1.0.1 assets equiformer_regio.pth (137,942,798 B),
+    ponita_binary.pth, binary_xgb.zip. The release page states no separate weights licence; the
+    repository is GPL-3.0. NOTE: Zenodo 10.5281/zenodo.20783136 is the *software* archive
+    (a 669 kB zip), not the weights.
+  - Data: Zenodo DOI 10.5281/zenodo.20773622, licence CC-BY-4.0 (Minot_preAL/AL1/AL2/AL3_Data.csv,
+    Regio_Data.csv). Same files ship in the upstream repo under data/training_data/.
+Please cite the paper when using these results.

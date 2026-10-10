@@ -1,0 +1,28 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Active borylation — regioselectivity (EquiformerV2)</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+body{font-family:system-ui,sans-serif;background:#0f1117;color:#e6e6e6;margin:0;padding:24px}
+h1{font-size:20px;margin:0 0 4px}p.sub{color:#9aa;margin:0 0 18px;font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(460px,1fr));gap:16px}
+.card{background:#181b24;border:1px solid #2a2f3d;border-radius:10px;padding:14px}
+.svg{background:#fff;border-radius:8px;display:flex;justify-content:center}
+.smi{font-family:ui-monospace,monospace;font-size:12px;color:#cfd;word-break:break-all}
+.tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:99px;margin-left:6px}
+.ok{background:#1f5f3a}.bad{background:#7a2a2a}.na{background:#3a3f4d}
+table{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}td,th{padding:3px 6px;border-bottom:1px solid #2a2f3d;text-align:left}
+.bar{height:8px;background:#e4572e;border-radius:4px}
+</style></head><body>
+<h1>Ir-catalysed C–H borylation: predicted regioselectivity</h1>
+<p class="sub">Released EquiformerV2 checkpoint (minotm/active-drug-discovery v1.0.1), CPU inference, mean ± std over 5 RDKit conformers. Red halo and number = probability that this C–H is borylated (shown when ≥ 0.05). Seed 0.</p>
+<div class="grid" id="g"></div>
+<script src="predictions.js"></script>
+<script>
+const g=document.getElementById('g');
+for(const m of window.PREDICTIONS){
+  const c=document.createElement('div');c.className='card';
+  const tag=m.top1_correct===null?'<span class="tag na">no label</span>':m.top1_correct?'<span class="tag ok">top-1 matches product</span>':'<span class="tag bad">top-1 wrong</span>';
+  const rows=m.atoms.filter(a=>a.candidate).sort((a,b)=>b.p-a.p).map(a=>`<tr><td>${a.symbol}${a.idx}</td><td>${a.p.toFixed(3)} ± ${a.std.toFixed(3)}</td><td style="width:45%"><div class="bar" style="width:${(a.p*100).toFixed(0)}%"></div></td><td>${a.label>0?'✔ product site':''}</td></tr>`).join('');
+  c.innerHTML=`<div class="smi">${m.smiles} ${tag}</div><div class="svg">${m.svg}</div><table><tr><th>atom</th><th>p (mean ± std)</th><th></th><th></th></tr>${rows}</table>`;
+  g.appendChild(c);
+}
+</script></body></html>

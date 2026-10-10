@@ -1,0 +1,14 @@
+exp_id: exp2_regio_inference
+hypothesis: >
+  The released EquiformerV2 regioselectivity checkpoint (equiformer_regio.pth, GitHub release v1.0.1)
+  runs on CPU and its top-1 predicted C-H site matches the borylated site of the product
+  for the upstream example molecules.
+weights: {url: https://github.com/minotm/active-drug-discovery/releases/download/v1.0.1/equiformer_regio.pth, bytes: 137942798}
+inputs: {labelled: labelled.csv, unlabelled: unlabelled.csv}
+conformers: [a, b, c, d, e]   # upstream fixed RDKit embedding seeds 0xF00A..0xF00E
+metric: top1_site_accuracy     # fraction of labelled molecules whose argmax-p candidate C is a labelled site
+secondary: [wall_s_per_molecule, peak_rss_mb]
+seeds: [0, 1, 2]               # torch/numpy/random seeds (conformer seeds are fixed upstream)
+device: cpu
+threads: 4
+pass: "top1_site_accuracy == 1.0 (3/3) on every seed AND wall_s_per_molecule < 60 on CPU"

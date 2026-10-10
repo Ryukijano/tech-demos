@@ -1,0 +1,11 @@
+{"seed": 0, "strategy": "bald", "ensemble_size": 10, "batch": 25, "molecules": 10, "reactions": 153, "test_mcc": 0.28141036973120626, "wall_s": 0.6174771785736084}
+{"seed": 0, "strategy": "bald", "ensemble_size": 10, "batch": 25, "molecules": 35, "reactions": 180, "test_mcc": 0.5212094570223459, "wall_s": 1.5626087188720703}
+{"seed": 0, "strategy": "bald", "ensemble_size": 10, "batch": 25, "molecules": 60, "reactions": 238, "test_mcc": 0.6467404926045304, "wall_s": 2.6090331077575684}
+{"seed": 0, "strategy": "bald", "ensemble_size": 10, "batch": 25, "molecules": 85, "reactions": 551, "test_mcc": 0.6868657655461506, "wall_s": 4.565139532089233}
+{"seed": 0, "strategy": "bald", "ensemble_size": 10, "batch": 25, "molecules": 110, "reactions": 2214, "test_mcc": 0.507768034928982, "wall_s": 8.749741554260254}
+{"seed": 0, "strategy": "bald", "ensemble_size": 10, "batch": 25, "molecules": 135, "reactions": 2250, "test_mcc": 0.5402949514954861, "wall_s": 12.916181564331055}
+{"seed": 0, "strategy": "bald", "ensemble_size": 10, "batch": 25, "molecules": 160, "reactions": 3409, "test_mcc": 0.675677444120132, "wall_s": 18.446699619293213}
+{"seed": 0, "strategy": "bald", "ensemble_size": 10, "batch": 25, "molecules": 185, "reactions": 4991, "test_mcc": 0.6150317297564494, "wall_s": 26.021064281463623}
+{"seed": 0, "strategy": "bald", "ensemble_size": 10, "batch": 25, "molecules": 210, "reactions": 5442, "test_mcc": 0.6930907678426235, "wall_s": 34.22133946418762}
+{"seed": 0, "strategy": "bald", "ensemble_size": 10, "batch": 25, "molecules": 235, "reactions": 5578, "test_mcc": 0.7283950220059483, "wall_s": 42.483638525009155}
+{"seed": 0, "strategy": "bald", "ensemble_size": 10, "batch": 25, "molecules": 260, "reactions": 5822, "test_mcc": 0.697054085947404, "wall_s": 51.683791160583496}

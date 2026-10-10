@@ -1,0 +1,3 @@
+ens10_b25 exit 0
+ens10_b50 exit 0
+ens25_b10 exit 0

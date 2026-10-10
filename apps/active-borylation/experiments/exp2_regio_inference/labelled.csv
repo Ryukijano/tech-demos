@@ -1,0 +1,5 @@
+SMILES,product_smiles,ID
+COc1cc(OC)cc(OC)c1,COc1cc(OC)c(B2OC(C)(C)C(C)(C)O2)c(OC)c1,1
+CNC(=O)c1ccc(Br)cc1,CNC(=O)c1ccc(Br)cc1B1OC(C)(C)C(C)(C)O1,2
+COc1cc(C)ccc1O,COc1cc(C)cc(B2OC(C)(C)C(C)(C)O2)c1O,3
+

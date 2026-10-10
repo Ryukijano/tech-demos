@@ -21,7 +21,7 @@
       <p class="subtitle">Small, honest kits and UIs for new AI models and runtimes, kept in one monorepo with one folder per demo.</p>
       <div class="hero-actions">
         <a class="btn primary" href="https://github.com/Ryukijano/tech-demos">View the repo on GitHub</a>
-        <a class="btn" href="#demos">Browse the 4 demos</a>
+        <a class="btn" href="#demos">Browse the 5 demos</a>
       </div>
       <p class="byline">By <a href="https://github.com/Ryukijano">Gyanateet Dutta</a> · <a href="https://github.com/Ryukijano">@Ryukijano</a></p>
     </div>
@@ -145,6 +145,31 @@ notebooks/jepa_anything_demo.ipynb</pre>
           <div class="links">
             <a href="https://github.com/Ryukijano/tech-demos/tree/main/apps/pixelumm">App folder</a>
             <a href="https://github.com/Ryukijano/tech-demos/blob/main/apps/pixelumm/README.md">README</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- 5. Active borylation (GPLv3 app) -->
+      <article class="card">
+        <div class="media">
+          <video src="assets/active-borylation-ui.mp4" poster="assets/active-borylation-ui.png" muted controls playsinline preload="metadata" aria-label="Recording of the regioselectivity UI showing per-atom borylation probabilities"></video>
+        </div>
+        <div class="body">
+          <div class="badges">
+            <span class="badge green">Released weights · CPU</span>
+            <span class="badge red">AL hypothesis: FAIL</span>
+            <span class="badge muted">Python · RDKit · XGBoost · PyG</span>
+          </div>
+          <h2>Active borylation</h2>
+          <p>Demo of <a href="https://www.nature.com/articles/s43588-026-01063-0">Minot et al., Nature Computational Science (2026)</a> (ETH/Roche): active learning and geometric GNNs for Ir-catalysed C–H borylation. Shows the released EquiformerV2 checkpoint's per-atom regioselectivity on CPU, and a retrospective BALD vs random acquisition run.</p>
+          <ul class="facts">
+            <li>EquiformerV2: top-1 site matches the product for 3/3 upstream examples (all three are also in its training set)</li>
+            <li>BALD vs random (XGBoost ensemble, 3 seeds): BALD needed more molecules to reach the target MCC, so the hypothesis failed</li>
+            <li>This app is GPL-3.0 (from minotm/active-drug-discovery); data CC-BY-4.0</li>
+          </ul>
+          <div class="links">
+            <a href="https://github.com/Ryukijano/tech-demos/tree/main/apps/active-borylation">App folder</a>
+            <a href="https://github.com/Ryukijano/tech-demos/blob/main/apps/active-borylation/README.md">README</a>
           </div>
         </div>
       </article>

@@ -1,0 +1,6 @@
+{"seed": 0, "strategy": "bald", "ensemble_size": 10, "batch": 50, "molecules": 10, "reactions": 153, "test_mcc": 0.28141036973120626, "wall_s": 0.5976324081420898}
+{"seed": 0, "strategy": "bald", "ensemble_size": 10, "batch": 50, "molecules": 60, "reactions": 213, "test_mcc": 0.5218345260444798, "wall_s": 1.6605205535888672}
+{"seed": 0, "strategy": "bald", "ensemble_size": 10, "batch": 50, "molecules": 110, "reactions": 2635, "test_mcc": 0.5477382064620504, "wall_s": 6.190786361694336}
+{"seed": 0, "strategy": "bald", "ensemble_size": 10, "batch": 50, "molecules": 160, "reactions": 2883, "test_mcc": 0.7190002348453689, "wall_s": 11.24315619468689}
+{"seed": 0, "strategy": "bald", "ensemble_size": 10, "batch": 50, "molecules": 210, "reactions": 4686, "test_mcc": 0.7271433421104747, "wall_s": 18.50161600112915}
+{"seed": 0, "strategy": "bald", "ensemble_size": 10, "batch": 50, "molecules": 260, "reactions": 5088, "test_mcc": 0.7202842908085815, "wall_s": 25.553569316864014}

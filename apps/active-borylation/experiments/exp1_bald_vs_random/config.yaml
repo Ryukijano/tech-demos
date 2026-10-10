@@ -1,0 +1,14 @@
+exp_id: exp1_bald_vs_random
+hypothesis: >
+  BALD (ensemble mutual information) acquisition over substrates reaches the target
+  test MCC with fewer substrate molecules sampled than random acquisition.
+upstream: {repo: minotm/active-drug-discovery, commit: c687cb1c52704a249f929c81bff5ca0ba21020f6}
+data: {files: [pre_AL, AL_1, AL_2, AL_3], n_reactions: 6865, target: binary, test_frac_substrates: 0.15}
+features: {ecfp_bits: 512, ecfp_radius: 2, one_hot: [catalyst_1_smiles, ligand_1_smiles, solvent_1_smiles, reagent_1_smiles, additive_1_smiles], numeric: [temperature_deg_c, time_h, startingmat_1_eq, reagent_1_eq, catalyst_1_eq, ligand_1_eq]}
+model: {type: xgboost_ensemble, ensemble_size: 10, max_depth: 6, n_estimators: 200, learning_rate: 0.1, subsample: 0.8, colsample_bytree: 0.8, n_jobs: 1, balance: scale_pos_weight}
+al: {unit: substrate, init_molecules: 10, batch_molecules: 10, max_molecules: 250, strategies: [bald, random]}
+metric: test_mcc   # Matthews corr. coef. on held-out substrates' reactions
+target: {definition: "0.9 * MCC of same ensemble trained on full pool (per seed)"}
+seeds: [0, 1, 2]
+pass: "molecules_to_target(bald) < molecules_to_target(random) on >=2 of 3 seeds AND mean over seeds lower"
+extremes: {ensemble_size: [10, 25, 50, 100], batch_molecules: [10, 25, 50], time_limit_min: 30, mem_limit_gb: 3}

@@ -1,0 +1,22 @@
+exp_id: exp3_gnn_aux_scaffold
+status: NOT RUN (needs approved Colab GPU budget)
+hypothesis: >
+  On a Bemis-Murcko scaffold split of the regioselectivity set, EquiformerV2 trained WITH the
+  auxiliary tasks (coordinate denoising + node masking) has higher held-out top-1 site accuracy
+  than the same model trained WITHOUT them.
+upstream: {repo: minotm/active-drug-discovery, commit: c687cb1c52704a249f929c81bff5ca0ba21020f6}
+data: {file: data/training_data/regioselectivity.csv, rows: 1030, unique_substrates: 812}
+split: {type: murcko_scaffold, test_frac: 0.2, assign: "largest scaffold groups to train, deterministic", note: "upstream train_gnn_workflow.py has no scaffold split; done in the notebook before training"}
+arms:
+  no_aux:   {flags: []}
+  with_aux: {flags: [--coordinate_denoising, --node_masking]}
+model: {name: equiformerv2, n_layers: 5, l_max: 4, sphere_channels: 96, norm_type: layer_norm_sh}
+train: {epochs: 300, patience: 50, batch_size: 16, learn_rate: 0.0004}   # paper param file uses 1000/200; reduced for budget
+metric: top1_site_accuracy_scaffold_test
+seeds: [0, 1, 2]
+pass: "mean(with_aux) - mean(no_aux) >= 0.03 AND with_aux > no_aux on >=2 of 3 seeds"
+extremes: {batch_size: [16, 32, 64, 128], sphere_channels: [96, 128, 192], stop_on: [CUDA_OOM, wall_gt_30min_per_epoch]}
+runtime_estimate: >
+  Unmeasured. 6 training runs (2 arms x 3 seeds). Cell 3 times 2 epochs on the assigned GPU and
+  extrapolates; budget = 6 x (s/epoch x expected epochs before early stop). Do not start the full
+  loop until that number is approved.

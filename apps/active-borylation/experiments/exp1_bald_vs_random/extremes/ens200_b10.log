@@ -1,0 +1,13 @@
+{"seed": 0, "strategy": "bald", "ensemble_size": 200, "batch": 10, "molecules": 10, "reactions": 153, "test_mcc": 0.26029511749465895, "wall_s": 13.77884840965271}
+{"seed": 0, "strategy": "bald", "ensemble_size": 200, "batch": 10, "molecules": 20, "reactions": 163, "test_mcc": 0.5645992206353011, "wall_s": 47.20750665664673}
+{"seed": 0, "strategy": "bald", "ensemble_size": 200, "batch": 10, "molecules": 30, "reactions": 176, "test_mcc": 0.6100868836686758, "wall_s": 67.73386096954346}
+{"seed": 0, "strategy": "bald", "ensemble_size": 200, "batch": 10, "molecules": 40, "reactions": 188, "test_mcc": 0.6071756103156686, "wall_s": 89.01119208335876}
+{"seed": 0, "strategy": "bald", "ensemble_size": 200, "batch": 10, "molecules": 50, "reactions": 199, "test_mcc": 0.5390486118759938, "wall_s": 110.6433219909668}
+{"seed": 0, "strategy": "bald", "ensemble_size": 200, "batch": 10, "molecules": 60, "reactions": 528, "test_mcc": 0.5407735890617095, "wall_s": 148.29329204559326}
+{"seed": 0, "strategy": "bald", "ensemble_size": 200, "batch": 10, "molecules": 70, "reactions": 565, "test_mcc": 0.6123466478564317, "wall_s": 184.73721599578857}
+{"seed": 0, "strategy": "bald", "ensemble_size": 200, "batch": 10, "molecules": 80, "reactions": 805, "test_mcc": 0.6577132005526265, "wall_s": 230.61541986465454}
+{"seed": 0, "strategy": "bald", "ensemble_size": 200, "batch": 10, "molecules": 90, "reactions": 910, "test_mcc": 0.6740142039468173, "wall_s": 279.92282152175903}
+{"seed": 0, "strategy": "bald", "ensemble_size": 200, "batch": 10, "molecules": 100, "reactions": 1462, "test_mcc": 0.6458458646720456, "wall_s": 1430.547197341919}
+{"seed": 0, "strategy": "bald", "ensemble_size": 200, "batch": 10, "molecules": 110, "reactions": 1833, "test_mcc": 0.5877890266026589, "wall_s": 1520.4181759357452}
+{"seed": 0, "strategy": "bald", "ensemble_size": 200, "batch": 10, "molecules": 120, "reactions": 1862, "test_mcc": 0.5833254598411525, "wall_s": 1600.4394807815552}
+{"seed": 0, "strategy": "bald", "ensemble_size": 200, "batch": 10, "molecules": 130, "reactions": 2258, "test_mcc": 0.6286177719815792, "wall_s": 1845.0266864299774}

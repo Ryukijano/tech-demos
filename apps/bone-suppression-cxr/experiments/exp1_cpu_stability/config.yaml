@@ -53,7 +53,7 @@ disclosure: >
 breakpoints:
   images: [JPCNN001, cxr_train_1_a_1]
   seed: 0
-  compare: ssim_bone vs the clean bone output (rotation: vs the clean bone output rotated by the same angle)
+  compare: "ssim_bone vs the clean bone output (rotation: vs the clean bone output rotated by the same angle)"
   degrade_levels: {ok: 0.95, degraded: 0.80}
   families:
     noise_sigma: [0.01, 0.03, 0.05, 0.1, 0.2, 0.4]

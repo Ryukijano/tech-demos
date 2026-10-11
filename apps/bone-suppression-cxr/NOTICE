@@ -1,0 +1,29 @@
+bone-suppression-cxr demo — NOTICE
+
+This directory (apps/bone-suppression-cxr/) is licensed separately from the rest of the tech-demos
+repository under Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International
+(CC BY-NC-SA 4.0, full text in LICENSE). Its results and media (artifacts/, experiments/) are
+outputs of the CC BY-NC-SA 4.0 models below, so the non-commercial and share-alike terms carry over.
+
+Upstream (attribution):
+  Model: qureaiorg/bone-suppression (Qure.ai), v1.0.0, released 2026-09-15
+         https://huggingface.co/qureaiorg/bone-suppression  (snapshot 7b794055ccdf257451b4eaac066f4276f91a373c)
+  Weights weights/bone_suppression.ts, weights/lung_component_suppression.ts: CC BY-NC-SA 4.0,
+         non-commercial research and educational use only (LICENSE-WEIGHTS.txt, copied verbatim).
+         They are NOT redistributed here; they are downloaded from Hugging Face at run time.
+  Reference code suppress.py / config.json: Apache-2.0 (LICENSE-UPSTREAM-CODE-Apache-2.0.txt).
+         src/bsx.py adapts its preprocessing (resize/min-max), first() and to_u8() helpers.
+  HF Space hugging-apps/bone-suppression-chest-xray (app.py): pipeline description, the
+         looks_inverted() heuristic and the percentile display stretch are adapted from it.
+  Paper: M. Angaitkar, P. Kumar, A. Satia, P. Rao, A. Mittal, M. Tadepalli, P. Putha,
+         "Anatomy-Decomposed Chest Computed Tomography (CT) Projections as Scalable Supervision
+         for Bone Suppression in Chest Radiographs", arXiv:2609.24937 (2026).
+
+Example images:
+  - cxr_train_*.png: synthetic CT-derived projections from Qure.ai's qureaiorg/ct2xr-projections
+    (CC BY-NC-SA 4.0), as shipped in the HF Space. Downloaded at run time. Only these appear in
+    artifacts/ (the grid PNG and the sweep MP4).
+  - JPCLN030.png, JPCNN001.png: JSRT database radiographs shipped in the model repo. Used only at
+    run time for the experiment; not redistributed here (JSRT database terms, http://db.jsrt.or.jp/eng.php).
+
+Not a medical device. Research use only; not for diagnosis or clinical decisions. No warranty.

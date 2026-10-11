@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Tech Demos · Gyanateet Dutta (@Ryukijano)</title>
-  <meta name="description" content="A monorepo of small, honest kits and UIs for new AI models and runtimes: llama.cpp Decision Models, JEPA-Anything, PixelUMM and EmbeddingGemma 2.">
+  <meta name="description" content="A monorepo of small, honest kits and UIs for new AI models and runtimes: llama.cpp Decision Models, JEPA-Anything, PixelUMM, EmbeddingGemma 2, active borylation and chest X-ray bone suppression.">
   <meta property="og:title" content="Tech Demos">
   <meta property="og:description" content="Small, honest kits and UIs for new AI models and runtimes, by Gyanateet Dutta (@Ryukijano).">
   <meta property="og:image" content="https://ryukijano.github.io/tech-demos/assets/decision-models-ui.png">
@@ -21,7 +21,7 @@
       <p class="subtitle">Small, honest kits and UIs for new AI models and runtimes, kept in one monorepo with one folder per demo.</p>
       <div class="hero-actions">
         <a class="btn primary" href="https://github.com/Ryukijano/tech-demos">View the repo on GitHub</a>
-        <a class="btn" href="#demos">Browse the 5 demos</a>
+        <a class="btn" href="#demos">Browse the 6 demos</a>
       </div>
       <p class="byline">By <a href="https://github.com/Ryukijano">Gyanateet Dutta</a> · <a href="https://github.com/Ryukijano">@Ryukijano</a></p>
     </div>
@@ -170,6 +170,35 @@ notebooks/jepa_anything_demo.ipynb</pre>
           <div class="links">
             <a href="https://github.com/Ryukijano/tech-demos/tree/main/apps/active-borylation">App folder</a>
             <a href="https://github.com/Ryukijano/tech-demos/blob/main/apps/active-borylation/README.md">README</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- 6. Bone suppression CXR (CC BY-NC-SA app) -->
+      <article class="card">
+        <div class="media">
+          <video src="assets/bone-suppression-cxr.mp4" poster="assets/bone-suppression-cxr.png" muted controls playsinline preload="metadata" aria-label="Sweep video of a chest X-ray and its bone-suppression output as the input is degraded"></video>
+        </div>
+        <div class="body">
+          <div class="badges">
+            <span class="badge green">Released weights · CPU</span>
+            <span class="badge amber">Hypothesis: PARTIAL</span>
+            <span class="badge red">Noncommercial weights · research only</span>
+            <span class="badge muted">Python · TorchScript</span>
+          </div>
+          <h2>Bone suppression for chest X-rays</h2>
+          <p>Demo of Qure.ai's <a href="https://huggingface.co/qureaiorg/bone-suppression">qureaiorg/bone-suppression</a> (<a href="https://arxiv.org/abs/2609.24937">arXiv:2609.24937</a>): two TorchScript models split a frontal chest X-ray into bone, soft tissue and lung component. It runs on CPU and includes a pre-registered stability test and breakpoint sweep.</p>
+          <ul class="facts">
+            <li>Reproduces the authors' published outputs. CPU latency was about 10 s per 1024 px image for both models, under the 15 s budget</li>
+            <li>Stability under σ=0.01 noise: mean bone SSIM 0.942–0.945, just below the 0.95 bar. The decomposition breaks on inverted, JPEG q≤10, 64 px or high-contrast-clipped input</li>
+            <li>This app is CC BY-NC-SA 4.0 (weights' terms). Not a medical device and not for diagnosis</li>
+          </ul>
+          <pre><code>cd apps/bone-suppression-cxr
+pip install -r requirements.txt
+./run_all.sh</code></pre>
+          <div class="links">
+            <a href="https://github.com/Ryukijano/tech-demos/tree/main/apps/bone-suppression-cxr">App folder</a>
+            <a href="https://github.com/Ryukijano/tech-demos/blob/main/apps/bone-suppression-cxr/README.md">README</a>
           </div>
         </div>
       </article>

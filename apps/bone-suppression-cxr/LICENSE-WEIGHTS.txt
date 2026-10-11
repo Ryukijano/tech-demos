@@ -1,0 +1,4 @@
+The model weights in this directory are released for non-commercial research and educational use only.
+They were trained on projections derived from the CT-RATE dataset (CC BY-NC-SA 4.0), whose non-commercial
+and share-alike terms carry over to derived works. Redistribution must retain this notice. No warranty;
+not a medical device.

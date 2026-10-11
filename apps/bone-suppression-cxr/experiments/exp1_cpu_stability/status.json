@@ -1,0 +1,6 @@
+{
+ "status": "PARTIAL",
+ "precondition": true,
+ "ssim_all_seeds": false,
+ "latency_all_seeds": true
+}

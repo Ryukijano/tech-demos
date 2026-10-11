@@ -1,0 +1,9 @@
+# CPU is enough. For CPU-only torch: pip install torch --index-url https://download.pytorch.org/whl/cpu
+torch>=2.1
+numpy>=1.24
+opencv-python-headless>=4.8
+scikit-image>=0.22
+huggingface_hub>=0.23
+pyyaml
+pandas
+matplotlib

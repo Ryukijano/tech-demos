@@ -12,7 +12,9 @@ One monorepo for sticky / bookmark-worthy tech demos. Prefer adding a new `apps/
 | `apps/jepa-anything/` | JEPA-Anything Colab notebook + dry-run / light-checkpoint scripts |
 | `apps/pixelumm/` | PixelUMM image-understanding kit (GPU + noncommercial weights) |
 | `apps/embeddinggemma-2/` | EmbeddingGemma 2 text similarity search (Python API + Vite UI) |
-| `tracking/seen-bookmarks.json` | Stub bookmark tracker (empty array) |
+| `apps/active-borylation/` | Active learning + EquiformerV2 regioselectivity for C–H borylation (CPU, GPL-3.0 app) |
+| `apps/bone-suppression-cxr/` | Qure.ai chest X-ray bone / lung-component suppression on CPU, pre-registered stability test (CC BY-NC-SA 4.0 app, research only) |
+| `tracking/seen-bookmarks.json` | X bookmarks already turned into demos (`url`, `slug`, `date`) |
 | `docs/` | GitHub Pages showcase site (static HTML/CSS) |
 | `AGENTS.md` | Rules for future cloud agents |
 | `bunfig.toml` | Bun install policy (`minimumReleaseAge = 259200`) |

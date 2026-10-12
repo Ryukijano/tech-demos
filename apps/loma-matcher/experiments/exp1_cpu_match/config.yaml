@@ -1,0 +1,70 @@
+# Fixed on 2026-10-12 BEFORE the official measured run. Do not edit thresholds after seeing results.
+# One disclosed smoke (if any) may adjust latency_s_match_max only; that adjustment is recorded in disclosure.
+exp_id: exp1_cpu_match
+hypothesis: >
+  On a CPU-only machine (no GPU), LoMa-B matches the upstream sample image pairs with mean
+  wall-clock latency at or below the latency budget per pair, and produces a stable
+  correspondence count (identical across seeds 0/1/2 for clean inputs = determinism).
+  Separately, under in-plane rotation of image B, LoMa-R retains a higher fraction of
+  MAGSAC inliers than LoMa-B once rotation exceeds about 45 degrees (document the breakpoint).
+upstream:
+  repo: https://github.com/davnords/LoMa
+  package: lomatch (import loma)
+  paper: arXiv:2604.04931
+  project: https://www.davnords.com/loma
+  weights:
+    LoMa-B: https://github.com/davnords/storage/releases/download/loma/loma_B.pt
+    LoMa-R: https://github.com/davnords/storage/releases/download/loma/loma_R.pth
+  api: "from loma import LoMa, LoMaB, LoMaR; model = LoMa(LoMaB()); kptsA, kptsB = model.match(a, b)"
+inputs:   # downloaded at run time from the LoMa repo (MIT), never committed as weights
+  - {id: pair_0015, A: "github:davnords/LoMa/assets/0015_A.jpg", B: "github:davnords/LoMa/assets/0015_B.jpg"}
+  - {id: pair_0022, A: "github:davnords/LoMa/assets/0022_A.jpg", B: "github:davnords/LoMa/assets/0022_B.jpg"}
+  - {id: pair_toronto, A: "github:davnords/LoMa/assets/toronto_A.jpg", B: "github:davnords/LoMa/assets/toronto_B.jpg"}
+models:
+  primary: LoMa-B          # latency + determinism measured on LoMa-B
+  rotation: [LoMa-B, LoMa-R]
+seeds: [0, 1, 2]
+runtime:
+  device: cpu
+  dtype: float32           # wall-clock includes upstream autocast (mp=True -> bf16 on CPU when supported)
+  torch_threads: 4
+  num_keypoints: 2048      # upstream default
+  filter_threshold: 0.1    # upstream default
+  warmup_passes: 1         # first LoMa-B match excluded from latency; reported separately
+magsac:
+  ransacReprojThreshold: 0.2
+  method: USAC_MAGSAC
+  confidence: 0.999999
+  maxIters: 10000
+metrics:
+  primary: latency_s_match          # wall-clock model.match(A,B) per pair, torch.inference_mode
+  secondary: n_matches_identical    # same correspondence count across seeds 0/1/2 for each clean pair
+  report_only: [n_matches, n_inliers, inlier_ratio]
+thresholds:
+  latency_s_match_max: 30.0         # per seed: mean over the 3 pairs must be <= this (seconds)
+  # Rotation criterion (LoMa-R vs LoMa-B): for every angle in angles_ge, mean inlier_ratio(R) > mean inlier_ratio(B)
+  # over the breakpoint images. "Retains a higher fraction" = higher MAGSAC inlier_ratio.
+  rotation_angles_ge_deg: 45
+pass_rule: >
+  PASS if, for every seed in {0,1,2}, mean latency_s_match <= latency_s_match_max AND
+  n_matches is identical across those seeds for every clean pair (determinism), AND
+  for every rotation angle >= rotation_angles_ge_deg on the breakpoint images,
+  mean inlier_ratio(LoMa-R) > mean inlier_ratio(LoMa-B).
+  PARTIAL if the latency+determinism block holds XOR the rotation block holds.
+  FAIL otherwise (or if the run cannot load weights / complete).
+disclosure: >
+  Thresholds written before the official multi-seed run. A single disclosed smoke may adjust
+  latency_s_match_max only if 30 s is clearly wrong; that adjustment (if any) is noted here
+  before the official run and does not touch other thresholds.
+breakpoints:
+  images: [pair_0015, pair_toronto]
+  seed: 0
+  rotate: image_B                      # in-plane rotation of B only; A fixed
+  angles_deg: [0, 15, 30, 45, 60, 90, 135, 180]
+  models: [LoMa-B, LoMa-R]
+  degrade_levels:
+    ok: 0.50                           # inlier_ratio >= 0.50
+    degraded: 0.20                     # inlier_ratio >= 0.20
+  story: >
+    Rotation is the story for LoMa-R vs LoMa-B. Expect LoMa-B inlier_ratio to fall as angle
+    grows past ~45 deg; LoMa-R should hold longer.

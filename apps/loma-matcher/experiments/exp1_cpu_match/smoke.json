@@ -1,0 +1,33 @@
+{
+ "env": {
+  "python": "3.12.3",
+  "torch": "2.14.1+cpu",
+  "threads": 4,
+  "cpu": "x86_64",
+  "nproc": 4,
+  "cuda": false,
+  "loadavg_start": [
+   0.39013671875,
+   0.21484375,
+   0.150390625
+  ],
+  "started": "2026-10-12T08:39:06+0000"
+ },
+ "load_s": {},
+ "cold_s": {},
+ "clean": {},
+ "seeds": {
+  "0": {},
+  "1": {},
+  "2": {}
+ },
+ "breakpoints": [],
+ "smoke": {
+  "pair": "pair_0015",
+  "load_s": 12.419605393999973,
+  "latency_s": 9.168978078999999,
+  "n_matches": 968,
+  "n_inliers": 143,
+  "inlier_ratio": 0.14772727272727273
+ }
+}

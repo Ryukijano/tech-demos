@@ -53,9 +53,10 @@ pass_rule: >
   PARTIAL if the latency+determinism block holds XOR the rotation block holds.
   FAIL otherwise (or if the run cannot load weights / complete).
 disclosure: >
-  Thresholds written before the official multi-seed run. A single disclosed smoke may adjust
-  latency_s_match_max only if 30 s is clearly wrong; that adjustment (if any) is noted here
-  before the official run and does not touch other thresholds.
+  Thresholds written before the official multi-seed run. One disclosed smoke (2026-10-12)
+  ran LoMa-B once on pair_0015 after weights download: load 12.4 s, warm match 9.17 s,
+  n_matches=968. The 30 s latency budget was therefore left unchanged (clearly not too tight).
+  Determinism and rotation thresholds were not informed by that smoke.
 breakpoints:
   images: [pair_0015, pair_toronto]
   seed: 0

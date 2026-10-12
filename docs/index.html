@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Tech Demos · Gyanateet Dutta (@Ryukijano)</title>
-  <meta name="description" content="A monorepo of small, honest kits and UIs for new AI models and runtimes: llama.cpp Decision Models, JEPA-Anything, PixelUMM, EmbeddingGemma 2, active borylation and chest X-ray bone suppression.">
+  <meta name="description" content="A monorepo of small, honest kits and UIs for new AI models and runtimes: llama.cpp Decision Models, JEPA-Anything, PixelUMM, EmbeddingGemma 2, active borylation, chest X-ray bone suppression, and LoMa matching.">
   <meta property="og:title" content="Tech Demos">
   <meta property="og:description" content="Small, honest kits and UIs for new AI models and runtimes, by Gyanateet Dutta (@Ryukijano).">
   <meta property="og:image" content="https://ryukijano.github.io/tech-demos/assets/decision-models-ui.png">
@@ -21,7 +21,7 @@
       <p class="subtitle">Small, honest kits and UIs for new AI models and runtimes, kept in one monorepo with one folder per demo.</p>
       <div class="hero-actions">
         <a class="btn primary" href="https://github.com/Ryukijano/tech-demos">View the repo on GitHub</a>
-        <a class="btn" href="#demos">Browse the 6 demos</a>
+        <a class="btn" href="#demos">Browse the 7 demos</a>
       </div>
       <p class="byline">By <a href="https://github.com/Ryukijano">Gyanateet Dutta</a> · <a href="https://github.com/Ryukijano">@Ryukijano</a></p>
     </div>
@@ -32,7 +32,36 @@
 
     <section class="grid">
 
-      <!-- 1. Decision Models -->
+      <!-- 1. LoMa matcher (CPU clear-experiment) -->
+      <article class="card">
+        <div class="media">
+          <video src="assets/loma-matcher.mp4" poster="assets/loma-matcher.png" muted controls playsinline preload="metadata" aria-label="Rotation sweep of LoMa-B vs LoMa-R match lines on an upstream sample pair"></video>
+        </div>
+        <div class="body">
+          <div class="badges">
+            <span class="badge green">Released weights · CPU</span>
+            <span class="badge red">Hypothesis: FAIL</span>
+            <span class="badge muted">Python · lomatch · OpenCV MAGSAC</span>
+          </div>
+          <h2>LoMa local feature matcher</h2>
+          <p>Demo of <a href="https://github.com/davnords/LoMa">davnords/LoMa</a> (<a href="https://arxiv.org/abs/2604.04931">arXiv:2604.04931</a>): LightGlue-style matching with LoMa-B plus rotation-invariant LoMa-R. CPU clear-experiment with pre-registered latency, determinism and rotation breakpoints.</p>
+          <ul class="facts">
+            <li>LoMa-B match latency about 8.3–8.7 s mean per upstream pair on 4 CPU threads, under the 30 s budget</li>
+            <li>Correspondence counts drift by a few matches across seeds 0/1/2 (strict identity fails). LoMa-R beats LoMa-B on inlier ratio at 45–90°, but not at every angle ≥ 45° (fails at 135°)</li>
+            <li>MIT code; matcher inherits Apache-2.0 from LightGlue. Weights auto-download; not committed</li>
+          </ul>
+          <pre><code>cd apps/loma-matcher
+uv pip install -r requirements.txt
+uv pip install "lomatch @ git+https://github.com/davnords/LoMa.git"
+./run_all.sh</code></pre>
+          <div class="links">
+            <a href="https://github.com/Ryukijano/tech-demos/tree/main/apps/loma-matcher">App folder</a>
+            <a href="https://github.com/Ryukijano/tech-demos/blob/main/apps/loma-matcher/README.md">README</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- 2. Decision Models -->
       <article class="card">
         <div class="media">
           <video src="assets/decision-models-ui.mp4" poster="assets/decision-models-ui.png" muted controls playsinline preload="metadata" aria-label="Recording of the Decision Models UI in mock mode"></video>
@@ -58,7 +87,7 @@ bun install &amp;&amp; bun run dev</code></pre>
         </div>
       </article>
 
-      <!-- 2. EmbeddingGemma 2 -->
+      <!-- 3. EmbeddingGemma 2 -->
       <article class="card">
         <div class="media">
           <video src="assets/embeddinggemma-ui.mp4" poster="assets/embeddinggemma-ui.png" muted controls playsinline preload="metadata" aria-label="Recording of the EmbeddingGemma 2 semantic search UI"></video>
@@ -85,7 +114,7 @@ python server/app.py</code></pre>
         </div>
       </article>
 
-      <!-- 3. JEPA-Anything -->
+      <!-- 4. JEPA-Anything -->
       <article class="card">
         <div class="media terminal" role="img" aria-label="Terminal panel showing the JEPA-Anything run paths">
           <div class="term-bar"><span></span><span></span><span></span><em>apps/jepa-anything</em></div>
@@ -117,7 +146,7 @@ notebooks/jepa_anything_demo.ipynb</pre>
         </div>
       </article>
 
-      <!-- 4. PixelUMM -->
+      <!-- 5. PixelUMM -->
       <article class="card">
         <div class="media terminal" role="img" aria-label="Summary of the PixelUMM smoke test report">
           <div class="term-bar"><span></span><span></span><span></span><em>artifacts/smoke_report.json</em></div>
@@ -149,7 +178,7 @@ notebooks/jepa_anything_demo.ipynb</pre>
         </div>
       </article>
 
-      <!-- 5. Active borylation (GPLv3 app) -->
+      <!-- 6. Active borylation (GPLv3 app) -->
       <article class="card">
         <div class="media">
           <video src="assets/active-borylation-ui.mp4" poster="assets/active-borylation-ui.png" muted controls playsinline preload="metadata" aria-label="Recording of the regioselectivity UI showing per-atom borylation probabilities"></video>
@@ -174,7 +203,7 @@ notebooks/jepa_anything_demo.ipynb</pre>
         </div>
       </article>
 
-      <!-- 6. Bone suppression CXR (CC BY-NC-SA app) -->
+      <!-- 7. Bone suppression CXR (CC BY-NC-SA app) -->
       <article class="card">
         <div class="media">
           <video src="assets/bone-suppression-cxr.mp4" poster="assets/bone-suppression-cxr.png" muted controls playsinline preload="metadata" aria-label="Sweep video of a chest X-ray and its bone-suppression output as the input is degraded"></video>

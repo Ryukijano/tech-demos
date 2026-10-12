@@ -248,14 +248,30 @@ for t in leg.get_texts():
 fig.suptitle(f"loma-matcher exp1_cpu_match — status {status}", fontweight="bold")
 fig.tight_layout()
 fig.savefig(os.path.join(EXP, "plot.png"), dpi=140)
+def _py(o):
+    if isinstance(o, (np.integer,)):
+        return int(o)
+    if isinstance(o, (np.floating,)):
+        return float(o)
+    if isinstance(o, (np.bool_,)):
+        return bool(o)
+    if isinstance(o, dict):
+        return {k: _py(v) for k, v in o.items()}
+    if isinstance(o, list):
+        return [_py(v) for v in o]
+    return o
+
+
 json.dump(
-    dict(
-        status=status,
-        latency_all_seeds=latency_all,
-        determinism=det_ok,
-        latency_and_determinism=det_block,
-        rotation_R_better_ge_threshold=rot_ok,
-        rotation_detail=rot_detail,
+    _py(
+        dict(
+            status=status,
+            latency_all_seeds=latency_all,
+            determinism=det_ok,
+            latency_and_determinism=det_block,
+            rotation_R_better_ge_threshold=rot_ok,
+            rotation_detail=rot_detail,
+        )
     ),
     open(os.path.join(EXP, "status.json"), "w"),
     indent=1,

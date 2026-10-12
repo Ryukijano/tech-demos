@@ -1,0 +1,448 @@
+{
+ "env": {
+  "python": "3.12.3",
+  "torch": "2.14.1+cpu",
+  "threads": 4,
+  "cpu": "x86_64",
+  "nproc": 4,
+  "cuda": false,
+  "loadavg_start": [
+   0.19580078125,
+   0.25048828125,
+   0.1728515625
+  ],
+  "started": "2026-10-12T08:41:04+0000",
+  "maxrss_mb": 4548.80078125,
+  "loadavg_end": [
+   4.02001953125,
+   3.01318359375,
+   1.5146484375
+  ],
+  "finished": "2026-10-12T08:47:51+0000"
+ },
+ "load_s": {
+  "LoMa-B": 6.74812181499999,
+  "LoMa-R": 8.097175846000027
+ },
+ "cold_s": {
+  "LoMa-B": 8.63294246800001,
+  "LoMa-R": 7.473251105999907
+ },
+ "clean": {
+  "pair_0015": {
+   "model": "LoMa-B",
+   "latency_s_match": 8.588625632000003,
+   "n_matches": 969,
+   "n_inliers": 143,
+   "inlier_ratio": 0.1475748194014448
+  },
+  "pair_0022": {
+   "model": "LoMa-B",
+   "latency_s_match": 8.63778197199997,
+   "n_matches": 364,
+   "n_inliers": 98,
+   "inlier_ratio": 0.2692307692307692
+  },
+  "pair_toronto": {
+   "model": "LoMa-B",
+   "latency_s_match": 8.55734011200002,
+   "n_matches": 280,
+   "n_inliers": 30,
+   "inlier_ratio": 0.10714285714285714
+  }
+ },
+ "seeds": {
+  "0": {
+   "pair_0015": {
+    "model": "LoMa-B",
+    "latency_s_match": 8.603722915000048,
+    "n_matches": 971,
+    "n_inliers": 144,
+    "inlier_ratio": 0.14830072090628219
+   },
+   "pair_0022": {
+    "model": "LoMa-B",
+    "latency_s_match": 8.623459126000057,
+    "n_matches": 367,
+    "n_inliers": 105,
+    "inlier_ratio": 0.28610354223433243
+   },
+   "pair_toronto": {
+    "model": "LoMa-B",
+    "latency_s_match": 8.733786156000065,
+    "n_matches": 285,
+    "n_inliers": 30,
+    "inlier_ratio": 0.10526315789473684
+   }
+  },
+  "1": {
+   "pair_0015": {
+    "model": "LoMa-B",
+    "latency_s_match": 8.280295310000042,
+    "n_matches": 975,
+    "n_inliers": 157,
+    "inlier_ratio": 0.16102564102564101
+   },
+   "pair_0022": {
+    "model": "LoMa-B",
+    "latency_s_match": 8.76514478799993,
+    "n_matches": 361,
+    "n_inliers": 108,
+    "inlier_ratio": 0.29916897506925205
+   },
+   "pair_toronto": {
+    "model": "LoMa-B",
+    "latency_s_match": 8.270828410000036,
+    "n_matches": 283,
+    "n_inliers": 30,
+    "inlier_ratio": 0.10600706713780919
+   }
+  },
+  "2": {
+   "pair_0015": {
+    "model": "LoMa-B",
+    "latency_s_match": 7.966767749999917,
+    "n_matches": 969,
+    "n_inliers": 133,
+    "inlier_ratio": 0.13725490196078433
+   },
+   "pair_0022": {
+    "model": "LoMa-B",
+    "latency_s_match": 8.69699712900001,
+    "n_matches": 365,
+    "n_inliers": 96,
+    "inlier_ratio": 0.26301369863013696
+   },
+   "pair_toronto": {
+    "model": "LoMa-B",
+    "latency_s_match": 8.108926409999981,
+    "n_matches": 279,
+    "n_inliers": 27,
+    "inlier_ratio": 0.0967741935483871
+   }
+  }
+ },
+ "breakpoints": [
+  {
+   "image": "pair_0015",
+   "model": "LoMa-B",
+   "family": "rotation_deg",
+   "level": 0,
+   "n_matches": 974,
+   "n_inliers": 159,
+   "inlier_ratio": 0.16324435318275154,
+   "latency_s_match": 7.8621550719999505
+  },
+  {
+   "image": "pair_0015",
+   "model": "LoMa-B",
+   "family": "rotation_deg",
+   "level": 15,
+   "n_matches": 987,
+   "n_inliers": 147,
+   "inlier_ratio": 0.14893617021276595,
+   "latency_s_match": 8.229504459000054
+  },
+  {
+   "image": "pair_0015",
+   "model": "LoMa-B",
+   "family": "rotation_deg",
+   "level": 30,
+   "n_matches": 967,
+   "n_inliers": 116,
+   "inlier_ratio": 0.11995863495346432,
+   "latency_s_match": 8.922122926999918
+  },
+  {
+   "image": "pair_0015",
+   "model": "LoMa-B",
+   "family": "rotation_deg",
+   "level": 45,
+   "n_matches": 928,
+   "n_inliers": 140,
+   "inlier_ratio": 0.15086206896551724,
+   "latency_s_match": 9.648506868999903
+  },
+  {
+   "image": "pair_0015",
+   "model": "LoMa-B",
+   "family": "rotation_deg",
+   "level": 60,
+   "n_matches": 949,
+   "n_inliers": 121,
+   "inlier_ratio": 0.12750263435194942,
+   "latency_s_match": 9.894738636000056
+  },
+  {
+   "image": "pair_0015",
+   "model": "LoMa-B",
+   "family": "rotation_deg",
+   "level": 90,
+   "n_matches": 982,
+   "n_inliers": 153,
+   "inlier_ratio": 0.15580448065173116,
+   "latency_s_match": 9.383048515999917
+  },
+  {
+   "image": "pair_0015",
+   "model": "LoMa-B",
+   "family": "rotation_deg",
+   "level": 135,
+   "n_matches": 952,
+   "n_inliers": 138,
+   "inlier_ratio": 0.14495798319327732,
+   "latency_s_match": 9.61902300700001
+  },
+  {
+   "image": "pair_0015",
+   "model": "LoMa-B",
+   "family": "rotation_deg",
+   "level": 180,
+   "n_matches": 955,
+   "n_inliers": 157,
+   "inlier_ratio": 0.1643979057591623,
+   "latency_s_match": 8.823325071999989
+  },
+  {
+   "image": "pair_toronto",
+   "model": "LoMa-B",
+   "family": "rotation_deg",
+   "level": 0,
+   "n_matches": 281,
+   "n_inliers": 36,
+   "inlier_ratio": 0.12811387900355872,
+   "latency_s_match": 8.839329366000015
+  },
+  {
+   "image": "pair_toronto",
+   "model": "LoMa-B",
+   "family": "rotation_deg",
+   "level": 15,
+   "n_matches": 242,
+   "n_inliers": 35,
+   "inlier_ratio": 0.1446280991735537,
+   "latency_s_match": 9.381541375999973
+  },
+  {
+   "image": "pair_toronto",
+   "model": "LoMa-B",
+   "family": "rotation_deg",
+   "level": 30,
+   "n_matches": 226,
+   "n_inliers": 26,
+   "inlier_ratio": 0.11504424778761062,
+   "latency_s_match": 9.758952381999961
+  },
+  {
+   "image": "pair_toronto",
+   "model": "LoMa-B",
+   "family": "rotation_deg",
+   "level": 45,
+   "n_matches": 227,
+   "n_inliers": 21,
+   "inlier_ratio": 0.09251101321585903,
+   "latency_s_match": 9.706372023999961
+  },
+  {
+   "image": "pair_toronto",
+   "model": "LoMa-B",
+   "family": "rotation_deg",
+   "level": 60,
+   "n_matches": 208,
+   "n_inliers": 13,
+   "inlier_ratio": 0.0625,
+   "latency_s_match": 9.26889762799999
+  },
+  {
+   "image": "pair_toronto",
+   "model": "LoMa-B",
+   "family": "rotation_deg",
+   "level": 90,
+   "n_matches": 285,
+   "n_inliers": 29,
+   "inlier_ratio": 0.10175438596491228,
+   "latency_s_match": 8.970668535999948
+  },
+  {
+   "image": "pair_toronto",
+   "model": "LoMa-B",
+   "family": "rotation_deg",
+   "level": 135,
+   "n_matches": 55,
+   "n_inliers": 13,
+   "inlier_ratio": 0.23636363636363636,
+   "latency_s_match": 9.893142650000073
+  },
+  {
+   "image": "pair_toronto",
+   "model": "LoMa-B",
+   "family": "rotation_deg",
+   "level": 180,
+   "n_matches": 258,
+   "n_inliers": 24,
+   "inlier_ratio": 0.09302325581395349,
+   "latency_s_match": 8.940877373000035
+  },
+  {
+   "image": "pair_0015",
+   "model": "LoMa-R",
+   "family": "rotation_deg",
+   "level": 0,
+   "n_matches": 967,
+   "n_inliers": 146,
+   "inlier_ratio": 0.15098241985522234,
+   "latency_s_match": 7.852304031999893
+  },
+  {
+   "image": "pair_0015",
+   "model": "LoMa-R",
+   "family": "rotation_deg",
+   "level": 15,
+   "n_matches": 983,
+   "n_inliers": 140,
+   "inlier_ratio": 0.14242115971515767,
+   "latency_s_match": 7.297464799999943
+  },
+  {
+   "image": "pair_0015",
+   "model": "LoMa-R",
+   "family": "rotation_deg",
+   "level": 30,
+   "n_matches": 959,
+   "n_inliers": 124,
+   "inlier_ratio": 0.12930135557872785,
+   "latency_s_match": 7.6974848719999045
+  },
+  {
+   "image": "pair_0015",
+   "model": "LoMa-R",
+   "family": "rotation_deg",
+   "level": 45,
+   "n_matches": 930,
+   "n_inliers": 135,
+   "inlier_ratio": 0.14516129032258066,
+   "latency_s_match": 8.120101879999993
+  },
+  {
+   "image": "pair_0015",
+   "model": "LoMa-R",
+   "family": "rotation_deg",
+   "level": 60,
+   "n_matches": 945,
+   "n_inliers": 130,
+   "inlier_ratio": 0.13756613756613756,
+   "latency_s_match": 7.609925947999955
+  },
+  {
+   "image": "pair_0015",
+   "model": "LoMa-R",
+   "family": "rotation_deg",
+   "level": 90,
+   "n_matches": 981,
+   "n_inliers": 153,
+   "inlier_ratio": 0.1559633027522936,
+   "latency_s_match": 7.488715859999957
+  },
+  {
+   "image": "pair_0015",
+   "model": "LoMa-R",
+   "family": "rotation_deg",
+   "level": 135,
+   "n_matches": 941,
+   "n_inliers": 130,
+   "inlier_ratio": 0.1381509032943677,
+   "latency_s_match": 7.94362295000019
+  },
+  {
+   "image": "pair_0015",
+   "model": "LoMa-R",
+   "family": "rotation_deg",
+   "level": 180,
+   "n_matches": 978,
+   "n_inliers": 170,
+   "inlier_ratio": 0.1738241308793456,
+   "latency_s_match": 7.691664631999856
+  },
+  {
+   "image": "pair_toronto",
+   "model": "LoMa-R",
+   "family": "rotation_deg",
+   "level": 0,
+   "n_matches": 283,
+   "n_inliers": 26,
+   "inlier_ratio": 0.09187279151943463,
+   "latency_s_match": 7.4084147129999565
+  },
+  {
+   "image": "pair_toronto",
+   "model": "LoMa-R",
+   "family": "rotation_deg",
+   "level": 15,
+   "n_matches": 252,
+   "n_inliers": 30,
+   "inlier_ratio": 0.11904761904761904,
+   "latency_s_match": 7.700833612999986
+  },
+  {
+   "image": "pair_toronto",
+   "model": "LoMa-R",
+   "family": "rotation_deg",
+   "level": 30,
+   "n_matches": 233,
+   "n_inliers": 28,
+   "inlier_ratio": 0.12017167381974249,
+   "latency_s_match": 7.985863002999849
+  },
+  {
+   "image": "pair_toronto",
+   "model": "LoMa-R",
+   "family": "rotation_deg",
+   "level": 45,
+   "n_matches": 246,
+   "n_inliers": 31,
+   "inlier_ratio": 0.12601626016260162,
+   "latency_s_match": 7.8230892619999395
+  },
+  {
+   "image": "pair_toronto",
+   "model": "LoMa-R",
+   "family": "rotation_deg",
+   "level": 60,
+   "n_matches": 232,
+   "n_inliers": 21,
+   "inlier_ratio": 0.09051724137931035,
+   "latency_s_match": 7.811337712000068
+  },
+  {
+   "image": "pair_toronto",
+   "model": "LoMa-R",
+   "family": "rotation_deg",
+   "level": 90,
+   "n_matches": 292,
+   "n_inliers": 35,
+   "inlier_ratio": 0.11986301369863013,
+   "latency_s_match": 7.612325380000129
+  },
+  {
+   "image": "pair_toronto",
+   "model": "LoMa-R",
+   "family": "rotation_deg",
+   "level": 135,
+   "n_matches": 226,
+   "n_inliers": 21,
+   "inlier_ratio": 0.09292035398230089,
+   "latency_s_match": 7.771229223000091
+  },
+  {
+   "image": "pair_toronto",
+   "model": "LoMa-R",
+   "family": "rotation_deg",
+   "level": 180,
+   "n_matches": 277,
+   "n_inliers": 27,
+   "inlier_ratio": 0.09747292418772563,
+   "latency_s_match": 7.56689674900008
+  }
+ ],
+ "smoke": null
+}

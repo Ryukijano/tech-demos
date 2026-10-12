@@ -5,5 +5,12 @@
     "slug": "bone-suppression-cxr",
     "date": "2026-10-11",
     "source": "https://huggingface.co/qureaiorg/bone-suppression"
+  },
+  {
+    "url": "https://x.com/gabriberton/status/2109348718298427571",
+    "author": "@gabriberton",
+    "slug": "loma-matcher",
+    "date": "2026-10-12",
+    "source": "https://github.com/davnords/LoMa"
   }
 ]

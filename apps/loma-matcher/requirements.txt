@@ -1,0 +1,15 @@
+# CPU is enough. Install torch CPU first, then:
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+#   pip install -r requirements.txt
+# Upstream package (MIT + Apache-2.0 matcher). Prefer uv when available:
+#   uv pip install "lomatch @ git+https://github.com/davnords/LoMa.git"
+numpy>=1.24
+opencv-python-headless>=4.8
+Pillow>=10.0
+pyyaml
+pandas
+matplotlib
+einops>=0.8
+tqdm
+tyro
+torchvision

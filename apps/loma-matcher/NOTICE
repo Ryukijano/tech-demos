@@ -1,0 +1,27 @@
+loma-matcher demo — NOTICE
+
+This directory (apps/loma-matcher/) is a thin CPU clear-experiment wrapper around
+upstream LoMa (https://github.com/davnords/LoMa). Demo scripts and docs here are
+MIT-licensed (see LICENSE). Upstream LoMa is MIT except the matcher, which inherits
+Apache-2.0 from LightGlue (https://github.com/cvg/LightGlue). The Apache-2.0 text
+is reproduced in LICENSE-Apache-2.0.txt.
+
+Upstream (attribution):
+  Package: lomatch / import loma  (davnords/LoMa)
+  Paper: Nordström et al., "LoMa: Local Feature Matching Revisited", ECCV 2026,
+         arXiv:2604.04931; project https://www.davnords.com/loma
+  Rotation-invariant model: LoMa-R; see also "Who Handles Orientation?", CVPRW 2026,
+         arXiv:2604.11809
+  Weights (auto-downloaded at run time, NOT committed here):
+    LoMa-B  https://github.com/davnords/storage/releases/download/loma/loma_B.pt
+    LoMa-R  https://github.com/davnords/storage/releases/download/loma/loma_R.pth
+  Detector weights (DaD) and DINOv2 / DeDoDe components are also downloaded by
+  upstream at init time into the local torch hub cache under work/cache/.
+
+Sample assets (MIT, from the LoMa repo) are downloaded at run time into work/assets/:
+  assets/0015_A.jpg, 0015_B.jpg, 0022_A.jpg, 0022_B.jpg, toronto_A.jpg, toronto_B.jpg
+
+LightGlue (Apache-2.0) — matcher lineage referenced by upstream LoMa:
+  https://github.com/cvg/LightGlue
+
+No warranty. Research / demo use. Weights stay out of git (see root .gitignore).

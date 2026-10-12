@@ -1,0 +1,39 @@
+{
+ "status": "FAIL",
+ "latency_all_seeds": true,
+ "determinism": false,
+ "latency_and_determinism": false,
+ "rotation_R_better_ge_threshold": false,
+ "rotation_detail": [
+  {
+   "angle": 45,
+   "mean_inlier_B": 0.12168654109068813,
+   "mean_inlier_R": 0.13558877524259114,
+   "R_better": true
+  },
+  {
+   "angle": 60,
+   "mean_inlier_B": 0.09500131717597471,
+   "mean_inlier_R": 0.11404168947272394,
+   "R_better": true
+  },
+  {
+   "angle": 90,
+   "mean_inlier_B": 0.12877943330832173,
+   "mean_inlier_R": 0.13791315822546185,
+   "R_better": true
+  },
+  {
+   "angle": 135,
+   "mean_inlier_B": 0.19066080977845684,
+   "mean_inlier_R": 0.11553562863833429,
+   "R_better": false
+  },
+  {
+   "angle": 180,
+   "mean_inlier_B": 0.1287105807865579,
+   "mean_inlier_R": 0.13564852753353562,
+   "R_better": true
+  }
+ ]
+}

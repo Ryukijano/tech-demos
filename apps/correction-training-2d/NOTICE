@@ -1,0 +1,26 @@
+correction-training-2d demo — NOTICE
+
+This directory (apps/correction-training-2d/) is a CPU-only pedagogical 2D
+re-implementation of the core idea of "Correction Training for Diffusion Models".
+It does NOT vendor the upstream ImageNet codebase; only the training loss
+(Algorithm 1) and the K-correction sampler (Algorithm 2) are re-implemented on a
+2D mixture of Gaussians with tiny MLPs. The demo code here and upstream are both
+MIT-licensed (see LICENSE).
+
+Upstream (attribution):
+  Code:    https://github.com/sunovivid/correction-training (MIT,
+           Copyright (c) 2026 Donghoon Ahn and contributors) — NOT vendored here
+  Paper:   Ahn, Wang, Efros, Park, Belhe,
+           "Correction Training for Diffusion Models", 2026, arXiv:2610.14136
+  Project: https://sunovivid.github.io/correction-training/
+           (also https://correction-training.github.io/)
+  Found via a bookmarked X post by @donghoon_ahn:
+           https://x.com/donghoon_ahn/status/2110038016622493951
+
+The official ImageNet sampling path (SiT-REPA / DiT / JiT checkpoints, ~11 GB)
+requires an NVIDIA GPU and is intentionally NOT run or downloaded here. A
+prepared, unexecuted Colab notebook (notebooks/correction_training_imagenet_colab.ipynb)
+documents how to run it; GPU spend needs owner approval.
+
+No warranty. Research / demo use. Model weights trained here stay out of git
+(work/ is git-ignored).

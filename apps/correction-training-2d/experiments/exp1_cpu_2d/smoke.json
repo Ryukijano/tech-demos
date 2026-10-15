@@ -1,0 +1,72 @@
+{
+  "smoke": true,
+  "gamma": 0.06268977827721366,
+  "torch": "2.14.1+cpu",
+  "started_utc": "2026-10-15T08:44:28Z",
+  "seeds": {
+    "0": {
+      "train_wall_s": 0.23793910100005178,
+      "final_denoise_loss": 0.8327010273933411,
+      "final_corr_loss": 0.845872700214386,
+      "rows": [
+        {
+          "K": 0,
+          "steps": 120,
+          "nfe": 120,
+          "nfe_budget": 120,
+          "mmd2": 0.01997065544128418,
+          "sliced_w1": 1.2950977087020874,
+          "nearest_mode_mse": 1.1525384187698364,
+          "mode_coverage": 1.0,
+          "sample_wall_s": 0.03158601400002681
+        },
+        {
+          "K": 1,
+          "steps": 60,
+          "nfe": 120,
+          "nfe_budget": 120,
+          "mmd2": 0.04248058795928955,
+          "sliced_w1": 1.2461090087890625,
+          "nearest_mode_mse": 1.3067914247512817,
+          "mode_coverage": 1.0,
+          "sample_wall_s": 0.027307916000040677
+        },
+        {
+          "K": 2,
+          "steps": 40,
+          "nfe": 120,
+          "nfe_budget": 120,
+          "mmd2": 0.05482625961303711,
+          "sliced_w1": 1.246976613998413,
+          "nearest_mode_mse": 1.522755742073059,
+          "mode_coverage": 1.0,
+          "sample_wall_s": 0.02772639700003765
+        },
+        {
+          "K": 4,
+          "steps": 24,
+          "nfe": 120,
+          "nfe_budget": 120,
+          "mmd2": 0.06342816352844238,
+          "sliced_w1": 1.2806264162063599,
+          "nearest_mode_mse": 1.3958832025527954,
+          "mode_coverage": 0.75,
+          "sample_wall_s": 0.026973638000072242
+        },
+        {
+          "K": 8,
+          "steps": 13,
+          "nfe": 117,
+          "nfe_budget": 120,
+          "mmd2": 0.0805443525314331,
+          "sliced_w1": 1.366052269935608,
+          "nearest_mode_mse": 1.2970160245895386,
+          "mode_coverage": 0.75,
+          "sample_wall_s": 0.026469614999996338
+        }
+      ]
+    }
+  },
+  "breakpoints": {},
+  "finished_utc": "2026-10-15T08:44:32Z"
+}

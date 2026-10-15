@@ -136,7 +136,7 @@ def train_joint(
         opt.zero_grad()
         loss.backward()
         opt.step()
-        dl, cl = float(loss_d), float(loss_c)
+        dl, cl = float(loss_d.detach()), float(loss_c.detach())
     wall = time.perf_counter() - t0
     D.eval()
     C.eval()

@@ -1,0 +1,11 @@
+{
+  "status": "FAIL",
+  "per_seed_pass": {
+    "0": false,
+    "1": false,
+    "2": false
+  },
+  "n_seeds_pass": 0,
+  "runaway_cost_guard_tripped": false,
+  "gamma": 0.06223825915972747
+}

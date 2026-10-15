@@ -1,0 +1,72 @@
+# Fixed on 2026-10-15 BEFORE the official measured run. Do not edit thresholds after seeing results.
+# One disclosed smoke (tiny iters / few samples) may be used to verify the code path runs;
+# it must not tune any threshold and is recorded in README + results.md.
+exp_id: exp1_cpu_2d
+hypothesis: >
+  On a fixed 2D mixture of 8 Gaussians on a ring, a tiny MLP denoiser trained jointly with a
+  stop-gradient corrector (Algorithm 1 of arXiv:2610.14136), sampled with K>0 iterative
+  corrections per denoising step (Algorithm 2) at a MATCHED total NFE budget, achieves strictly
+  lower unbiased RBF MMD^2 between 2000 generated samples and 2000 held-out data samples than
+  the K=0 baseline, for the best K in {1,2,4,8}, on every seed in {0,1,2}.
+upstream:
+  repo: https://github.com/sunovivid/correction-training   # MIT; NOT vendored here
+  paper: arXiv:2610.14136 (Ahn, Wang, Efros, Park, Belhe, 2026)
+  project: https://sunovivid.github.io/correction-training/
+  bookmark: https://x.com/donghoon_ahn/status/2110038016622493951
+  equations:
+    interpolation: "z_t = (1-t) x + t eps, t ~ U[0,1]  (Eq. 1, flow matching)"
+    training: "loss = mse(D(z,t), x) + weight * mse(C(sg(D(z,t)), t), x)  (Algorithm 1)"
+    sampling: "pred = D(z,t); K times pred = C(pred,t); v = (z-pred)/t; z += (s-t) v  (Algorithm 2)"
+data:
+  n_modes: 8
+  radius: 2.0
+  mode_std: 0.1
+  eval_set: 2000 samples drawn with fixed torch seed 9999 (independent of training seeds)
+model:
+  arch: TimeMLP (2 + 16 Fourier time features -> 3x128 SiLU -> 2), separate D and C
+  iters: 3000
+  batch: 256
+  lr: 1.0e-3
+  corr_weight: 1.0
+  training: joint from scratch (paper fine-tunes a pretrained denoiser; same Algorithm 1 loss)
+seeds: [0, 1, 2]        # control training data stream, init, and sampling noise
+runtime:
+  device: cpu
+  torch_threads: 4
+  dtype: float32
+sampling:
+  nfe_budget: 120        # total network evaluations per sample, denoiser + corrector
+  K_values: [0, 1, 2, 4, 8]
+  steps_rule: "steps = max(1, floor(nfe_budget / (1+K)))"   # K=0:120, 1:60, 2:40, 4:24, 8:13
+  n_samples: 2000
+metrics:
+  primary: mmd2_rbf      # unbiased MMD^2, RBF kernel, gamma = 1/(2*median squared pairwise
+                         # distance) computed ONCE on the fixed 2000-point eval data set
+  report_only: [sliced_w1, nearest_mode_mse, mode_coverage, train_wall_s, sample_wall_s]
+thresholds:
+  primary_rule: "min over K in {1,2,4,8} of mmd2(K) < mmd2(K=0), strictly, per seed"
+  train_wall_s_max: 180.0    # report-only secondary: joint training per seed on CPU
+  sample_wall_s_max: 60.0    # report-only secondary: 2000 samples at K=0, NFE 120
+pass_rule: >
+  PASS if the primary rule holds on ALL THREE seeds {0,1,2}.
+  PARTIAL if it holds on exactly two of the three seeds.
+  FAIL otherwise, or if training/sampling crashes or any wall-time secondary is exceeded
+  by more than 5x (runaway-cost guard).
+disclosure: >
+  Thresholds written before the official run. Smokes (if any) are limited to verifying that
+  training, sampling, metrics and plotting execute without error; any smoke run is listed in
+  results.md with its settings. No threshold was changed after the first official result.
+breakpoints:
+  seed: 0
+  k_extreme:
+    K_values: [0, 1, 2, 4, 8, 16, 32, 64]   # matched NFE 120; K=64 -> 1 denoising step
+  nfe_sweep:
+    budgets: [6, 12, 24, 60, 120, 240]
+    K_values: [0, 4]
+  difficulty:                                 # retrain per setting, seed 0
+    mode_std_values: [0.02, 0.05, 0.1, 0.2, 0.4]   # 8 modes, radius 2
+    n_modes_values: [4, 8, 16]                      # mode_std 0.1, radius 2
+  story: >
+    Where does iterative correction stop paying? Expect gains to saturate or invert at very
+    large K (too few denoising steps) and at very small NFE budgets; expect harder mixtures
+    (tighter modes, more modes) to change the margin.

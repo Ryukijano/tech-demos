@@ -217,7 +217,16 @@ def breakpoints(cfg):
         if degen:
             continue
         for sec_name, sec in [("X", 1), ("Y", 3)]:
-            for wq in bp["weight_sweep"]["grid"]:
+            # DISCLOSED post-hoc extension: the pre-registered absolute grid
+            # [-1, 1] turned out not to bracket the d=3 optimum (w*_X ~ -2.1;
+            # the paper's -0.42 is a d=7 number), so relative points around
+            # w* are added. Breakpoints are exploratory; no threshold depends
+            # on this grid. Recorded in breakpoints.md.
+            rel = [wstar[sec] * f for f in
+                   (0.0, 0.25, 0.5, 0.75, 0.9, 1.0, 1.1, 1.25, 1.5, 2.0)]
+            grid = sorted(set(round(float(g), 6)
+                              for g in list(bp["weight_sweep"]["grid"]) + rel))
+            for wq in grid:
                 w = wstar.copy()
                 # adjust consensus weight to keep sum_k q_k w_k = 1 (paper's
                 # Fig. 2d convention), other contested weights at w*

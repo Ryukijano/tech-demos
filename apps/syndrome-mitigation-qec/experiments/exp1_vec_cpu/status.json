@@ -1,0 +1,80 @@
+{
+ "status": "PARTIAL",
+ "rule": "PASS = (p_res_VEC <= 0.1 p_L) AND (p_res_VEC < p_res_PS) AND (eta < 4) on every seed 0/1/2 for d=3 AND d=5; PARTIAL = VEC beats postselection and plain on all seeds but misses 10x or eta<4; FAIL otherwise.",
+ "failed_condition": "eta<4 at d=3 (eta=5.4-5.7)",
+ "per_run_checks": [
+  {
+   "d": 3,
+   "seed": 0,
+   "c1_10x": true,
+   "c2_beats_postselect": true,
+   "c3_eta_lt_4": false,
+   "beats_plain": true,
+   "p_l_mwpm": 0.033975,
+   "p_res_vec": 0.0005862429262782182,
+   "p_res_postselect": 0.022617211558528156,
+   "eta": 5.693339415255183
+  },
+  {
+   "d": 3,
+   "seed": 1,
+   "c1_10x": true,
+   "c2_beats_postselect": true,
+   "c3_eta_lt_4": false,
+   "beats_plain": true,
+   "p_l_mwpm": 0.033993,
+   "p_res_vec": 0.0002230977840337804,
+   "p_res_postselect": 0.02263217798699752,
+   "eta": 5.663432949148956
+  },
+  {
+   "d": 3,
+   "seed": 2,
+   "c1_10x": true,
+   "c2_beats_postselect": true,
+   "c3_eta_lt_4": false,
+   "beats_plain": true,
+   "p_l_mwpm": 0.033879,
+   "p_res_vec": 0.0004083388445518698,
+   "p_res_postselect": 0.022309965158497275,
+   "eta": 5.4149256805779915
+  },
+  {
+   "d": 5,
+   "seed": 0,
+   "c1_10x": true,
+   "c2_beats_postselect": true,
+   "c3_eta_lt_4": true,
+   "beats_plain": true,
+   "p_l_mwpm": 0.016744,
+   "p_res_vec": 0.00031589723577115525,
+   "p_res_postselect": 0.007733981776691644,
+   "eta": 2.440465738318625
+  },
+  {
+   "d": 5,
+   "seed": 1,
+   "c1_10x": true,
+   "c2_beats_postselect": true,
+   "c3_eta_lt_4": true,
+   "beats_plain": true,
+   "p_l_mwpm": 0.016468,
+   "p_res_vec": 0.0004815333702566551,
+   "p_res_postselect": 0.007346662943763935,
+   "eta": 2.424103470154563
+  },
+  {
+   "d": 5,
+   "seed": 2,
+   "c1_10x": true,
+   "c2_beats_postselect": true,
+   "c3_eta_lt_4": true,
+   "beats_plain": true,
+   "p_l_mwpm": 0.016212,
+   "p_res_vec": 0.0005044451119955669,
+   "p_res_postselect": 0.007366787963129651,
+   "eta": 2.441243448711894
+  }
+ ],
+ "total_wall_s": 13.13
+}

@@ -1,0 +1,131 @@
+# Fixed on 2026-10-16 BEFORE the official measured run. Do not edit thresholds
+# after seeing results. One disclosed smoke (2e4 shots, seed 0, d=3 and d=5)
+# verified only that the code path runs and that the statistical floor is where
+# expected; it tuned no threshold and is recorded in smoke.json + results.md.
+exp_id: exp1_vec_cpu
+hypothesis: >
+  On a rotated surface code under code-capacity depolarizing noise at p=0.05,
+  dual-decoder coarse-grained virtual error cancellation (MWPM real-time +
+  exact maximum-likelihood offline, Eqs. 10-11 of arXiv:2610.12400) reduces
+  the residual logical bias by at least 10x relative to plain MWPM decoding
+  and is strictly lower than agreement postselection, at a sampling overhead
+  below the paper's standard logical-PEC benchmark (eta < 4).
+upstream:
+  paper: >
+    Shtanko, Roy, Kumar, Minev (Google Quantum AI), "Measure Now, Mitigate
+    Later: Virtual Error Cancellation for Logical Quantum Circuits",
+    arXiv:2610.12400 (CC BY 4.0). No official code; this is an independent
+    re-implementation.
+  bookmark: https://x.com/zlatko_minev/status/2110718095568622016
+  equations:
+    noise: "E_p(rho) = (1-p) rho + p/3 (X rho X + Y rho Y + Z rho Z) per data qubit"
+    sectors: "S_Q = { s : D_rt(s) * D_off(s) ~ Q }, Q in {I,X,Y,Z}  (Eq. 10)"
+    weights: >
+      V = (p_X - p_I, p_Y - p_I, p_Z - p_I);
+      w_I = (1 + 1^T V^-1 p_I)/q_I;  w_Q = -(V^-1 p_I)_Q / q_Q  (Eq. 11)
+    estimator: "<O>_VEC = N^-1 sum_i w(s_i) m_i  (Eq. 2)"
+    overhead: "C = sum_k q_k w_k^2;  eta = (C - 1)/p_L  (Eq. 9/12)"
+    offline_decoder: >
+      exact coset partition functions Z_L(s) (Eq. S.1), here by exhaustive
+      4^9 enumeration (d=3) and an exact transfer-matrix contraction with
+      bond dimension <= 2^d x 4 (d=5,7), verified against brute force at d=3
+      to max |diff| ~ 1e-15 (src/verify.py).
+noise:
+  model: code-capacity depolarizing, one perfect syndrome-extraction round
+  p: 0.05
+  simulator: >
+    stim detector sampler; the true logical frame flip Q' is recorded through
+    a noiseless reference ancilla (Bell-paired logical observables), used for
+    BENCHMARKING AND ORACLE CALIBRATION ONLY, as in the paper's Fig. 2
+    benchmark (Supplementary Sec. II.A). Disclosure: the main experiment is
+    oracle-calibrated (sector centroids from true frame flips on the
+    calibration split), like the paper's Fig. 2; the syndrome-only
+    noise-learning path (Eqs. 16-17) is a report-only stretch breakpoint.
+decoders:
+  real_time: PyMatching MWPM on decoupled X/Z graphs, weights ln[(1-q)/q], q=2p/3
+  offline: exact ML over the four logical cosets (see offline_decoder above)
+  d5_decision: >
+    DECIDED PRE-REGISTRATION: exact d=5 ML runs in budget (verified 0.003
+    ms/syndrome, src/verify.py), so the primary claim covers d=3 AND d=5.
+    d=7 is included as report-only (seed 0 only, smaller shots).
+runs:
+  - {d: 3, role: primary, seeds: [0, 1, 2], n_cal: 1000000, n_eval: 1000000,
+     cal_shards: 1000, eval_shards: 20}
+  - {d: 5, role: primary, seeds: [0, 1, 2], n_cal: 500000, n_eval: 500000,
+     cal_shards: 500, eval_shards: 20}
+  - {d: 7, role: report_only, seeds: [0], n_cal: 200000, n_eval: 200000,
+     cal_shards: 100, eval_shards: 20}
+seeding:
+  cal_base: 10000      # stim sampler seed = cal_base + 100*d + seed
+  eval_base: 20000     # stim sampler seed = eval_base + 100*d + seed
+  note: calibration and eval sampling are independent streams per seed
+metrics:
+  primary: >
+    p_res = || sum_k q_k w_k p_k ||_1 (residual logical Pauli error, L1) on
+    HELD-OUT eval shots, with weights fitted on the separate calibration set;
+    per seed. Baselines on the same eval shots: plain decoding (w = 1,
+    p_res = p_L_MWPM) and agreement postselection (w_Q = 0, renormalised,
+    p_res = ||p_I||_1).
+  statistical_floor: >
+    1-sigma floor on p_res must sit well below 0.1*p_L. With n_eval = 1e6
+    (d=3) the per-component shot-noise floor is ~sqrt(C*p_bar/N) ~ 3e-4
+    against 0.1*p_L ~ 3e-3 (p_L ~ 3e-2 at d=3, p=0.05); with n_eval = 5e5
+    (d=5) it is ~2e-4 against 0.1*p_L ~ 1.5e-3. Error bars: paired delete-1
+    jackknife over B=20 shards (cal and eval shards dropped jointly).
+  observable_check: >
+    report estimated <Z_L> on |0_L> and <X_L> on |+_L> (ideal +1) for
+    plain / postselect / VEC with jackknife CIs (report-only).
+  report_only: [sector shares q_Q, conditional matrix P_QQp, optimal weights,
+                C, eta, wall times, MWPM vs ML logical error rate]
+thresholds:
+  pass_condition: >
+    For d=3 AND d=5, on EVERY seed in {0,1,2}:
+      (1) p_res_VEC <= 0.1 * p_L_MWPM   (same seed, eval split),
+      (2) p_res_VEC <  p_res_postselect (same seed, eval split),
+      (3) eta_VEC = (C - 1)/p_L_MWPM < 4.
+  status_rule: >
+    PASS if all three conditions hold on all seeds for both d=3 and d=5.
+    PARTIAL if VEC beats postselection and plain decoding on all seeds
+    (conditions (2) and p_res_VEC < p_L_MWPM) but misses the 10x or eta<4 bar.
+    FAIL otherwise.
+breakpoints:
+  p_sweep:
+    d_values: [3, 5]
+    p_values: [0.01, 0.02, 0.03, 0.05, 0.08, 0.11, 0.15, 0.19]
+    n_shots: {"3": 200000, "5": 100000}   # cal = eval, seed 0 only
+    story: where VEC's advantage and eta break down toward/above threshold
+  cal_budget:
+    budgets: [1000, 3000, 10000, 30000, 100000, 300000, 1000000]
+    story: p_res vs calibration size, from official cal shard prefixes (seed 0)
+  drift:
+    story: weights calibrated at p=0.05 applied at every p' in p_values
+  weight_sweep:
+    grid: [-1.0, -0.8, -0.6, -0.5, -0.42, -0.35, -0.3, -0.25, -0.2, -0.15,
+           -0.1, -0.05, -0.02, 0.0, 0.05, 0.1, 0.2, 0.4, 0.7, 1.0]
+    story: >
+      residual vs one contested weight w_Q (X and Y sectors), consensus
+      weight adjusted to keep sum q_k w_k = 1 (paper Fig. 2d convention);
+      minimum at w_Q* vs postselection (w_Q=0) and no mitigation (w_Q=1).
+  noise_learning:   # report-only stretch (Eqs. 16-17 / S.2-S.9)
+    enabled: true
+    p_range: [0.03, 0.08]       # inhomogeneous per-qubit true rates, d=3
+    noise_seed: 777
+    n_learn: 1000000
+    n_eval: 1000000
+    cal_seed: 30001
+    eval_seed: 30002
+runtime:
+  device: cpu-only (4 vCPUs), numpy + stim + pymatching
+  paper_reference_point: >
+    QUOTED from arXiv:2610.12400 (Supp. Sec. II.B), NOT claimed reproduced
+    here (paper value is at d=7): at d=7, p=0.05 the paper reports
+    P_XX ~ P_ZZ ~ 0.86, P_YY ~ 0.78, w_I* ~ 1.01, w_X* = w_Z* ~ -0.42,
+    w_Y* ~ -4e-2. Our d=7 report-only run is compared against these numbers.
+disclosure: >
+  Thresholds and shot counts fixed before the official run. The only
+  pre-registration computation was src/verify.py (decoder correctness +
+  timing, no hypothesis metrics) and one smoke (2e4 shots, seed 0; recorded
+  in smoke.json and results.md). No threshold was changed after any result.
+  Oracle calibration disclosure: sector shares/centroids are estimated from
+  true frame flips on the calibration split, exactly like the paper's Fig. 2
+  benchmark; the noise-learning breakpoint uses no true labels.

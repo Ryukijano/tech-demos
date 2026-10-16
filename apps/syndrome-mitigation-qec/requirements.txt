@@ -1,0 +1,6 @@
+numpy>=1.26
+stim>=1.13
+pymatching>=2.1
+matplotlib>=3.8
+pyyaml>=6.0
+scipy>=1.11

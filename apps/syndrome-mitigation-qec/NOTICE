@@ -1,0 +1,29 @@
+syndrome-mitigation-qec demo — NOTICE
+
+This directory (apps/syndrome-mitigation-qec/) is a CPU-only toy
+re-implementation of dual-decoder coarse-grained Virtual Error Cancellation
+(VEC) in a code-capacity setting. There is NO official code release for the
+paper; everything here is an independent re-implementation written for this
+demo and is NOT the authors' code.
+
+Paper (attribution, licence CC BY 4.0):
+  Oles Shtanko, Saswata Roy, Shashwat Kumar, Zlatko Minev (Google Quantum AI),
+  "Measure Now, Mitigate Later: Virtual Error Cancellation for Logical
+  Quantum Circuits", arXiv:2610.12400, https://arxiv.org/abs/2610.12400
+  Found via a bookmarked X post by @zlatko_minev:
+  https://x.com/zlatko_minev/status/2110718095568622016
+  No figures or text from the paper are reproduced here; the equations
+  re-implemented (Eqs. 2, 9-12, 16-17, S.1-S.9) are cited in README.md and
+  config.yaml. Paper-reported numbers quoted for comparison are marked as
+  QUOTED and are not claimed as reproduced results.
+
+Dependencies (attribution):
+  stim        — Apache-2.0, https://github.com/quantumlib/Stim
+  PyMatching  — Apache-2.0, https://github.com/oscarhiggott/PyMatching
+  NumPy       — BSD-3-Clause
+  SciPy       — BSD-3-Clause
+  Matplotlib  — PSF-based licence
+  PyYAML      — MIT
+
+This demo's code is MIT (see LICENSE). No model weights, no credentials, no
+network access at runtime. Research / demo use; no warranty.

@@ -1,0 +1,18 @@
+{
+  "status": "FAIL",
+  "binary_mean_solve_rate": 0.0,
+  "binary_std_solve_rate": 0.0,
+  "masked_mean_solve_rate": 0.6875,
+  "masked_std_solve_rate": 0.04166666666666663,
+  "mean_gap": -0.6875,
+  "every_seed_binary_wins": false,
+  "mean_gap_ge_0.05": false,
+  "per_seed_binary_wins": {
+    "0": false,
+    "1": false,
+    "2": false
+  },
+  "n_params": 111369,
+  "pass_condition": "For EVERY seed in {0,1,2}:\n  solve_rate_binary > solve_rate_masked\nAND mean_over_seeds(solve_rate_binary - solve_rate_masked) >= 0.05 (at least a 5 percentage-point mean gap).\n",
+  "status_rule": "PASS if the pass_condition holds. PARTIAL if mean(binary) > mean(masked) but the every-seed strict win or the 5pp mean-gap fails. FAIL otherwise (including ties or masked ahead on mean).\n"
+}

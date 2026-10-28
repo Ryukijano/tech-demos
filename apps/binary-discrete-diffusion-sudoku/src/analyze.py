@@ -97,7 +97,7 @@ def main() -> None:
         f"# exp1_cpu_sudoku results — **{status}**",
         "",
         f"Primary metric: full-puzzle solve rate on {rows[0]['n']} held-out puzzles "
-        f"(36 clues, NFE={rows[0]['nfe']}).",
+        f"({cfg['data']['n_clues_eval']} clues, NFE={rows[0]['nfe']}).",
         "",
         f"| seed | binary solve | masked solve | gap | cell_acc binary | cell_acc masked |",
         f"|---|---:|---:|---:|---:|---:|",
@@ -229,7 +229,7 @@ def main() -> None:
         bp_lines.append("")
 
     bp_lines.append(
-        "Honest note: this toy uses a ~150k-param network and synthetic 36-clue "
+        "Honest note: this toy uses a ~110k-param network and synthetic 50-clue "
         "boards — far from the paper's 43M DiT on Sudoku-Extreme. Breakpoints show "
         "where the *toy* comparison collapses, not where the paper's method fails."
     )

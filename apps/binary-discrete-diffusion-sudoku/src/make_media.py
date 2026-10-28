@@ -66,6 +66,8 @@ def _draw_candidates(ax, z: np.ndarray, clues: np.ndarray, solution: np.ndarray,
             else:
                 bits = z[r * 9 + c]
                 cands = [i + 1 for i in range(9) if bits[i] > 0.5]
+                if not cands:
+                    continue
                 if len(cands) == 1:
                     color = "#2166ac" if cands[0] == solution[r, c] else "#b2182b"
                     ax.text(
@@ -73,7 +75,6 @@ def _draw_candidates(ax, z: np.ndarray, clues: np.ndarray, solution: np.ndarray,
                         ha="center", va="center", fontsize=12, color=color, fontweight="bold",
                     )
                 else:
-                    # show up to 4 candidates as mini text
                     txt = "".join(str(d) for d in cands[:5])
                     if len(cands) > 5:
                         txt += "…"
@@ -94,9 +95,10 @@ def _draw_candidates(ax, z: np.ndarray, clues: np.ndarray, solution: np.ndarray,
 def main() -> None:
     ART.mkdir(exist_ok=True)
     model = _load_binary()
+    n_clues = 50
     sols = make_puzzle_pool(1, seed=4242)
     rng = np.random.default_rng(7)
-    clues_np, mask_np = punch_clues(sols, 36, rng)
+    clues_np, mask_np = punch_clues(sols, n_clues, rng)
     solution = sols[0]
     clues = clues_np[0]
 
@@ -114,7 +116,7 @@ def main() -> None:
     mid = traj[len(traj) // 2].numpy()[0]
     final_z = traj[-1].numpy()[0]
     empty_z = np.zeros((81, 9))
-    _draw_candidates(axes[0], empty_z, clues, solution, "Clues (36 givens)")
+    _draw_candidates(axes[0], empty_z, clues, solution, f"Clues ({n_clues} givens)")
     _draw_candidates(axes[1], mid, clues, solution, f"Binary state @ step {len(traj)//2}")
     # final panel: decoded prediction
     final_clues = pred_board.copy()

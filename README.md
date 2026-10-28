@@ -14,6 +14,7 @@ One monorepo for sticky / bookmark-worthy tech demos. Prefer adding a new `apps/
 | `apps/embeddinggemma-2/` | EmbeddingGemma 2 text similarity search (Python API + Vite UI) |
 | `apps/active-borylation/` | Active learning + EquiformerV2 regioselectivity for C–H borylation (CPU, GPL-3.0 app) |
 | `apps/bone-suppression-cxr/` | Qure.ai chest X-ray bone / lung-component suppression on CPU, pre-registered stability test (CC BY-NC-SA 4.0 app, research only) |
+| `apps/binary-discrete-diffusion-sudoku/` | Binary Discrete Diffusion Sudoku CPU toy vs masked baseline (arXiv:2610.28543; independent re-implementation, no official code) |
 | `tracking/seen-bookmarks.json` | X bookmarks already turned into demos (`url`, `slug`, `date`) |
 | `docs/` | GitHub Pages showcase site (static HTML/CSS) |
 | `AGENTS.md` | Rules for future cloud agents |

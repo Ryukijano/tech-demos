@@ -1,0 +1,97 @@
+# Fixed on 2026-10-28 BEFORE the official measured run. Do not edit thresholds
+# after seeing results. One disclosed smoke (tiny iters, seed 0) may verify the
+# code path only; it tunes no threshold and is recorded in smoke.json.
+exp_id: exp1_cpu_sudoku
+hypothesis: >
+  On 9x9 Sudoku with 50 clues, a tiny binary-symmetric candidate-set diffusion
+  denoiser (arXiv:2610.28543 idea; independent re-implementation) achieves a
+  strictly higher full-puzzle solve rate than a matched-size masked discrete
+  diffusion baseline at equal NFE and matched parameter count, on every seed
+  in {0, 1, 2}.
+upstream:
+  paper: >
+    Casado Noguerales, von Rütte, Schölkopf, Hofmann, Raoufi,
+    "Binary Discrete Diffusion: Candidate-Set Diffusion for Logic and
+    Planning Tasks", arXiv:2610.28543 (2026). No official code release found
+    as of 2026-10-28; this app is an independent minimal re-implementation.
+  paper_url: https://arxiv.org/abs/2610.28543
+  bookmark: https://x.com/rodcasnog/status/2113287405142675759
+  author_site: https://rodcasnog.github.io/research/
+  note: >
+    Not the authors' 43M DiT / Sudoku-Extreme setup. Toy architecture, synthetic
+    puzzles, and simplified ancestral samplers. Results here do not claim to
+    reproduce Table 1 of the paper.
+data:
+  board_size: 9
+  vocab: 9                  # digits 1..9 indexed as 0..8
+  # 50 clues: chosen pre-run so both kernels can reach non-zero solve rates on
+  # this tiny (~110k) CPU model; still leaves 31 blanks (harder than "easy"
+  # newspaper puzzles). Not Sudoku-Extreme low-clue.
+  n_clues_train: 50
+  n_clues_eval: 50
+  n_train_puzzles: 256      # unique filled grids (punch anew each batch)
+  n_eval_puzzles: 48
+  train_grid_seed: 12345    # fixed filled-grid pool for training
+  eval_grid_seed: 99991     # held-out filled-grid pool (disjoint seed stream)
+model:
+  d_model: 64
+  n_layers: 2
+  n_heads: 4
+  dropout: 0.0
+  # ~110k params; same trunk for both kernels (embedding front-end differs)
+training:
+  steps: 3000
+  batch_size: 32
+  lr: 0.001
+  weight_decay: 0.0
+  log_every: 500
+  time_sampling: uniform    # paper uses a log clock for binary; toy keeps uniform for both
+sampling:
+  nfe: 32                   # matched network evaluations for both kernels
+  t_min: 0.02
+  schedule: linear          # t: 1 -> t_min over nfe steps
+seeds: [0, 1, 2]
+metrics:
+  primary: >
+    full_puzzle_solve_rate = fraction of held-out eval puzzles whose decoded
+    board is a valid complete Sudoku AND matches the known solution, one
+    attempt per puzzle, no verifier / search beyond each kernel's own
+    confidence-guided sampler. Per seed.
+  report_only:
+    - cell_accuracy          # fraction of non-clue cells matching solution
+    - valid_board_rate       # fraction of decoded boards that are valid Sudokus
+    - mean_candidates_final  # binary only: mean |set| after last step (pre-decode)
+    - train_wall_s
+    - sample_wall_s
+thresholds:
+  pass_condition: >
+    For EVERY seed in {0,1,2}:
+      solve_rate_binary > solve_rate_masked
+    AND mean_over_seeds(solve_rate_binary - solve_rate_masked) >= 0.05
+    (at least a 5 percentage-point mean gap).
+  status_rule: >
+    PASS if the pass_condition holds.
+    PARTIAL if mean(binary) > mean(masked) but the every-seed strict win
+    or the 5pp mean-gap fails.
+    FAIL otherwise (including ties or masked ahead on mean).
+  train_wall_s_max_report: 600
+  sample_wall_s_max_report: 120
+breakpoints:
+  seed: 0
+  fewer_clues:
+    n_clues: [50, 40, 30, 22]
+    story: harder boards (fewer givens); where the toy comparison collapses
+  fewer_steps:
+    nfe: [32, 16, 8, 4, 2]
+    story: under-budget sampling; where iterative narrowing breaks
+  train_steps_ablation:
+    steps: [500, 3000]
+    story: under-trained vs primary budget (report-only)
+runtime:
+  device: cpu-only
+  torch_threads: 4
+disclosure: >
+  Thresholds, clue counts, NFE, model size, and puzzle counts fixed before the
+  official run. A disclosed smoke (few steps, seed 0) may verify the code path
+  only and is recorded in smoke.json; no threshold is changed after any result.
+  This is NOT an official reproduction of arXiv:2610.28543 Table 1.

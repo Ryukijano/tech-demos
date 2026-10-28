@@ -1,0 +1,23 @@
+binary-discrete-diffusion-sudoku demo — NOTICE
+
+This directory (apps/binary-discrete-diffusion-sudoku/) is a CPU-only clear-
+experiment toy inspired by:
+
+  Casado Noguerales, von Rütte, Schölkopf, Hofmann, Raoufi,
+  "Binary Discrete Diffusion: Candidate-Set Diffusion for Logic and Planning
+  Tasks", arXiv:2610.28543 (2026)
+  https://arxiv.org/abs/2610.28543
+  Author page: https://rodcasnog.github.io/research/
+
+Found via a bookmarked X post by @rodcasnog:
+  https://x.com/rodcasnog/status/2113287405142675759
+
+No official code repository was located as of 2026-10-28 (searched arXiv
+abstract/HTML, the author's research page, and public GitHub queries). This
+app is therefore an **independent minimal re-implementation** of the candidate-
+set / binary-symmetric vs masked diffusion comparison on synthetic 9×9 Sudoku,
+with a tiny (~150k-param) transformer — NOT a reproduction of the paper's 43M
+DiT / Sudoku-Extreme numbers.
+
+No warranty. Research / demo use. Trained weights stay out of git (work/ is
+git-ignored).

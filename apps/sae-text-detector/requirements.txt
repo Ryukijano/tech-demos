@@ -1,0 +1,15 @@
+# torch installed separately from the CPU index:
+#   uv pip install --index-url https://download.pytorch.org/whl/cpu torch
+detectorscope>=0.0.1
+transformers>=4.57
+huggingface_hub>=0.34
+safetensors>=0.4.3
+scikit-learn>=1.5
+matplotlib>=3.8
+pyyaml>=6.0
+pandas>=2.0
+datasets>=2.19
+numpy>=1.26
+scipy>=1.11
+gradio>=5.0
+accelerate>=0.33

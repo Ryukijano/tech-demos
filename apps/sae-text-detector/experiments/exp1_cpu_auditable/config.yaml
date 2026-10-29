@@ -1,0 +1,83 @@
+# Fixed on 2026-10-29 BEFORE the official measured run. Do not edit thresholds
+# after seeing results. One disclosed smoke (few texts, seed 0) may verify the
+# code path only; it tunes no threshold and is recorded in smoke.json.
+exp_id: exp1_cpu_auditable
+hypothesis: >
+  On a balanced 96-example stratified subsample (48 human + 48 AI) drawn from
+  the public dmitva/human_ai_generated_text corpus (CC-BY-4.0), the released
+  DetectorScope logistic-regression head at interpretability threshold tau=0.85
+  (liamdugan/detector-scope, Apache-2.0 code / Gemma ToU LM) achieves AUROC
+  within 0.05 of the same head at tau=0.00 (all SAE features admitted), on every
+  seed in {0, 1, 2}. Seed controls which stratified rows enter the subsample.
+upstream:
+  paper: >
+    Dugan, McDougall, Denton, Pham, Kaeser-Chen, Callison-Burch,
+    "Building Auditable AI Text Detectors with Sparse Autoencoders",
+    arXiv:2610.30006 / EMNLP 2026.
+  paper_url: https://arxiv.org/abs/2610.30006
+  hf_papers: https://huggingface.co/papers/2610.30006
+  code: https://github.com/google-deepmind/detectorscope
+  code_license: Apache-2.0
+  model: liamdugan/detector-scope
+  bookmark: https://x.com/_akhaliq/status/2114730846426890689
+  note: >
+    This app uses the official detectorscope Python package and the released
+    Hub detector on CPU. It is a small clear-experiment slice, not a full
+    reproduction of the COLING / RAID tables in the paper.
+data:
+  dataset: dmitva/human_ai_generated_text
+  dataset_license: CC-BY-4.0
+  dataset_url: https://huggingface.co/datasets/dmitva/human_ai_generated_text
+  pool_pairs: 400          # fixed pool drawn once with pool_seed before per-seed splits
+  pool_seed: 20261029
+  n_per_class: 48          # 96 texts total per seed
+  min_chars: 80            # drop tiny cells before pooling
+  max_chars: 1200          # truncate for CPU latency; applied after sampling
+model:
+  hub_id: liamdugan/detector-scope
+  head: logreg
+  tau_sparse: 0.85         # primary auditable setting (paper default)
+  tau_dense: 0.00          # all features admitted (dense-SAE baseline)
+seeds: [0, 1, 2]
+metrics:
+  primary: >
+    auroc_gap = AUROC(tau=0.00) - AUROC(tau=0.85) on the seed's 96-example
+    balanced subsample. Lower is better for the sparse auditable head.
+  report_only:
+    - auroc_tau_0.85
+    - auroc_tau_0.00
+    - mean_n_active_features_tau_0.85
+    - mean_n_active_features_tau_0.00
+    - accuracy_tau_0.85
+    - extract_wall_s
+thresholds:
+  max_auroc_gap: 0.05
+  min_auroc_sparse: 0.70
+  pass_condition: >
+    For EVERY seed in {0,1,2}:
+      (AUROC(tau=0.00) - AUROC(tau=0.85)) <= 0.05
+      AND AUROC(tau=0.85) >= 0.70
+  status_rule: >
+    PASS if the pass_condition holds.
+    PARTIAL if mean_over_seeds(auroc_gap) <= 0.05 and mean(AUROC_0.85) >= 0.70
+    but at least one seed fails the every-seed rule.
+    FAIL otherwise.
+breakpoints:
+  seed: 0
+  truncate_chars: [40, 80, 160, 400, 1200]
+  story_truncate: where short inputs lose the sparse-vs-dense match
+  tau_sweep: [0.00, 0.50, 0.70, 0.85, 0.90, 0.95]
+  story_tau: where raising the interpretability bar collapses AUROC
+  topk_features: [1, 2, 4, 8, 16, 32, 64]
+  story_topk: >
+    rescoring tau=0.85 logits with only the top-|importance| active features
+    (zero-ablate the rest); where extreme sparsity breaks the decision
+runtime:
+  device: cpu-only
+  torch_threads: 4
+  batch_size: 4
+disclosure: >
+  Thresholds, dataset sizes, taus, and dataset fixed before the official run.
+  A disclosed smoke (few texts, seed 0) may verify the code path only and is
+  recorded in smoke.json; no threshold is changed after any result. Not a full
+  COLING/RAID reproduction of arXiv:2610.30006.

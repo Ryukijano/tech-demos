@@ -15,6 +15,7 @@ One monorepo for sticky / bookmark-worthy tech demos. Prefer adding a new `apps/
 | `apps/active-borylation/` | Active learning + EquiformerV2 regioselectivity for C–H borylation (CPU, GPL-3.0 app) |
 | `apps/bone-suppression-cxr/` | Qure.ai chest X-ray bone / lung-component suppression on CPU, pre-registered stability test (CC BY-NC-SA 4.0 app, research only) |
 | `apps/binary-discrete-diffusion-sudoku/` | Binary Discrete Diffusion Sudoku CPU toy vs masked baseline (arXiv:2610.28543; independent re-implementation, no official code) |
+| `apps/sae-text-detector/` | Auditable SAE AI-text detector via official DetectorScope on CPU (arXiv:2610.30006; Apache-2.0) |
 | `tracking/seen-bookmarks.json` | X bookmarks already turned into demos (`url`, `slug`, `date`) |
 | `docs/` | GitHub Pages showcase site (static HTML/CSS) |
 | `AGENTS.md` | Rules for future cloud agents |

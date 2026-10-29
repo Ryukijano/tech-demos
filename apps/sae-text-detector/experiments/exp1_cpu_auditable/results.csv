@@ -1,0 +1,4 @@
+seed,auroc_tau_0.85,auroc_tau_0.00,auroc_gap,accuracy_tau_0.85,mean_n_active_0.85,mean_n_active_0.00,extract_wall_s,n,seed_pass
+0,0.7886,0.9826,0.194,0.5208,72.03,88.18,,96,False
+1,0.8351,0.9761,0.1411,0.5104,72.14,87.11,,96,False
+2,0.8468,0.9887,0.1419,0.5,73.7,87.55,,96,False

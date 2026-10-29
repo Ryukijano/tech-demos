@@ -1,0 +1,35 @@
+sae-text-detector demo — NOTICE
+
+This directory (apps/sae-text-detector/) is a CPU-only clear-experiment kit for:
+
+  Dugan, McDougall, Denton, Pham, Kaeser-Chen, Callison-Burch,
+  "Building Auditable AI Text Detectors with Sparse Autoencoders",
+  arXiv:2610.30006 (EMNLP 2026)
+  https://arxiv.org/abs/2610.30006
+  https://huggingface.co/papers/2610.30006
+
+Found via a bookmarked X post by @_akhaliq:
+  https://x.com/_akhaliq/status/2114730846426890689
+
+Official code (used here via the `detectorscope` PyPI package):
+  https://github.com/google-deepmind/detectorscope
+  License: Apache License 2.0 (copy in LICENSE)
+
+Released Hub detector used at run time (not redistributed in git):
+  https://huggingface.co/liamdugan/detector-scope
+  - Language model under extractor/: Gemma-2-2b, Gemma Terms of Use
+    (https://ai.google.dev/gemma/terms) — see the Hub repo NOTICE
+  - Sparse autoencoders derive from Gemma Scope (CC-BY-4.0)
+  - Heads and feature descriptions: CC-BY-4.0
+
+Dataset used for the clear experiment (downloaded at run time):
+  dmitva/human_ai_generated_text — CC-BY-4.0
+  https://huggingface.co/datasets/dmitva/human_ai_generated_text
+
+This app's experiment harness, Gradio wrapper, and media scripts are original to
+tech-demos. They call the official AuditableDetector API; they are not a
+re-implementation of the authors' training pipeline. Results here are a small
+CPU slice, not the paper's COLING / RAID tables.
+
+No warranty. Research / demo use. Model weights stay out of git (HF cache /
+work/ is git-ignored). No API keys required for the measured run.

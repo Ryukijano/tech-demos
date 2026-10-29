@@ -1,0 +1,21 @@
+{
+  "status": "FAIL",
+  "auroc_sparse_mean": 0.8234953703703702,
+  "auroc_sparse_std": 0.03075886401097458,
+  "auroc_dense_mean": 0.9824942129629629,
+  "auroc_dense_std": 0.006294649860476546,
+  "auroc_gap_mean": 0.15899884259259256,
+  "auroc_gap_std": 0.030324018854204736,
+  "every_seed_pass": false,
+  "mean_pass": false,
+  "per_seed_pass": {
+    "0": false,
+    "1": false,
+    "2": false
+  },
+  "max_auroc_gap": 0.05,
+  "min_auroc_sparse": 0.7,
+  "pass_condition": "For EVERY seed in {0,1,2}:\n  (AUROC(tau=0.00) - AUROC(tau=0.85)) <= 0.05\n  AND AUROC(tau=0.85) >= 0.70\n",
+  "status_rule": "PASS if the pass_condition holds. PARTIAL if mean_over_seeds(auroc_gap) <= 0.05 and mean(AUROC_0.85) >= 0.70 but at least one seed fails the every-seed rule. FAIL otherwise.\n",
+  "load_wall_s": null
+}

@@ -1,0 +1,51 @@
+{
+  "smoke": true,
+  "torch": "2.15.0+cpu",
+  "started_utc": "2026-10-30T09:46:26Z",
+  "games": {
+    "breakout": {
+      "seeds": {
+        "0": {
+          "n_params": 459805,
+          "train_wall_s": 1.1022303949998786,
+          "eval_wall_s": 0.04641474200002449,
+          "policy_steps": 200,
+          "imagine_horizon": 5,
+          "learning_curve": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            1.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            2.0,
+            0.0,
+            1.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "agent_mean_return": 0.0,
+          "agent_std_return": 0.0,
+          "random_mean_return": 0.75,
+          "random_std_return": 1.164964745021435,
+          "ckpt": "agent_breakout_seed0.pt"
+        }
+      }
+    }
+  },
+  "finished_utc": "2026-10-30T09:46:28Z"
+}

@@ -1,0 +1,27 @@
+nanodreamer-minatar demo — NOTICE
+
+This directory (apps/nanodreamer-minatar/) is a CPU-only clear-experiment toy
+inspired by:
+
+  Benjamin Bai, "NanoDreamer: Learning to Act Through Imagination" (October 2026)
+  Write-up: https://www.benjamin-bai.com/projects/nanodreamer
+  Upstream code: https://github.com/benyebai/NanoDreamer
+
+Found via a bookmarked X post by @benbye:
+  https://x.com/benbye/status/2115488344050192584
+
+LICENCE STATUS (verified 2026-10-30):
+  GitHub API reports license=null for benyebai/NanoDreamer. The repository tree
+  has no LICENSE, COPYING, or equivalent file. Absent an explicit open-source
+  grant, the upstream code is all rights reserved by its author.
+
+Therefore this app is a **clean-room PyTorch reimplementation** of the
+write-up's ideas (CNN encoder, causal transformer world model, imagination-only
+actor–critic on MinAtar). It does NOT pip/git-install, vendor, or copy any
+upstream NanoDreamer source. The `minatar` PyPI package is used for the
+environments.
+
+This is NOT a reproduction of the upstream ~750k-param / 500k-step MinAtar
+table. Toy scale, simplified scalar reward/value heads, and a much smaller
+CPU step budget. No warranty. Research / demo use. Trained weights stay out
+of git (work/ is git-ignored).

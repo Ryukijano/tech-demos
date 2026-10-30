@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Tech Demos · Gyanateet Dutta (@Ryukijano)</title>
-  <meta name="description" content="A monorepo of small, honest kits and UIs for new AI models and runtimes: llama.cpp Decision Models, JEPA-Anything, PixelUMM, EmbeddingGemma 2, active borylation, chest X-ray bone suppression, LoMa matching, a correction-training 2D toy, a syndrome-mitigation QEC experiment, a binary discrete diffusion Sudoku toy, and an auditable SAE text detector.">
+  <meta name="description" content="A monorepo of small, honest kits and UIs for new AI models and runtimes: llama.cpp Decision Models, JEPA-Anything, PixelUMM, EmbeddingGemma 2, active borylation, chest X-ray bone suppression, LoMa matching, a correction-training 2D toy, a syndrome-mitigation QEC experiment, a binary discrete diffusion Sudoku toy, an auditable SAE text detector, and a NanoDreamer MinAtar world-model toy.">
   <meta property="og:title" content="Tech Demos">
   <meta property="og:description" content="Small, honest kits and UIs for new AI models and runtimes, by Gyanateet Dutta (@Ryukijano).">
   <meta property="og:image" content="https://ryukijano.github.io/tech-demos/assets/decision-models-ui.png">
@@ -21,7 +21,7 @@
       <p class="subtitle">Small, honest kits and UIs for new AI models and runtimes, kept in one monorepo with one folder per demo.</p>
       <div class="hero-actions">
         <a class="btn primary" href="https://github.com/Ryukijano/tech-demos">View the repo on GitHub</a>
-        <a class="btn" href="#demos">Browse the 11 demos</a>
+        <a class="btn" href="#demos">Browse the 12 demos</a>
       </div>
       <p class="byline">By <a href="https://github.com/Ryukijano">Gyanateet Dutta</a> · <a href="https://github.com/Ryukijano">@Ryukijano</a></p>
     </div>
@@ -32,7 +32,37 @@
 
     <section class="grid">
 
-      <!-- 0. SAE text detector / DetectorScope (CPU clear-experiment) -->
+      <!-- 0. NanoDreamer MinAtar (CPU clear-experiment, clean-room) -->
+      <article class="card">
+        <div class="media">
+          <video src="assets/nanodreamer-minatar.mp4" poster="assets/nanodreamer-minatar.png" muted controls playsinline preload="metadata" aria-label="Clean-room NanoDreamer-style agent playing MinAtar Breakout on CPU"></video>
+        </div>
+        <div class="body">
+          <div class="badges">
+            <span class="badge green">CPU toy · clean-room</span>
+            <span class="badge red">Hypothesis: FAIL</span>
+            <span class="badge muted">PyTorch · MinAtar · world model</span>
+          </div>
+          <h2>NanoDreamer on MinAtar</h2>
+          <p>Clean-room reimplementation of ideas from <a href="https://www.benjamin-bai.com/projects/nanodreamer">Benjamin Bai's NanoDreamer</a> (found via <a href="https://x.com/benbye/status/2115488344050192584">@benbye</a>): a tiny Dreamer-style world model whose actor trains only in imagination. Upstream GitHub has <strong>no licence</strong> — no source was copied. Pre-registered CPU slice on Breakout + Space Invaders, 16k steps, seeds 0/1/2.</p>
+          <ul class="facts">
+            <li>FAIL: Breakout mean 0.727±0.280 vs random 0.533±0.055 (misses every-seed + 2× bars); Space Invaders 0.937±1.207 vs random 2.700±0.295</li>
+            <li>~460k params; actor updates are imagination-only; does not reproduce the upstream 500k-step MinAtar table</li>
+            <li>Breakpoints: &lt;4k steps or a ~74k-param stack collapse on Breakout; horizon 5 beats horizon 1</li>
+          </ul>
+          <pre><code>cd apps/nanodreamer-minatar
+uv venv .venv && source .venv/bin/activate
+uv pip install --index-url https://download.pytorch.org/whl/cpu torch
+uv pip install -r requirements.txt
+./run_all.sh</code></pre>
+          <div class="links">
+            <a href="https://github.com/Ryukijano/tech-demos/tree/main/apps/nanodreamer-minatar">App folder</a>
+            <a href="https://github.com/Ryukijano/tech-demos/blob/main/apps/nanodreamer-minatar/README.md">README</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- 1. SAE text detector / DetectorScope (CPU clear-experiment) -->
       <article class="card">
         <div class="media">
           <video src="assets/sae-text-detector.mp4" poster="assets/sae-text-detector.png" muted controls playsinline preload="metadata" aria-label="DetectorScope listing named SAE feature attributions for an AI-like abstract on CPU"></video>

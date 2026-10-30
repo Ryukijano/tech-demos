@@ -1,0 +1,7 @@
+kind,policy_steps,imagine_horizon,n_params,agent_mean,random_mean,train_wall_s
+tiny_step_budget,1000,,459805,0.45,0.5,6.9
+tiny_step_budget,4000,,459805,0.575,0.625,35.1
+tiny_step_budget,16000,,459805,0.675,0.375,169.6
+imagination_horizon,8000,1,459805,0.675,0.475,70.5
+imagination_horizon,8000,5,459805,0.725,0.4,79.4
+tiny_model,8000,,73717,0.225,0.575,55.3

@@ -1,0 +1,7 @@
+game,seed,agent_mean_return,agent_std_return,random_mean_return,random_std_return,ratio,n_params,policy_steps,train_wall_s,eval_wall_s
+breakout,0,0.41,0.5877,0.47,0.6884,0.8723,459805,16000,216.8,1.03
+breakout,1,0.83,0.9107,0.57,0.6705,1.4561,459805,16000,225.1,1.23
+breakout,2,0.94,1.0427,0.56,0.7564,1.6786,459805,16000,224.2,1.31
+space_invaders,0,0.23,0.5291,2.38,1.774,0.0966,460095,16000,222.2,5.57
+space_invaders,1,2.33,1.5378,2.96,2.5223,0.7872,460095,16000,214.8,3.4
+space_invaders,2,0.25,0.5,2.76,2.2253,0.0906,460095,16000,214.5,4.34

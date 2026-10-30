@@ -1,0 +1,121 @@
+# Fixed on 2026-10-30 BEFORE the official measured run. Do not edit thresholds
+# after seeing results. One disclosed smoke (tiny iters, seed 0) may verify the
+# code path only; it tunes no threshold and is recorded in smoke.json.
+exp_id: exp1_cpu_minatar
+hypothesis: >
+  A small (<1M param) Dreamer-style world-model agent whose actor is updated
+  only on imagined rollouts beats a uniform-random policy on MinAtar Breakout
+  and SpaceInvaders on CPU within a fixed small policy-step budget (far below
+  the upstream 500k-step report). Independent clean-room PyTorch reimplementation
+  of ideas from Benjamin Bai's NanoDreamer write-up; upstream repo is unlicensed.
+upstream:
+  project: NanoDreamer by Benjamin Bai
+  writeup: https://www.benjamin-bai.com/projects/nanodreamer
+  github: https://github.com/benyebai/NanoDreamer
+  bookmark: https://x.com/benbye/status/2115488344050192584
+  license_note: >
+    Verified 2026-10-30 via GitHub API: license=null; no LICENSE/COPYING file in
+    the repository tree. Upstream is therefore all rights reserved by its author.
+    This app does NOT copy or vendor any upstream source; it is a clean-room
+    PyTorch reimplementation of the published write-up's ideas at toy CPU scale.
+  note: >
+    Upstream reports ~750k params, 500k policy steps/game (~3h on M5 Pro) and
+    e.g. Space Invaders 22.61 vs random 4.14, Breakout 5.03 vs 0.37. This toy
+    uses a much smaller step budget and a simplified scalar reward/value head
+    (not the full 255-bin symlog categoricals). Results here do not claim to
+    reproduce those numbers.
+env:
+  games: [breakout, space_invaders]
+  sticky_action_prob: 0.1   # MinAtar default sticky actions
+model:
+  # Tiny Dreamer-style stack inspired by the write-up (CNN encoder + causal
+  # transformer dynamics + MLP actor/critic). Target << 1M params.
+  cnn_channels: [8, 16, 32]
+  latent_dim: 48
+  transformer_width: 64
+  transformer_layers: 2
+  transformer_heads: 4
+  history: 8
+  actor_hidden: 128
+  critic_hidden: 128
+training:
+  policy_steps: 16000         # per seed per game (vs upstream 500k; CPU budget)
+  initial_random_steps: 1000
+  update_every: 4             # 1 WM + actor-critic update per N policy steps
+  wm_batch: 24
+  imagine_batch: 48
+  wm_horizon: 3               # generated-step world-model rollouts
+  imagine_horizon: 5          # actor imagination horizon
+  replay_capacity: 30000
+  wm_lr: 0.0002
+  actor_lr: 0.00005
+  critic_lr: 0.00015
+  grad_clip: 5.0
+  gamma: 0.99
+  lambda_gae: 0.95
+  entropy_coef: 0.05
+  actor_delay_steps: 2000     # train world model only for the first N policy steps
+  continue_loss_coef: 0.2
+  reward_loss_coef: 4.0
+  latent_loss_coef: 1.0
+  frame_loss_coef: 1.0
+  critic_imagine_coef: 0.3
+  explore_start: 0.5
+  explore_end: 0.08
+  explore_decay_steps: 12000  # keep exploration alive across the step budget
+  log_every: 2000
+evaluation:
+  n_episodes: 100             # mean episode return over 100 eval episodes
+  max_episode_steps: 1000
+  greedy: false               # sample from policy (sticky actions still on)
+seeds: [0, 1, 2]
+metrics:
+  primary: >
+    mean_episode_return over 100 evaluation episodes (sticky actions on),
+    compared to a uniform-random baseline measured with the same seed stream
+    and episode count. Reported per game and per seed.
+  report_only:
+    - random_mean_return
+    - n_params
+    - train_wall_s
+    - eval_wall_s
+    - learning_curve_mean_return
+thresholds:
+  pass_condition: >
+    For EVERY game in {breakout, space_invaders}:
+      (a) agent_mean_return > random_mean_return on EVERY seed in {0,1,2}
+      AND (b) mean_over_seeds(agent_mean_return) >= 2 * mean_over_seeds(random_mean_return)
+  status_rule: >
+    PASS if the pass_condition holds for both games.
+    PARTIAL if for both games mean(agent) > mean(random), but the every-seed
+    strict win or the 2x mean bar fails on at least one game.
+    FAIL otherwise (any game where mean(agent) <= mean(random)).
+  train_wall_s_max_report: 2700
+breakpoints:
+  seed: 0
+  game: breakout
+  tiny_step_budget:
+    policy_steps: [1000, 4000, 16000]
+    story: under-trained policy; where beating random collapses
+  imagination_horizon:
+    imagine_horizon: [1, 5]
+    policy_steps: 8000
+    story: horizon-1 imagination vs primary-length imagination
+  tiny_model:
+    latent_dim: 16
+    transformer_width: 32
+    transformer_layers: 1
+    actor_hidden: 32
+    critic_hidden: 32
+    policy_steps: 8000
+    story: severely under-parameterized stack
+runtime:
+  device: cpu-only
+  torch_threads: 4
+disclosure: >
+  Thresholds, games, step budget, model size, and eval episode count fixed
+  before the official run. A disclosed smoke (few steps, seed 0, one game)
+  may verify the code path only and is recorded in smoke.json; no threshold
+  is changed after any result. This is NOT a reproduction of the upstream
+  500k-step MinAtar table. Upstream NanoDreamer source is unlicensed and was
+  not copied.

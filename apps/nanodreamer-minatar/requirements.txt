@@ -1,0 +1,9 @@
+# torch installed separately from the CPU index:
+#   python -m pip install --index-url https://download.pytorch.org/whl/cpu torch
+numpy>=1.26
+matplotlib>=3.8
+pyyaml>=6.0
+minatar==1.0.15
+# MinAtar's Environment uses numba; pin a recent wheel-friendly release.
+numba>=0.59
+seaborn>=0.13

@@ -1,0 +1,37 @@
+{
+  "status": "FAIL",
+  "games": {
+    "breakout": {
+      "agent_mean": 0.7266666666666666,
+      "agent_std": 0.2797022226106423,
+      "random_mean": 0.5333333333333333,
+      "random_std": 0.05507570547286104,
+      "every_seed_beats_random": false,
+      "mean_ge_2x_random": false,
+      "mean_beats_random": true,
+      "per_seed_wins": {
+        "0": false,
+        "1": true,
+        "2": true
+      },
+      "n_params": 459805
+    },
+    "space_invaders": {
+      "agent_mean": 0.9366666666666666,
+      "agent_std": 1.2067034985170688,
+      "random_mean": 2.6999999999999997,
+      "random_std": 0.2946183972531247,
+      "every_seed_beats_random": false,
+      "mean_ge_2x_random": false,
+      "mean_beats_random": false,
+      "per_seed_wins": {
+        "0": false,
+        "1": false,
+        "2": false
+      },
+      "n_params": 460095
+    }
+  },
+  "pass_condition": "For EVERY game in {breakout, space_invaders}:\n  (a) agent_mean_return > random_mean_return on EVERY seed in {0,1,2}\n  AND (b) mean_over_seeds(agent_mean_return) >= 2 * mean_over_seeds(random_mean_return)\n",
+  "status_rule": "PASS if the pass_condition holds for both games. PARTIAL if for both games mean(agent) > mean(random), but the every-seed strict win or the 2x mean bar fails on at least one game. FAIL otherwise (any game where mean(agent) <= mean(random)).\n"
+}

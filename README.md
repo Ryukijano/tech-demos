@@ -16,6 +16,7 @@ One monorepo for sticky / bookmark-worthy tech demos. Prefer adding a new `apps/
 | `apps/bone-suppression-cxr/` | Qure.ai chest X-ray bone / lung-component suppression on CPU, pre-registered stability test (CC BY-NC-SA 4.0 app, research only) |
 | `apps/binary-discrete-diffusion-sudoku/` | Binary Discrete Diffusion Sudoku CPU toy vs masked baseline (arXiv:2610.28543; independent re-implementation, no official code) |
 | `apps/sae-text-detector/` | Auditable SAE AI-text detector via official DetectorScope on CPU (arXiv:2610.30006; Apache-2.0) |
+| `apps/nanodreamer-minatar/` | Clean-room NanoDreamer-style world model on MinAtar (Breakout + Space Invaders); upstream unlicensed — no source vendored |
 | `tracking/seen-bookmarks.json` | X bookmarks already turned into demos (`url`, `slug`, `date`) |
 | `docs/` | GitHub Pages showcase site (static HTML/CSS) |
 | `AGENTS.md` | Rules for future cloud agents |

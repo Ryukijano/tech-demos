@@ -207,7 +207,6 @@ def train_model(
 ) -> TrainResult:
     import time
 
-    g = torch.Generator().manual_seed(seed)
     torch.manual_seed(seed)
     np_rng = np.random.default_rng(stream_seed + seed * 1009)
 

@@ -6,7 +6,6 @@ Inspired by the full-stack looping idea in Meta/FAIR arXiv:2610.40325
 
 from __future__ import annotations
 
-import math
 from dataclasses import dataclass
 
 import numpy as np

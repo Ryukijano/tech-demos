@@ -1,0 +1,97 @@
+# Fixed on 2026-10-31 BEFORE the official measured run. Do not edit thresholds
+# after seeing results. One disclosed smoke (tiny iters, seed 0) may verify the
+# code path only; it tunes no threshold and is recorded in smoke.json.
+exp_id: exp1_cpu_addition
+hypothesis: >
+  On character-level multi-digit addition (train/eval on 4-digit operands,
+  LSB-first), a tiny full-stack looped transformer (2 shared blocks applied
+  K=4 times) achieves a strictly higher exact-match accuracy than a
+  parameter-matched non-looped baseline (same 2 unique blocks, K=1) on every
+  seed in {0, 1, 2}, with mean_over_seeds(looped - baseline) >= 0.10.
+  This is a clean-room toy of the full-stack looping idea from Meta/FAIR
+  "How to Loop Your Transformer" (arXiv:2610.40325) — not a reproduction of
+  the paper's 1B-parameter language-model tables.
+upstream:
+  paper: >
+    Ekbote, Pagnoni, Sachan, Bhosale, Lewis, Fazel-Zarandi, Rajput,
+    Gonugondla, "How to Loop Your Transformer: Loop Scaling, Specialization,
+    and Parallel Inference", FAIR at Meta / MIT, arXiv:2610.40325 (Oct 2026).
+  paper_url: https://arxiv.org/abs/2610.40325
+  paper_html: https://arxiv.org/html/2610.40325v1
+  bookmark: https://x.com/iScienceLuvr/status/2116286474090107140
+  note: >
+    No official code release located as of 2026-10-31 (arXiv abstract/HTML;
+    Hugging Face Papers page for 2610.40325 returned 404). This app is an
+    independent clean-room toy of full-stack weight-shared looping on a
+    synthetic algorithmic task. Results do not claim to reproduce the paper's
+    DCLM / NLL-ranked accuracy tables.
+data:
+  n_digits_train: 4
+  n_digits_eval: 4
+  # LSB-first digit strings: a[0]+b[0] ... = sum digits (length n+1)
+  n_train: 4096
+  n_eval: 512
+  train_stream_seed: 20261031
+  eval_stream_seed: 910031
+model:
+  d_model: 64
+  n_layers: 2            # shared stack depth (applied once or K times)
+  n_heads: 4
+  dropout: 0.0
+  ff_mult: 4
+  # looped uses n_loops_train at train+primary eval; baseline forced to 1
+  n_loops_train: 4
+  n_loops_baseline: 1
+training:
+  steps: 2500
+  batch_size: 64
+  lr: 0.001
+  weight_decay: 0.0
+  log_every: 500
+  grad_clip: 1.0
+seeds: [0, 1, 2]
+metrics:
+  primary: >
+    exact_match_accuracy = fraction of held-out eval examples where every
+    predicted sum digit matches the true sum (teacher-forced input prefix
+    a+b=; greedy decode of the sum tokens). Per seed, on 4-digit operands.
+  report_only:
+    - digit_accuracy
+    - train_wall_s
+    - eval_wall_s
+    - n_params
+    - test_time_loops_accuracy   # same weights, vary K at eval
+    - longer_digits_accuracy     # length generalization
+thresholds:
+  pass_condition: >
+    For EVERY seed in {0,1,2}:
+      exact_match_looped > exact_match_baseline
+    AND mean_over_seeds(exact_match_looped - exact_match_baseline) >= 0.10
+    (at least a 10 percentage-point mean gap on 4-digit addition).
+  status_rule: >
+    PASS if the pass_condition holds.
+    PARTIAL if mean(looped) > mean(baseline) but the every-seed strict win
+    or the 10pp mean-gap fails.
+    FAIL otherwise (including ties or baseline ahead on mean).
+  train_wall_s_max_report: 1800
+breakpoints:
+  seed: 0
+  test_time_loops:
+    n_loops: [1, 2, 4, 8, 16]
+    story: >
+      Push loop count at inference on the trained looped model (K_train=4);
+      where extra test-time depth helps or saturates/breaks.
+  longer_digits:
+    n_digits: [2, 3, 4, 5, 6]
+    story: length generalization beyond the 4-digit train distribution
+  train_steps_ablation:
+    steps: [500, 2500]
+    story: under-trained vs primary budget (report-only)
+runtime:
+  device: cpu-only
+  torch_threads: 4
+disclosure: >
+  Thresholds, digit lengths, steps, model size, and eval counts fixed before
+  the official run. A disclosed smoke (few steps, seed 0) may verify the code
+  path only and is recorded in smoke.json; no threshold is changed after any
+  result. This is NOT an official reproduction of arXiv:2610.40325.

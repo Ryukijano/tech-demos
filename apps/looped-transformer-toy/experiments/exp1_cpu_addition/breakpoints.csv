@@ -1,0 +1,13 @@
+kind,n_loops,n_digits,steps,looped_exact_match,baseline_exact_match
+test_time_loops,1,,,0.626953125,
+test_time_loops,2,,,0.998046875,
+test_time_loops,4,,,1.0,
+test_time_loops,8,,,1.0,
+test_time_loops,16,,,0.93359375,
+longer_digits,,2,,0.00390625,0.0
+longer_digits,,3,,0.0,0.0
+longer_digits,,4,,1.0,1.0
+longer_digits,,5,,0.0,0.0
+longer_digits,,6,,0.0,0.0
+train_steps,,,500,0.0,0.001953125
+train_steps,,,2500,1.0,1.0

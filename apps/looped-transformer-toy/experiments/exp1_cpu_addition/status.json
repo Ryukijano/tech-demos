@@ -1,0 +1,19 @@
+{
+  "status": "FAIL",
+  "looped_mean_exact_match": 0.9967447916666666,
+  "looped_std_exact_match": 0.005638186222554939,
+  "baseline_mean_exact_match": 1.0,
+  "baseline_std_exact_match": 0.0,
+  "mean_gap": -0.0032552083333333703,
+  "every_seed_looped_wins": false,
+  "mean_gap_ge_0.10": false,
+  "per_seed_looped_wins": {
+    "0": false,
+    "1": false,
+    "2": false
+  },
+  "n_params": 105856,
+  "pass_condition": "For EVERY seed in {0,1,2}:\n  exact_match_looped > exact_match_baseline\nAND mean_over_seeds(exact_match_looped - exact_match_baseline) >= 0.10 (at least a 10 percentage-point mean gap on 4-digit addition).\n",
+  "status_rule": "PASS if the pass_condition holds. PARTIAL if mean(looped) > mean(baseline) but the every-seed strict win or the 10pp mean-gap fails. FAIL otherwise (including ties or baseline ahead on mean).\n",
+  "wall_s_total": 245.81307404200004
+}

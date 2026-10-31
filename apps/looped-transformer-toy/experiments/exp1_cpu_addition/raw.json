@@ -1,0 +1,170 @@
+{
+  "exp_id": "exp1_cpu_addition",
+  "n_params": 105856,
+  "seeds": {
+    "0": {
+      "kernels": {
+        "baseline": {
+          "exact_match": 1.0,
+          "digit_accuracy": 1.0,
+          "n": 512,
+          "n_digits": 4,
+          "n_loops": 1,
+          "eval_wall_s": 0.15232000000003154,
+          "n_params": 105856,
+          "train_wall_s": 39.27951744799998,
+          "final_loss": 0.00012249211431480944
+        },
+        "looped": {
+          "exact_match": 1.0,
+          "digit_accuracy": 1.0,
+          "n": 512,
+          "n_digits": 4,
+          "n_loops": 4,
+          "eval_wall_s": 0.6561068630000477,
+          "n_params": 105856,
+          "train_wall_s": 119.31991294699998,
+          "final_loss": 8.237855945480987e-05
+        }
+      }
+    },
+    "1": {
+      "kernels": {
+        "baseline": {
+          "exact_match": 1.0,
+          "digit_accuracy": 1.0,
+          "n": 512,
+          "n_digits": 4,
+          "n_loops": 1,
+          "eval_wall_s": 0.15465995099998509,
+          "n_params": 105856,
+          "train_wall_s": 35.87313218500003,
+          "final_loss": 0.00016130921721924096
+        },
+        "looped": {
+          "exact_match": 0.990234375,
+          "digit_accuracy": 0.998046875,
+          "n": 512,
+          "n_digits": 4,
+          "n_loops": 4,
+          "eval_wall_s": 0.6139256559999922,
+          "n_params": 105856,
+          "train_wall_s": 116.80821718599998,
+          "final_loss": 0.04968275874853134
+        }
+      }
+    },
+    "2": {
+      "kernels": {
+        "baseline": {
+          "exact_match": 1.0,
+          "digit_accuracy": 1.0,
+          "n": 512,
+          "n_digits": 4,
+          "n_loops": 1,
+          "eval_wall_s": 0.12790013300002556,
+          "n_params": 105856,
+          "train_wall_s": 37.1470580219999,
+          "final_loss": 0.00014499839744530618
+        },
+        "looped": {
+          "exact_match": 1.0,
+          "digit_accuracy": 1.0,
+          "n": 512,
+          "n_digits": 4,
+          "n_loops": 4,
+          "eval_wall_s": 0.2209891749999997,
+          "n_params": 105856,
+          "train_wall_s": 76.35814263300006,
+          "final_loss": 8.03632938186638e-05
+        }
+      }
+    }
+  },
+  "breakpoints": {
+    "test_time_loops": [
+      {
+        "n_loops": 1,
+        "looped_exact_match": 0.626953125,
+        "looped_digit_accuracy": 0.897265625
+      },
+      {
+        "n_loops": 2,
+        "looped_exact_match": 0.998046875,
+        "looped_digit_accuracy": 0.999609375
+      },
+      {
+        "n_loops": 4,
+        "looped_exact_match": 1.0,
+        "looped_digit_accuracy": 1.0
+      },
+      {
+        "n_loops": 8,
+        "looped_exact_match": 1.0,
+        "looped_digit_accuracy": 1.0
+      },
+      {
+        "n_loops": 16,
+        "looped_exact_match": 0.93359375,
+        "looped_digit_accuracy": 0.979296875
+      }
+    ],
+    "longer_digits": [
+      {
+        "n_digits": 2,
+        "looped_exact_match": 0.00390625,
+        "baseline_exact_match": 0.0,
+        "looped_digit_accuracy": 0.17057291666666666,
+        "baseline_digit_accuracy": 0.10286458333333333
+      },
+      {
+        "n_digits": 3,
+        "looped_exact_match": 0.0,
+        "baseline_exact_match": 0.0,
+        "looped_digit_accuracy": 0.10400390625,
+        "baseline_digit_accuracy": 0.1171875
+      },
+      {
+        "n_digits": 4,
+        "looped_exact_match": 1.0,
+        "baseline_exact_match": 1.0,
+        "looped_digit_accuracy": 1.0,
+        "baseline_digit_accuracy": 1.0
+      },
+      {
+        "n_digits": 5,
+        "looped_exact_match": 0.0,
+        "baseline_exact_match": 0.0,
+        "looped_digit_accuracy": 0.10872395833333333,
+        "baseline_digit_accuracy": 0.12272135416666667
+      },
+      {
+        "n_digits": 6,
+        "looped_exact_match": 0.0,
+        "baseline_exact_match": 0.0,
+        "looped_digit_accuracy": 0.10518973214285714,
+        "baseline_digit_accuracy": 0.15736607142857142
+      }
+    ],
+    "train_steps_ablation": [
+      {
+        "looped_exact_match": 0.0,
+        "baseline_exact_match": 0.001953125,
+        "steps": 500
+      },
+      {
+        "steps": 2500,
+        "looped_exact_match": 1.0,
+        "baseline_exact_match": 1.0
+      }
+    ]
+  },
+  "wall_s_total": 245.81307404200004,
+  "config_snapshot": {
+    "n_digits_train": 4,
+    "n_eval": 512,
+    "steps": 2500,
+    "n_loops_train": 4,
+    "n_loops_baseline": 1
+  }
+}

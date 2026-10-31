@@ -1,0 +1,22 @@
+looped-transformer-toy demo — NOTICE
+
+This directory (apps/looped-transformer-toy/) is a CPU-only clear-experiment
+toy inspired by:
+
+  Ekbote, Pagnoni, Sachan, Bhosale, Lewis, Fazel-Zarandi, Rajput, Gonugondla,
+  "How to Loop Your Transformer: Loop Scaling, Specialization, and Parallel
+  Inference", FAIR at Meta / MIT, arXiv:2610.40325 (October 2026)
+  https://arxiv.org/abs/2610.40325
+  https://arxiv.org/html/2610.40325v1
+
+Found via a bookmarked X post by @iScienceLuvr:
+  https://x.com/iScienceLuvr/status/2116286474090107140
+
+No official code repository was located as of 2026-10-31 (searched arXiv
+abstract/HTML; Hugging Face Papers for 2610.40325 returned 404). This app is
+therefore an **independent clean-room toy** of full-stack weight-shared
+looping on synthetic multi-digit addition — NOT a reproduction of the paper's
+up-to-1B-parameter language-model / DCLM tables.
+
+No warranty. Research / demo use. Trained weights stay out of git (work/ is
+git-ignored).

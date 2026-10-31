@@ -1,0 +1,18 @@
+{
+  "kind": "looped",
+  "seed": 0,
+  "steps": 40,
+  "final_loss": 2.010629415512085,
+  "n_params": 105856,
+  "train_wall_s": 0.36674439900002653,
+  "metrics": {
+    "exact_match": 0.0,
+    "digit_accuracy": 0.2375,
+    "n": 32,
+    "n_digits": 4,
+    "n_loops": 4,
+    "eval_wall_s": 0.021659537000005002,
+    "n_params": 105856
+  },
+  "note": "Disclosed smoke only; thresholds unchanged."
+}

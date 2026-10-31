@@ -1,0 +1,6 @@
+# torch installed separately from the CPU index:
+#   uv pip install --index-url https://download.pytorch.org/whl/cpu torch
+#   # or: pip install --index-url https://download.pytorch.org/whl/cpu torch
+numpy>=1.26
+matplotlib>=3.8
+pyyaml>=6.0

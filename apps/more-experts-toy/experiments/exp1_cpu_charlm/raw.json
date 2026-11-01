@@ -1,0 +1,1000 @@
+{
+  "exp_id": "exp1_cpu_charlm",
+  "param_table": {
+    "dense": 126048,
+    "moe": 201888,
+    "more": 202848,
+    "more_nodepth": 202656
+  },
+  "vocab_size": 70,
+  "corpus_chars": 51982,
+  "seeds": {
+    "0": {
+      "kernels": {
+        "dense": {
+          "val_ce": 1.8973430916666985,
+          "bits_per_char": 2.73728746921248,
+          "train_wall_s": 33.617302826000014,
+          "final_train_ce": 1.6871978044509888,
+          "n_params": 126048,
+          "n_active_params_per_token": 74688,
+          "history": [
+            {
+              "step": 100,
+              "train_ce": 2.587362051010132,
+              "val_ce": 2.610173411667347,
+              "bits_per_char": 3.7656842368727084,
+              "kind": "dense"
+            },
+            {
+              "step": 200,
+              "train_ce": 2.4261600971221924,
+              "val_ce": 2.4556517526507378,
+              "bits_per_char": 3.542756605699511,
+              "kind": "dense"
+            },
+            {
+              "step": 300,
+              "train_ce": 2.2716970443725586,
+              "val_ce": 2.3655103221535683,
+              "bits_per_char": 3.4127100109426074,
+              "kind": "dense"
+            },
+            {
+              "step": 400,
+              "train_ce": 2.104482889175415,
+              "val_ce": 2.2334782406687737,
+              "bits_per_char": 3.2222279817462467,
+              "kind": "dense"
+            },
+            {
+              "step": 500,
+              "train_ce": 2.0246360301971436,
+              "val_ce": 2.119016893208027,
+              "bits_per_char": 3.0570951633911587,
+              "kind": "dense"
+            },
+            {
+              "step": 600,
+              "train_ce": 1.8702055215835571,
+              "val_ce": 1.998456198722124,
+              "bits_per_char": 2.883162847330217,
+              "kind": "dense"
+            },
+            {
+              "step": 700,
+              "train_ce": 1.867027997970581,
+              "val_ce": 1.9257321767508984,
+              "bits_per_char": 2.77824426147883,
+              "kind": "dense"
+            },
+            {
+              "step": 800,
+              "train_ce": 1.6871978044509888,
+              "val_ce": 1.9019870273768902,
+              "bits_per_char": 2.7439872522317805,
+              "kind": "dense"
+            }
+          ],
+          "routing": {
+            "adjacent_expert_reuse_rate": null,
+            "random_reuse_baseline": null,
+            "n_pairs": 0,
+            "note": "no shared-pool adjacent pairs (dense or standard MoE)"
+          }
+        },
+        "moe": {
+          "val_ce": 1.8956564590334892,
+          "bits_per_char": 2.7348541726767475,
+          "train_wall_s": 63.78300400399996,
+          "final_train_ce": 1.6687889099121094,
+          "n_params": 201888,
+          "n_active_params_per_token": 74880,
+          "history": [
+            {
+              "step": 100,
+              "train_ce": 2.5834033489227295,
+              "val_ce": 2.6189456433057785,
+              "bits_per_char": 3.7783398919550026,
+              "kind": "moe"
+            },
+            {
+              "step": 200,
+              "train_ce": 2.4462337493896484,
+              "val_ce": 2.45980191975832,
+              "bits_per_char": 3.54874403120448,
+              "kind": "moe"
+            },
+            {
+              "step": 300,
+              "train_ce": 2.2841057777404785,
+              "val_ce": 2.392574302852154,
+              "bits_per_char": 3.4517550816831712,
+              "kind": "moe"
+            },
+            {
+              "step": 400,
+              "train_ce": 2.1230485439300537,
+              "val_ce": 2.2464205622673035,
+              "bits_per_char": 3.2408998049340356,
+              "kind": "moe"
+            },
+            {
+              "step": 500,
+              "train_ce": 2.0635406970977783,
+              "val_ce": 2.107159346342087,
+              "bits_per_char": 3.0399883393305585,
+              "kind": "moe"
+            },
+            {
+              "step": 600,
+              "train_ce": 1.8708035945892334,
+              "val_ce": 2.003547064960003,
+              "bits_per_char": 2.890507414805434,
+              "kind": "moe"
+            },
+            {
+              "step": 700,
+              "train_ce": 1.869172215461731,
+              "val_ce": 1.9321398846805096,
+              "bits_per_char": 2.7874886299323447,
+              "kind": "moe"
+            },
+            {
+              "step": 800,
+              "train_ce": 1.6687889099121094,
+              "val_ce": 1.899462305009365,
+              "bits_per_char": 2.7403448477925307,
+              "kind": "moe"
+            }
+          ],
+          "routing": {
+            "adjacent_expert_reuse_rate": null,
+            "random_reuse_baseline": null,
+            "n_pairs": 0,
+            "note": "no shared-pool adjacent pairs (dense or standard MoE)"
+          }
+        },
+        "more": {
+          "val_ce": 1.899877730756998,
+          "bits_per_char": 2.7409441804584986,
+          "train_wall_s": 96.17871899600004,
+          "final_train_ce": 1.678264856338501,
+          "n_params": 202848,
+          "n_active_params_per_token": 74880,
+          "history": [
+            {
+              "step": 100,
+              "train_ce": 2.5894553661346436,
+              "val_ce": 2.625813066959381,
+              "bits_per_char": 3.788247490003739,
+              "kind": "more"
+            },
+            {
+              "step": 200,
+              "train_ce": 2.452469825744629,
+              "val_ce": 2.46898240596056,
+              "bits_per_char": 3.561988673121401,
+              "kind": "more"
+            },
+            {
+              "step": 300,
+              "train_ce": 2.2807655334472656,
+              "val_ce": 2.3991915434598923,
+              "bits_per_char": 3.4613017418923246,
+              "kind": "more"
+            },
+            {
+              "step": 400,
+              "train_ce": 2.131653070449829,
+              "val_ce": 2.263469748198986,
+              "bits_per_char": 3.265496580928868,
+              "kind": "more"
+            },
+            {
+              "step": 500,
+              "train_ce": 2.027737855911255,
+              "val_ce": 2.127194009721279,
+              "bits_per_char": 3.068892248833599,
+              "kind": "more"
+            },
+            {
+              "step": 600,
+              "train_ce": 1.8608877658843994,
+              "val_ce": 2.0203010365366936,
+              "bits_per_char": 2.9146782865143206,
+              "kind": "more"
+            },
+            {
+              "step": 700,
+              "train_ce": 1.8672057390213013,
+              "val_ce": 1.9544809721410275,
+              "bits_per_char": 2.8197200060197005,
+              "kind": "more"
+            },
+            {
+              "step": 800,
+              "train_ce": 1.678264856338501,
+              "val_ce": 1.911392118781805,
+              "bits_per_char": 2.7575559309607587,
+              "kind": "more"
+            }
+          ],
+          "routing": {
+            "adjacent_expert_reuse_rate": 0.184356689453125,
+            "random_reuse_baseline": 0.25,
+            "n_pairs": 2,
+            "pool_size": 8,
+            "top_k": 2,
+            "ratio_vs_random": 0.7374267578125
+          }
+        },
+        "more_nodepth": {
+          "val_ce": 1.8974145501852036,
+          "bits_per_char": 2.7373905620627563,
+          "train_wall_s": 96.860826427,
+          "final_train_ce": 1.6673414707183838,
+          "n_params": 202656,
+          "n_active_params_per_token": 74880,
+          "history": [
+            {
+              "step": 100,
+              "train_ce": 2.5901341438293457,
+              "val_ce": 2.6254331171512604,
+              "bits_per_char": 3.7876993382997766,
+              "kind": "more_nodepth"
+            },
+            {
+              "step": 200,
+              "train_ce": 2.4549105167388916,
+              "val_ce": 2.4681782200932503,
+              "bits_per_char": 3.5608284781586805,
+              "kind": "more_nodepth"
+            },
+            {
+              "step": 300,
+              "train_ce": 2.282684564590454,
+              "val_ce": 2.3966727554798126,
+              "bits_per_char": 3.457667898964413,
+              "kind": "more_nodepth"
+            },
+            {
+              "step": 400,
+              "train_ce": 2.1304588317871094,
+              "val_ce": 2.262974373996258,
+              "bits_per_char": 3.264781907023208,
+              "kind": "more_nodepth"
+            },
+            {
+              "step": 500,
+              "train_ce": 2.030193567276001,
+              "val_ce": 2.1234100610017776,
+              "bits_per_char": 3.063433164780996,
+              "kind": "more_nodepth"
+            },
+            {
+              "step": 600,
+              "train_ce": 1.8648732900619507,
+              "val_ce": 2.0169509202241898,
+              "bits_per_char": 2.90984509032387,
+              "kind": "more_nodepth"
+            },
+            {
+              "step": 700,
+              "train_ce": 1.8728519678115845,
+              "val_ce": 1.9596673399209976,
+              "bits_per_char": 2.82720235309609,
+              "kind": "more_nodepth"
+            },
+            {
+              "step": 800,
+              "train_ce": 1.6673414707183838,
+              "val_ce": 1.910989299416542,
+              "bits_per_char": 2.7569747854601196,
+              "kind": "more_nodepth"
+            }
+          ],
+          "routing": {
+            "adjacent_expert_reuse_rate": 0.176483154296875,
+            "random_reuse_baseline": 0.25,
+            "n_pairs": 2,
+            "pool_size": 8,
+            "top_k": 2,
+            "ratio_vs_random": 0.7059326171875
+          }
+        }
+      }
+    },
+    "1": {
+      "kernels": {
+        "dense": {
+          "val_ce": 1.877488624304533,
+          "bits_per_char": 2.708643527609592,
+          "train_wall_s": 34.02292924100004,
+          "final_train_ce": 1.7608472108840942,
+          "n_params": 126048,
+          "n_active_params_per_token": 74688,
+          "history": [
+            {
+              "step": 100,
+              "train_ce": 2.5328423976898193,
+              "val_ce": 2.60406207293272,
+              "bits_per_char": 3.7568674387870695,
+              "kind": "dense"
+            },
+            {
+              "step": 200,
+              "train_ce": 2.443354606628418,
+              "val_ce": 2.4686004891991615,
+              "bits_per_char": 3.5614376837036996,
+              "kind": "dense"
+            },
+            {
+              "step": 300,
+              "train_ce": 2.2901415824890137,
+              "val_ce": 2.384144000709057,
+              "bits_per_char": 3.43959272658813,
+              "kind": "dense"
+            },
+            {
+              "step": 400,
+              "train_ce": 2.212582588195801,
+              "val_ce": 2.282569408416748,
+              "bits_per_char": 3.2930515660076973,
+              "kind": "dense"
+            },
+            {
+              "step": 500,
+              "train_ce": 2.031010866165161,
+              "val_ce": 2.1352356523275375,
+              "bits_per_char": 3.080493886742249,
+              "kind": "dense"
+            },
+            {
+              "step": 600,
+              "train_ce": 1.897815465927124,
+              "val_ce": 2.0261927135288715,
+              "bits_per_char": 2.9231781796934553,
+              "kind": "dense"
+            },
+            {
+              "step": 700,
+              "train_ce": 1.8653523921966553,
+              "val_ce": 1.944190751761198,
+              "bits_per_char": 2.804874356108066,
+              "kind": "dense"
+            },
+            {
+              "step": 800,
+              "train_ce": 1.7608472108840942,
+              "val_ce": 1.8970759324729443,
+              "bits_per_char": 2.736902039968523,
+              "kind": "dense"
+            }
+          ],
+          "routing": {
+            "adjacent_expert_reuse_rate": null,
+            "random_reuse_baseline": null,
+            "n_pairs": 0,
+            "note": "no shared-pool adjacent pairs (dense or standard MoE)"
+          }
+        },
+        "moe": {
+          "val_ce": 1.8305578492581844,
+          "bits_per_char": 2.6409367311851493,
+          "train_wall_s": 61.85027250199994,
+          "final_train_ce": 1.7149832248687744,
+          "n_params": 201888,
+          "n_active_params_per_token": 74880,
+          "history": [
+            {
+              "step": 100,
+              "train_ce": 2.575314998626709,
+              "val_ce": 2.6437756940722466,
+              "bits_per_char": 3.8141620830608076,
+              "kind": "moe"
+            },
+            {
+              "step": 200,
+              "train_ce": 2.490886926651001,
+              "val_ce": 2.470433883368969,
+              "bits_per_char": 3.5640827123804755,
+              "kind": "moe"
+            },
+            {
+              "step": 300,
+              "train_ce": 2.2867751121520996,
+              "val_ce": 2.375010535120964,
+              "bits_per_char": 3.4264159210780583,
+              "kind": "moe"
+            },
+            {
+              "step": 400,
+              "train_ce": 2.1633362770080566,
+              "val_ce": 2.214087910950184,
+              "bits_per_char": 3.1942536492200353,
+              "kind": "moe"
+            },
+            {
+              "step": 500,
+              "train_ce": 1.992297649383545,
+              "val_ce": 2.0588162504136562,
+              "bits_per_char": 2.970243994573392,
+              "kind": "moe"
+            },
+            {
+              "step": 600,
+              "train_ce": 1.8494704961776733,
+              "val_ce": 1.9573006518185139,
+              "bits_per_char": 2.8237879439073055,
+              "kind": "moe"
+            },
+            {
+              "step": 700,
+              "train_ce": 1.786543607711792,
+              "val_ce": 1.894718211144209,
+              "bits_per_char": 2.733500567099758,
+              "kind": "moe"
+            },
+            {
+              "step": 800,
+              "train_ce": 1.7149832248687744,
+              "val_ce": 1.8553888201713562,
+              "bits_per_char": 2.67676024978204,
+              "kind": "moe"
+            }
+          ],
+          "routing": {
+            "adjacent_expert_reuse_rate": null,
+            "random_reuse_baseline": null,
+            "n_pairs": 0,
+            "note": "no shared-pool adjacent pairs (dense or standard MoE)"
+          }
+        },
+        "more": {
+          "val_ce": 1.841514240950346,
+          "bits_per_char": 2.656743463145468,
+          "train_wall_s": 93.84375696899997,
+          "final_train_ce": 1.658879041671753,
+          "n_params": 202848,
+          "n_active_params_per_token": 74880,
+          "history": [
+            {
+              "step": 100,
+              "train_ce": 2.573425054550171,
+              "val_ce": 2.65126970410347,
+              "bits_per_char": 3.8249736541692254,
+              "kind": "more"
+            },
+            {
+              "step": 200,
+              "train_ce": 2.459982395172119,
+              "val_ce": 2.471167080104351,
+              "bits_per_char": 3.5651404916746072,
+              "kind": "more"
+            },
+            {
+              "step": 300,
+              "train_ce": 2.293367385864258,
+              "val_ce": 2.3909370377659798,
+              "bits_per_char": 3.4493930074627275,
+              "kind": "more"
+            },
+            {
+              "step": 400,
+              "train_ce": 2.1994833946228027,
+              "val_ce": 2.271034151315689,
+              "bits_per_char": 3.2764097077926206,
+              "kind": "more"
+            },
+            {
+              "step": 500,
+              "train_ce": 2.0371315479278564,
+              "val_ce": 2.1415154859423637,
+              "bits_per_char": 3.089553771555967,
+              "kind": "more"
+            },
+            {
+              "step": 600,
+              "train_ce": 1.8880198001861572,
+              "val_ce": 2.0196166560053825,
+              "bits_per_char": 2.913690934115717,
+              "kind": "more"
+            },
+            {
+              "step": 700,
+              "train_ce": 1.8142116069793701,
+              "val_ce": 1.9314565509557724,
+              "bits_per_char": 2.7865027877563944,
+              "kind": "more"
+            },
+            {
+              "step": 800,
+              "train_ce": 1.658879041671753,
+              "val_ce": 1.8694217130541801,
+              "bits_per_char": 2.6970054347534167,
+              "kind": "more"
+            }
+          ],
+          "routing": {
+            "adjacent_expert_reuse_rate": 0.26556396484375,
+            "random_reuse_baseline": 0.25,
+            "n_pairs": 2,
+            "pool_size": 8,
+            "top_k": 2,
+            "ratio_vs_random": 1.062255859375
+          }
+        },
+        "more_nodepth": {
+          "val_ce": 1.8444572761654854,
+          "bits_per_char": 2.660989365455511,
+          "train_wall_s": 96.03443655199999,
+          "final_train_ce": 1.6492295265197754,
+          "n_params": 202656,
+          "n_active_params_per_token": 74880,
+          "history": [
+            {
+              "step": 100,
+              "train_ce": 2.5703301429748535,
+              "val_ce": 2.652171328663826,
+              "bits_per_char": 3.826274423451195,
+              "kind": "more_nodepth"
+            },
+            {
+              "step": 200,
+              "train_ce": 2.4596869945526123,
+              "val_ce": 2.470066785812378,
+              "bits_per_char": 3.563553102556059,
+              "kind": "more_nodepth"
+            },
+            {
+              "step": 300,
+              "train_ce": 2.2933270931243896,
+              "val_ce": 2.3936590552330017,
+              "bits_per_char": 3.453320048563613,
+              "kind": "more_nodepth"
+            },
+            {
+              "step": 400,
+              "train_ce": 2.200525999069214,
+              "val_ce": 2.277864895761013,
+              "bits_per_char": 3.286264388929469,
+              "kind": "more_nodepth"
+            },
+            {
+              "step": 500,
+              "train_ce": 2.034538984298706,
+              "val_ce": 2.1433749943971634,
+              "bits_per_char": 3.0922364751821974,
+              "kind": "more_nodepth"
+            },
+            {
+              "step": 600,
+              "train_ce": 1.8814382553100586,
+              "val_ce": 2.012544721364975,
+              "bits_per_char": 2.90348828908051,
+              "kind": "more_nodepth"
+            },
+            {
+              "step": 700,
+              "train_ce": 1.8018741607666016,
+              "val_ce": 1.9204719066619873,
+              "bits_per_char": 2.7706552959078214,
+              "kind": "more_nodepth"
+            },
+            {
+              "step": 800,
+              "train_ce": 1.6492295265197754,
+              "val_ce": 1.8719757869839668,
+              "bits_per_char": 2.7006901845459836,
+              "kind": "more_nodepth"
+            }
+          ],
+          "routing": {
+            "adjacent_expert_reuse_rate": 0.2689208984375,
+            "random_reuse_baseline": 0.25,
+            "n_pairs": 2,
+            "pool_size": 8,
+            "top_k": 2,
+            "ratio_vs_random": 1.07568359375
+          }
+        }
+      }
+    },
+    "2": {
+      "kernels": {
+        "dense": {
+          "val_ce": 1.9080522432923317,
+          "bits_per_char": 2.752737509154909,
+          "train_wall_s": 32.72910011800013,
+          "final_train_ce": 1.6871895790100098,
+          "n_params": 126048,
+          "n_active_params_per_token": 74688,
+          "history": [
+            {
+              "step": 100,
+              "train_ce": 2.578099250793457,
+              "val_ce": 2.5864903181791306,
+              "bits_per_char": 3.731516755344349,
+              "kind": "dense"
+            },
+            {
+              "step": 200,
+              "train_ce": 2.4256534576416016,
+              "val_ce": 2.4536918997764587,
+              "bits_per_char": 3.5399291356769167,
+              "kind": "dense"
+            },
+            {
+              "step": 300,
+              "train_ce": 2.3642630577087402,
+              "val_ce": 2.3787811994552612,
+              "bits_per_char": 3.4318558398140055,
+              "kind": "dense"
+            },
+            {
+              "step": 400,
+              "train_ce": 2.1253998279571533,
+              "val_ce": 2.243288040161133,
+              "bits_per_char": 3.236380530825988,
+              "kind": "dense"
+            },
+            {
+              "step": 500,
+              "train_ce": 2.046659231185913,
+              "val_ce": 2.1306249797344208,
+              "bits_per_char": 3.073842092256997,
+              "kind": "dense"
+            },
+            {
+              "step": 600,
+              "train_ce": 1.8779733180999756,
+              "val_ce": 2.0325527898967266,
+              "bits_per_char": 2.932353830329035,
+              "kind": "dense"
+            },
+            {
+              "step": 700,
+              "train_ce": 1.8371554613113403,
+              "val_ce": 1.9540080092847347,
+              "bits_per_char": 2.8190376648524023,
+              "kind": "dense"
+            },
+            {
+              "step": 800,
+              "train_ce": 1.6871895790100098,
+              "val_ce": 1.8903516046702862,
+              "bits_per_char": 2.7272008855943164,
+              "kind": "dense"
+            }
+          ],
+          "routing": {
+            "adjacent_expert_reuse_rate": null,
+            "random_reuse_baseline": null,
+            "n_pairs": 0,
+            "note": "no shared-pool adjacent pairs (dense or standard MoE)"
+          }
+        },
+        "moe": {
+          "val_ce": 1.8869267702102661,
+          "bits_per_char": 2.7222598939029794,
+          "train_wall_s": 62.714270050000096,
+          "final_train_ce": 1.6851969957351685,
+          "n_params": 201888,
+          "n_active_params_per_token": 74880,
+          "history": [
+            {
+              "step": 100,
+              "train_ce": 2.580728769302368,
+              "val_ce": 2.6095600724220276,
+              "bits_per_char": 3.7647993753851035,
+              "kind": "moe"
+            },
+            {
+              "step": 200,
+              "train_ce": 2.431504487991333,
+              "val_ce": 2.4788659140467644,
+              "bits_per_char": 3.5762475612239544,
+              "kind": "moe"
+            },
+            {
+              "step": 300,
+              "train_ce": 2.3837997913360596,
+              "val_ce": 2.411631517112255,
+              "bits_per_char": 3.479248830189378,
+              "kind": "moe"
+            },
+            {
+              "step": 400,
+              "train_ce": 2.1629462242126465,
+              "val_ce": 2.2748716324567795,
+              "bits_per_char": 3.2819460228043766,
+              "kind": "moe"
+            },
+            {
+              "step": 500,
+              "train_ce": 2.0886483192443848,
+              "val_ce": 2.1675285771489143,
+              "bits_per_char": 3.12708272923785,
+              "kind": "moe"
+            },
+            {
+              "step": 600,
+              "train_ce": 1.8824443817138672,
+              "val_ce": 2.0438222512602806,
+              "bits_per_char": 2.948612226351724,
+              "kind": "moe"
+            },
+            {
+              "step": 700,
+              "train_ce": 1.859345555305481,
+              "val_ce": 1.9479058794677258,
+              "bits_per_char": 2.810234152426543,
+              "kind": "moe"
+            },
+            {
+              "step": 800,
+              "train_ce": 1.6851969957351685,
+              "val_ce": 1.8683397136628628,
+              "bits_per_char": 2.6954444395973183,
+              "kind": "moe"
+            }
+          ],
+          "routing": {
+            "adjacent_expert_reuse_rate": null,
+            "random_reuse_baseline": null,
+            "n_pairs": 0,
+            "note": "no shared-pool adjacent pairs (dense or standard MoE)"
+          }
+        },
+        "more": {
+          "val_ce": 1.891518011689186,
+          "bits_per_char": 2.728883655216141,
+          "train_wall_s": 96.15620606399989,
+          "final_train_ce": 1.6500846147537231,
+          "n_params": 202848,
+          "n_active_params_per_token": 74880,
+          "history": [
+            {
+              "step": 100,
+              "train_ce": 2.619488000869751,
+              "val_ce": 2.6622957810759544,
+              "bits_per_char": 3.840880920737889,
+              "kind": "more"
+            },
+            {
+              "step": 200,
+              "train_ce": 2.440117597579956,
+              "val_ce": 2.472840763628483,
+              "bits_per_char": 3.56755510659489,
+              "kind": "more"
+            },
+            {
+              "step": 300,
+              "train_ce": 2.3728134632110596,
+              "val_ce": 2.4127217531204224,
+              "bits_per_char": 3.480821708271759,
+              "kind": "more"
+            },
+            {
+              "step": 400,
+              "train_ce": 2.1755571365356445,
+              "val_ce": 2.295379899442196,
+              "bits_per_char": 3.3115331978814635,
+              "kind": "more"
+            },
+            {
+              "step": 500,
+              "train_ce": 2.102797269821167,
+              "val_ce": 2.181708447635174,
+              "bits_per_char": 3.147539958068824,
+              "kind": "more"
+            },
+            {
+              "step": 600,
+              "train_ce": 1.8995490074157715,
+              "val_ce": 2.0495996065437794,
+              "bits_per_char": 2.956947188168681,
+              "kind": "more"
+            },
+            {
+              "step": 700,
+              "train_ce": 1.8426053524017334,
+              "val_ce": 1.9517019502818584,
+              "bits_per_char": 2.8157107249649553,
+              "kind": "more"
+            },
+            {
+              "step": 800,
+              "train_ce": 1.6500846147537231,
+              "val_ce": 1.8727586567401886,
+              "bits_per_char": 2.7018196268609467,
+              "kind": "more"
+            }
+          ],
+          "routing": {
+            "adjacent_expert_reuse_rate": 0.2151031494140625,
+            "random_reuse_baseline": 0.25,
+            "n_pairs": 2,
+            "pool_size": 8,
+            "top_k": 2,
+            "ratio_vs_random": 0.86041259765625
+          }
+        },
+        "more_nodepth": {
+          "val_ce": 1.8883289396762848,
+          "bits_per_char": 2.7242827968380907,
+          "train_wall_s": 77.12015193899992,
+          "final_train_ce": 1.6738957166671753,
+          "n_params": 202656,
+          "n_active_params_per_token": 74880,
+          "history": [
+            {
+              "step": 100,
+              "train_ce": 2.6194400787353516,
+              "val_ce": 2.6602480188012123,
+              "bits_per_char": 3.837926624259199,
+              "kind": "more_nodepth"
+            },
+            {
+              "step": 200,
+              "train_ce": 2.4412143230438232,
+              "val_ce": 2.4753496199846268,
+              "bits_per_char": 3.5711746212182014,
+              "kind": "more_nodepth"
+            },
+            {
+              "step": 300,
+              "train_ce": 2.377847671508789,
+              "val_ce": 2.4172414541244507,
+              "bits_per_char": 3.4873422584965716,
+              "kind": "more_nodepth"
+            },
+            {
+              "step": 400,
+              "train_ce": 2.1808078289031982,
+              "val_ce": 2.298249989748001,
+              "bits_per_char": 3.3156738629325524,
+              "kind": "more_nodepth"
+            },
+            {
+              "step": 500,
+              "train_ce": 2.1127872467041016,
+              "val_ce": 2.1948943361639977,
+              "bits_per_char": 3.166563174059073,
+              "kind": "more_nodepth"
+            },
+            {
+              "step": 600,
+              "train_ce": 1.88955819606781,
+              "val_ce": 2.066592261195183,
+              "bits_per_char": 2.9814624067657998,
+              "kind": "more_nodepth"
+            },
+            {
+              "step": 700,
+              "train_ce": 1.8528119325637817,
+              "val_ce": 1.9656086526811123,
+              "bits_per_char": 2.8357738555514778,
+              "kind": "more_nodepth"
+            },
+            {
+              "step": 800,
+              "train_ce": 1.6738957166671753,
+              "val_ce": 1.8706450387835503,
+              "bits_per_char": 2.6987703207165707,
+              "kind": "more_nodepth"
+            }
+          ],
+          "routing": {
+            "adjacent_expert_reuse_rate": 0.2557830810546875,
+            "random_reuse_baseline": 0.25,
+            "n_pairs": 2,
+            "pool_size": 8,
+            "top_k": 2,
+            "ratio_vs_random": 1.02313232421875
+          }
+        }
+      }
+    }
+  },
+  "breakpoints": {
+    "reuse_factor_extreme": [
+      {
+        "kind": "more",
+        "R": 2,
+        "steps": 800,
+        "val_ce": 1.899877730756998,
+        "bits_per_char": 2.7409441804584986,
+        "n_params": 202848,
+        "routing": {
+          "adjacent_expert_reuse_rate": 0.184356689453125,
+          "random_reuse_baseline": 0.25,
+          "n_pairs": 2,
+          "pool_size": 8,
+          "top_k": 2,
+          "ratio_vs_random": 0.7374267578125
+        },
+        "note": "primary run (full steps)"
+      },
+      {
+        "kind": "more",
+        "R": 4,
+        "steps": 400,
+        "val_ce": 2.3016666769981384,
+        "bits_per_char": 3.3206031006845937,
+        "n_params": 204384,
+        "routing": {
+          "adjacent_expert_reuse_rate": 0.11961873372395833,
+          "random_reuse_baseline": 0.125,
+          "n_pairs": 3,
+          "pool_size": 16,
+          "top_k": 2,
+          "ratio_vs_random": 0.9569498697916666
+        }
+      },
+      {
+        "kind": "more_nodepth",
+        "R": 4,
+        "steps": 400,
+        "val_ce": 2.3020559325814247,
+        "bits_per_char": 3.3211646777842394,
+        "n_params": 204192,
+        "routing": {
+          "adjacent_expert_reuse_rate": 0.13326009114583334,
+          "random_reuse_baseline": 0.125,
+          "n_pairs": 3,
+          "pool_size": 16,
+          "top_k": 2,
+          "ratio_vs_random": 1.0660807291666667
+        }
+      }
+    ],
+    "few_experts": [
+      {
+        "kind": "moe",
+        "n_experts": 2,
+        "steps": 400,
+        "val_ce": 2.2813656702637672,
+        "bits_per_char": 3.2913149389438634,
+        "n_params": 126624
+      },
+      {
+        "kind": "more",
+        "n_experts": 2,
+        "steps": 400,
+        "val_ce": 2.320033699274063,
+        "bits_per_char": 3.3471011126379677,
+        "n_params": 127200
+      }
+    ],
+    "top1": [
+      {
+        "kind": "moe",
+        "top_k": 1,
+        "steps": 400,
+        "val_ce": 2.4319119974970818,
+        "bits_per_char": 3.5085073786674132,
+        "n_params": 201888
+      },
+      {
+        "kind": "more",
+        "top_k": 1,
+        "steps": 400,
+        "val_ce": 2.4308774769306183,
+        "bits_per_char": 3.5070148809764787,
+        "n_params": 202848
+      }
+    ]
+  },
+  "wall_s_total": 531.1406543919999,
+  "config_snapshot": {
+    "steps": 800,
+    "n_experts": 4,
+    "top_k": 2,
+    "reuse_factor": 2,
+    "n_layers": 4,
+    "d_model": 48,
+    "seq_len": 64
+  }
+}

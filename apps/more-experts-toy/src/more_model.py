@@ -165,24 +165,17 @@ class SharedExpertPool(nn.Module):
 
         x: (B, T, D); top_idx/top_w: (B, T, K)
         Returns (B, T, D).
+
+        For the tiny expert counts in this CPU toy, evaluating every expert on
+        the full batch and gathering is faster than sparse Python scatter.
         """
-        b, t, d = x.shape
-        k = top_idx.shape[-1]
-        out = torch.zeros_like(x)
-        # Loop over K (small); vectorize over batch*time via expert gather.
-        flat_x = x.reshape(b * t, d)
-        for ki in range(k):
-            idx_k = top_idx[:, :, ki].reshape(-1)  # (B*T,)
-            w_k = top_w[:, :, ki].reshape(-1, 1)  # (B*T, 1)
-            # Group by expert id for fewer python loops when E is small.
-            for e_id, expert in enumerate(self.experts):
-                mask = idx_k == e_id
-                if not bool(mask.any()):
-                    continue
-                y = expert(flat_x[mask])
-                contrib = y * w_k[mask]
-                out.view(b * t, d)[mask] += contrib
-        return out
+        # stacked: (B, T, E, D)
+        stacked = torch.stack([expert(x) for expert in self.experts], dim=2)
+        # gather selected experts → (B, T, K, D)
+        idx = top_idx.unsqueeze(-1).expand(-1, -1, -1, stacked.size(-1))
+        selected = torch.gather(stacked, 2, idx)
+        # weight and sum over K
+        return (selected * top_w.unsqueeze(-1)).sum(dim=2)
 
 
 class TransformerBlock(nn.Module):

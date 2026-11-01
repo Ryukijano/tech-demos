@@ -1,0 +1,23 @@
+{
+  "kind": "more",
+  "seed": 0,
+  "steps": 40,
+  "final_train_ce": 2.9162867069244385,
+  "n_params": 202848,
+  "train_wall_s": 1.6032829350000384,
+  "metrics": {
+    "val_ce": 3.001274824142456,
+    "bits_per_char": 4.329924305135218,
+    "n_params": 202848,
+    "n_active_params_per_token": 74880,
+    "routing": {
+      "adjacent_expert_reuse_rate": 0.179351806640625,
+      "random_reuse_baseline": 0.25,
+      "n_pairs": 2,
+      "pool_size": 8,
+      "top_k": 2,
+      "ratio_vs_random": 0.7174072265625
+    }
+  },
+  "note": "Disclosed smoke only; thresholds unchanged."
+}

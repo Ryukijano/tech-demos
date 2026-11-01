@@ -1,0 +1,30 @@
+more-experts-toy demo — NOTICE
+
+This directory (apps/more-experts-toy/) is a CPU-only clear-experiment
+toy inspired by:
+
+  Qiu, Acikalin, Lovelace, Belardi, Mulchandani, Gomes, Weinberger,
+  "MoRE: Mixture of Reused Experts", Cornell University,
+  arXiv:2609.18176 / COLM 2026
+  https://arxiv.org/abs/2609.18176
+
+Found via a bookmarked X post by @askalphaxiv:
+  https://x.com/askalphaxiv/status/2116032693280571682
+
+Official full-scale training code exists:
+  https://github.com/EricQiu6/MoRE  (Apache-2.0)
+
+That upstream stack targets DeepSeek-v3-style MoE pretraining on C4 at
+114M–1.15B parameters and is unsuitable for this monorepo's CPU
+clear-experiment standard. This app is therefore an **independent
+clean-room toy** of the paper's core idea — shared expert pools across
+adjacent layers (reuse factor R), per-layer routers, and learnable depth
+embeddings — on a tiny character LM. No upstream source files are
+vendored. Results do not claim to reproduce the paper's C4 / FineWeb /
+downstream tables.
+
+Corpus: a trimmed public-domain excerpt of Alice's Adventures in
+Wonderland (Project Gutenberg) under data/tiny_corpus.txt.
+
+No warranty. Research / demo use. Trained weights stay out of git (work/
+is git-ignored).

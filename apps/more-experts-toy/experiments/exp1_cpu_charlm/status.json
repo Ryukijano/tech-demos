@@ -1,0 +1,30 @@
+{
+  "status": "FAIL",
+  "means_val_ce": {
+    "dense": 1.8942946530878544,
+    "moe": 1.8710470261673133,
+    "more": 1.8776366611321766,
+    "more_nodepth": 1.876733588675658
+  },
+  "stds_val_ce": {
+    "dense": 0.015508173159162584,
+    "moe": 0.03533527913886665,
+    "more": 0.03156094351516971,
+    "more_nodepth": 0.02831885134536151
+  },
+  "moe_minus_more_gap": -0.006589634964863311,
+  "more_std": 0.03156094351516971,
+  "gap_ge_more_std": false,
+  "more_beats_moe_mean": false,
+  "more_reuse_rate_mean": 0.22167460123697916,
+  "more_random_baseline_mean": 0.25,
+  "param_table": {
+    "dense": 126048,
+    "moe": 201888,
+    "more": 202848,
+    "more_nodepth": 202656
+  },
+  "pass_condition": "mean_over_seeds(val_ce_moe) - mean_over_seeds(val_ce_more)\n  >= std_over_seeds(val_ce_more)\nAND mean_over_seeds(val_ce_more) < mean_over_seeds(val_ce_moe) (MoRE beats matched MoE on mean val CE by at least MoRE's cross-seed std).\n",
+  "status_rule": "PASS if the pass_condition holds. PARTIAL if mean(val_ce_more) < mean(val_ce_moe) but the gap is smaller than std(val_ce_more). FAIL otherwise (including ties or MoE ahead on mean).\n",
+  "wall_s_total": 531.1406543919999
+}

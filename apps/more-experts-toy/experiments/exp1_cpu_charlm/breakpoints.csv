@@ -1,0 +1,8 @@
+kind_bp,model,R,n_experts,top_k,steps,val_ce
+reuse_factor,more,2,,,800,1.899877730756998
+reuse_factor,more,4,,,400,2.3016666769981384
+reuse_factor,more_nodepth,4,,,400,2.3020559325814247
+few_experts,moe,,2,,400,2.2813656702637672
+few_experts,more,,2,,400,2.320033699274063
+top1,moe,,,1,400,2.4319119974970818
+top1,more,,,1,400,2.4308774769306183

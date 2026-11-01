@@ -1,0 +1,115 @@
+# Fixed on 2026-11-01 BEFORE the official measured run. Do not edit thresholds
+# after seeing results. One disclosed smoke (tiny iters, seed 0) may verify the
+# code path only; it tunes no threshold and is recorded in smoke.json.
+exp_id: exp1_cpu_charlm
+hypothesis: >
+  On a tiny character-level language-modeling corpus (public-domain English
+  excerpt, bits-per-char / validation cross-entropy), a clean-room MoRE toy
+  with reuse factor R=2 reaches a strictly lower mean validation cross-entropy
+  than a parameter-matched standard MoE (same total unique expert parameters,
+  same top-K active experts per token, same steps / optimizer) across seeds
+  {0,1,2}, with the MoE−MoRE mean gap at least as large as the MoRE
+  cross-seed std. A dense FLOPs-matched baseline and a MoRE-without-depth-
+  embeddings ablation are reported for context. This is a toy of Qiu,
+  Acikalin et al. "MoRE: Mixture of Reused Experts" (arXiv:2609.18176) —
+  not a reproduction of the paper's 114M–1.15B C4 tables.
+upstream:
+  paper: >
+    Qiu, Acikalin, Lovelace, Belardi, Mulchandani, Gomes, Weinberger,
+    "MoRE: Mixture of Reused Experts", Cornell University,
+    arXiv:2609.18176 / COLM 2026.
+  paper_url: https://arxiv.org/abs/2609.18176
+  paper_pdf: https://arxiv.org/pdf/2609.18176
+  bookmark: https://x.com/askalphaxiv/status/2116032693280571682
+  official_code: https://github.com/EricQiu6/MoRE
+  official_code_license: Apache-2.0
+  note: >
+    Official full-scale training code exists (Apache-2.0) but is a DeepSeek-v3 /
+    C4 stack unsuitable for this CPU clear-experiment. This app is an
+    independent clean-room toy of the paper's core idea (shared adjacent-layer
+    expert pools + per-layer routers + depth embeddings). No upstream source
+    is vendored.
+data:
+  corpus_path: data/tiny_corpus.txt
+  corpus_note: >
+    Public-domain English excerpt (Project Gutenberg Alice's Adventures in
+    Wonderland, trimmed) committed under data/ for offline CPU runs.
+  seq_len: 64
+  train_frac: 0.9
+  eval_batches: 32
+model:
+  d_model: 48
+  n_layers: 4
+  n_heads: 4
+  dropout: 0.0
+  # Per-layer expert count for standard MoE. MoRE uses pool size R*N per
+  # reuse block so total unique experts stay L*N.
+  n_experts: 4
+  top_k: 2
+  reuse_factor: 2          # primary MoRE R
+  d_ff_expert: 96          # expert inner width
+  d_ff_dense: 192          # dense FFN ≈ K * d_ff_expert (active-FLOPs match)
+  aux_loss_coef: 0.01      # Switch-style load-balance auxiliary
+training:
+  steps: 800
+  batch_size: 32
+  lr: 0.001
+  weight_decay: 0.0
+  log_every: 100
+  grad_clip: 1.0
+  eval_every: 100
+seeds: [0, 1, 2]
+kernels:
+  - dense
+  - moe
+  - more
+  - more_nodepth
+metrics:
+  primary: >
+    val_ce = mean token cross-entropy (nats) on the held-out 10% of the
+    character corpus, teacher-forced. Lower is better. Also report
+    bits_per_char = val_ce / ln(2).
+  report_only:
+    - bits_per_char
+    - train_wall_s
+    - n_params
+    - n_active_params_per_token
+    - adjacent_expert_reuse_rate
+    - random_reuse_baseline
+thresholds:
+  pass_condition: >
+    mean_over_seeds(val_ce_moe) - mean_over_seeds(val_ce_more)
+      >= std_over_seeds(val_ce_more)
+    AND mean_over_seeds(val_ce_more) < mean_over_seeds(val_ce_moe)
+    (MoRE beats matched MoE on mean val CE by at least MoRE's cross-seed std).
+  status_rule: >
+    PASS if the pass_condition holds.
+    PARTIAL if mean(val_ce_more) < mean(val_ce_moe) but the gap is smaller
+    than std(val_ce_more).
+    FAIL otherwise (including ties or MoE ahead on mean).
+  train_wall_s_max_report: 1800
+breakpoints:
+  seed: 0
+  reuse_factor_extreme:
+    R: [4]                 # all 4 layers share one pool (all-layers-shared)
+    story: >
+      Push reuse to R=n_layers (single shared pool of R*N experts for all
+      layers). Where extreme sharing helps or collapses vs R=2.
+  few_experts:
+    n_experts: [2]
+    story: very few experts per layer / pool — routing collapse risk
+  top1:
+    top_k: [1]
+    story: top-1 routing (Switch-style) — less combinatorial routing space
+  train_steps_note: >
+    Breakpoint variants retrain seed 0 for 400 steps (half primary budget)
+    to keep total wall under ~30 min; primary comparison uses 800 steps.
+runtime:
+  device: cpu-only
+  torch_threads: 4
+disclosure: >
+  Thresholds, model sizes, steps, corpus, and seeds fixed before the official
+  run. A disclosed smoke (few steps, seed 0) may verify the code path only and
+  is recorded in smoke.json; no threshold is changed after any result. This is
+  NOT an official reproduction of arXiv:2609.18176. Official code at
+  EricQiu6/MoRE is Apache-2.0 and was not copied into this toy.

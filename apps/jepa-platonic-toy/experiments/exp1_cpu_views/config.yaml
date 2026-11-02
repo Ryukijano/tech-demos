@@ -1,0 +1,126 @@
+# Fixed on 2026-11-02 BEFORE the official measured run. Do not edit thresholds
+# after seeing results. One disclosed smoke (tiny iters, seed 0) may verify the
+# code path only; it tunes no threshold and is recorded in smoke.json.
+exp_id: exp1_cpu_views
+hypothesis: >
+  On a synthetic finite world with two injective linear renderings (modalities
+  A and B), two tiny JEPAs trained SEPARATELY — JEPA-A only on good-view pairs
+  from modality A, JEPA-B only on good-view pairs from modality B — learn
+  representations that align up to an orthogonal transform. After orthogonal
+  Procrustes, Procrustes-aligned linear CKA on held-out paired observations
+  beats both a randomly-initialised pair and a reconstruction-trained
+  (autoencoder) pair by the pre-registered margins below, on every seed in
+  {0,1,2}. This is a clean-room toy of the Platonic Representation Theorem
+  for whitened JEPAs (Balestriero & LeCun, arXiv:2610.39302) — not a
+  reproduction of the paper's Flickr / COCO / Recap-DataComp / 70B LM tables.
+upstream:
+  paper: >
+    Balestriero, LeCun, "Proving and Improving the Platonic Representation
+    Hypothesis with JEPAs", Brown / NYU / AMI Labs, arXiv:2610.39302
+    (October 2026).
+  paper_url: https://arxiv.org/abs/2610.39302
+  paper_html: https://arxiv.org/html/2610.39302v1
+  hf_papers: https://huggingface.co/papers/2610.39302
+  demo_space: https://huggingface.co/spaces/galilai-group/prh_demo
+  code_repo: https://github.com/galilai-group/prh-proof
+  bookmark: https://x.com/HuggingPapers/status/2116804737207021735
+  bookmark_thread: https://x.com/HuggingPapers/status/2116804727228784718
+  note: >
+    Paper verified on arXiv (abs + HTML) and Hugging Face Papers on
+    2026-11-02. Official code at galilai-group/prh-proof and demo Space
+    galilai-group/prh_demo exist; neither is vendored. This app is an
+    independent clean-room toy of good-view JEPA cross-modal alignment on
+    synthetic data. Results do not claim to reproduce the paper's large-scale
+    alignment tables.
+data:
+  n_classes: 8
+  n_states_per_class: 4          # finite world |Z| = 32
+  d_latent: 16
+  d_mod_a: 24
+  d_mod_b: 20
+  nuisance_std: 0.35             # observation noise / viewpoint nuisance
+  class_sep: 2.5                 # spacing of class means in latent
+  n_train_pairs: 4096
+  n_eval: 1024
+  world_seed: 20261102
+  train_stream_seed: 71002
+  eval_stream_seed: 91002
+model:
+  emb_dim: 8                     # shared embedding width k
+  # Two different MLP architectures (separately trained)
+  arch_a: [64, 64]
+  arch_b: [96, 48]
+  dropout: 0.0
+training:
+  steps: 800
+  batch_size: 128
+  lr: 0.003
+  weight_decay: 0.0
+  log_every: 200
+  grad_clip: 1.0
+  # VICReg-style whitened JEPA (identity predictor): invariance + variance + cov
+  sim_coef: 25.0
+  std_coef: 25.0
+  cov_coef: 1.0
+  std_target: 1.0
+  # Reconstruction baseline: MSE autoencoder with same encoder trunk + decoder
+  recon_steps: 800
+  recon_lr: 0.003
+seeds: [0, 1, 2]
+metrics:
+  primary: >
+    procrustes_cka = linear Centered Kernel Alignment between modality-A and
+    modality-B embeddings AFTER the optimal orthogonal Procrustes map
+    (SVD of B^T A) is applied to B. Computed on n_eval held-out paired
+    observations that share the same world state z. Higher is better
+    (1 = perfect linear alignment up to rotation/scale after centering).
+  report_only:
+    - mutual_knn_overlap   # fraction of shared k-NN among top-10 neighbors
+    - procrustes_rmse      # RMS residual after Procrustes (whitened)
+    - train_wall_s
+    - n_params_a
+    - n_params_b
+thresholds:
+  pass_condition: >
+    For EVERY seed in {0,1,2}:
+      cka_jepa > cka_recon
+      AND cka_jepa > cka_random
+    AND mean_over_seeds(cka_jepa) >= 0.55
+    AND mean_over_seeds(cka_jepa - cka_recon) >= 0.20
+    AND mean_over_seeds(cka_jepa - cka_random) >= 0.35
+  status_rule: >
+    PASS if the pass_condition holds.
+    PARTIAL if mean(cka_jepa) > mean(cka_recon) and mean(cka_jepa) > mean(cka_random)
+      but any every-seed strict win or any mean-gap / absolute bar fails.
+    FAIL otherwise.
+  cka_jepa_mean_min: 0.55
+  gap_vs_recon_min: 0.20
+  gap_vs_random_min: 0.35
+  train_wall_s_max_report: 1800
+breakpoints:
+  seed: 0
+  bad_views:
+    story: >
+      Replace good views (two independent observations of the same world
+      state) with bad views (two corruptions of ONE observation: additive
+      noise / coordinate dropout). Alignment should drop vs the primary
+      good-view run.
+    noise_std: 0.5
+    dropout_p: 0.3
+    steps: 800
+  tiny_emb_dim:
+    story: embedding width pushed to extremes (under / over capacity)
+    emb_dims: [2, 4, 8, 16]
+    steps: 400
+  short_training:
+    story: under-trained vs primary budget
+    steps: [50, 200, 800]
+runtime:
+  device: cpu-only
+  torch_threads: 4
+disclosure: >
+  Thresholds, world size, steps, model sizes, and eval counts fixed before
+  the official run. A disclosed smoke (few steps, seed 0) may verify the code
+  path only and is recorded in smoke.json; no threshold is changed after any
+  result. This is NOT an official reproduction of arXiv:2610.39302. Official
+  code (galilai-group/prh-proof) is not vendored.

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Tech Demos · Gyanateet Dutta (@Ryukijano)</title>
-  <meta name="description" content="A monorepo of small, honest kits and UIs for new AI models and runtimes: llama.cpp Decision Models, JEPA-Anything, PixelUMM, EmbeddingGemma 2, active borylation, chest X-ray bone suppression, LoMa matching, a correction-training 2D toy, a syndrome-mitigation QEC experiment, a binary discrete diffusion Sudoku toy, an auditable SAE text detector, a NanoDreamer MinAtar world-model toy, a looped-transformer addition toy, and a MoRE reused-experts char-LM toy.">
+  <meta name="description" content="A monorepo of small, honest kits and UIs for new AI models and runtimes: llama.cpp Decision Models, JEPA-Anything, PixelUMM, EmbeddingGemma 2, active borylation, chest X-ray bone suppression, LoMa matching, a correction-training 2D toy, a syndrome-mitigation QEC experiment, a binary discrete diffusion Sudoku toy, an auditable SAE text detector, a NanoDreamer MinAtar world-model toy, a looped-transformer addition toy, a MoRE reused-experts char-LM toy, and a Platonic JEPA alignment toy.">
   <meta property="og:title" content="Tech Demos">
   <meta property="og:description" content="Small, honest kits and UIs for new AI models and runtimes, by Gyanateet Dutta (@Ryukijano).">
   <meta property="og:image" content="https://ryukijano.github.io/tech-demos/assets/decision-models-ui.png">
@@ -21,7 +21,7 @@
       <p class="subtitle">Small, honest kits and UIs for new AI models and runtimes, kept in one monorepo with one folder per demo.</p>
       <div class="hero-actions">
         <a class="btn primary" href="https://github.com/Ryukijano/tech-demos">View the repo on GitHub</a>
-        <a class="btn" href="#demos">Browse the 14 demos</a>
+        <a class="btn" href="#demos">Browse the 15 demos</a>
       </div>
       <p class="byline">By <a href="https://github.com/Ryukijano">Gyanateet Dutta</a> · <a href="https://github.com/Ryukijano">@Ryukijano</a></p>
     </div>
@@ -32,7 +32,37 @@
 
     <section class="grid">
 
-      <!-- 0. MoRE reused-experts toy (CPU clear-experiment, clean-room) -->
+      <!-- 0. Platonic JEPA toy (CPU clear-experiment, clean-room) -->
+      <article class="card">
+        <div class="media">
+          <video src="assets/jepa-platonic-toy.mp4" poster="assets/jepa-platonic-toy.png" muted controls playsinline preload="metadata" aria-label="Procrustes-aligned JEPA embeddings across two synthetic modalities coloured by world class"></video>
+        </div>
+        <div class="body">
+          <div class="badges">
+            <span class="badge green">CPU toy · clean-room</span>
+            <span class="badge amber">Hypothesis: PARTIAL</span>
+            <span class="badge muted">PyTorch · JEPA · Procrustes CKA</span>
+          </div>
+          <h2>Platonic JEPA alignment (toy)</h2>
+          <p>Clean-room toy of the Platonic Representation Theorem for whitened JEPAs from Balestriero &amp; LeCun <a href="https://arxiv.org/abs/2610.39302">arXiv:2610.39302</a> (found via <a href="https://x.com/HuggingPapers/status/2116804737207021735">@HuggingPapers</a>). Official <a href="https://github.com/galilai-group/prh-proof">prh-proof</a> code is not vendored. Two separately trained good-view JEPAs on synthetic modalities A/B vs reconstruction and random baselines, seeds 0/1/2.</p>
+          <ul class="facts">
+            <li>PARTIAL: JEPA CKA 0.958±0.027 vs recon 0.790±0.009 vs random 0.270±0.051 — every-seed wins hold; gap vs recon 0.168 misses ≥0.20 bar</li>
+            <li>~7k params; bad-view breakpoint mild (−0.025 CKA); emb=4 soft-breaks; 50 steps already ~0.84</li>
+            <li>Does not reproduce Flickr/COCO/Recap-DataComp or 70B LM tables; VICReg-style whitened JEPA only</li>
+          </ul>
+          <pre><code>cd apps/jepa-platonic-toy
+uv venv .venv && source .venv/bin/activate
+uv pip install --index-url https://download.pytorch.org/whl/cpu torch
+uv pip install -r requirements.txt
+./run_all.sh</code></pre>
+          <div class="links">
+            <a href="https://github.com/Ryukijano/tech-demos/tree/main/apps/jepa-platonic-toy">App folder</a>
+            <a href="https://github.com/Ryukijano/tech-demos/blob/main/apps/jepa-platonic-toy/README.md">README</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- 1. MoRE reused-experts toy (CPU clear-experiment, clean-room) -->
       <article class="card">
         <div class="media">
           <video src="assets/more-experts-toy.mp4" poster="assets/more-experts-toy.png" muted controls playsinline preload="metadata" aria-label="MoRE vs MoE validation loss curves and adjacent expert reuse rates on a tiny char LM"></video>

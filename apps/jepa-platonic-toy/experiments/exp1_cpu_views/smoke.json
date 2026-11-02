@@ -1,0 +1,15 @@
+{
+  "kind": "jepa",
+  "seed": 0,
+  "steps": 40,
+  "metrics": {
+    "procrustes_cka": 0.7147170901298523,
+    "procrustes_rmse": 0.01810535043478012,
+    "mutual_knn_overlap": 0.5906250000000002,
+    "n_eval": 128
+  },
+  "n_params_a": 6280,
+  "n_params_b": 7064,
+  "train_wall_s": 0.12242713000000549,
+  "note": "Disclosed smoke only; thresholds unchanged."
+}

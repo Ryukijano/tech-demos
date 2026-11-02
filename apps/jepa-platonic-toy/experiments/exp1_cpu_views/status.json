@@ -1,0 +1,50 @@
+{
+  "status": "PARTIAL",
+  "mean_cka_jepa": 0.958042581876119,
+  "std_cka_jepa": 0.026679001645754537,
+  "mean_cka_recon": 0.7900981704394022,
+  "std_cka_recon": 0.008763412280524751,
+  "mean_cka_random": 0.26971886058648425,
+  "std_cka_random": 0.051007716182272095,
+  "gap_vs_recon": 0.1679444114367168,
+  "gap_vs_random": 0.6883237212896347,
+  "every_seed_beats_recon": true,
+  "every_seed_beats_random": true,
+  "checks": {
+    "cka_jepa_mean_min": {
+      "threshold": 0.55,
+      "value": 0.958042581876119,
+      "ok": true
+    },
+    "gap_vs_recon_min": {
+      "threshold": 0.2,
+      "value": 0.1679444114367168,
+      "ok": false
+    },
+    "gap_vs_random_min": {
+      "threshold": 0.35,
+      "value": 0.6883237212896347,
+      "ok": true
+    },
+    "every_seed_beats_recon": true,
+    "every_seed_beats_random": true
+  },
+  "per_seed_cka": {
+    "0": {
+      "jepa": 0.9796920418739319,
+      "recon": 0.7870547771453857,
+      "random": 0.23698139190673828
+    },
+    "1": {
+      "jepa": 0.9282377362251282,
+      "recon": 0.7999775409698486,
+      "random": 0.24368499219417572
+    },
+    "2": {
+      "jepa": 0.9661979675292969,
+      "recon": 0.7832621932029724,
+      "random": 0.3284901976585388
+    }
+  },
+  "wall_s_total": 21.034989412000016
+}

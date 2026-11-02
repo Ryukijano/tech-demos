@@ -19,6 +19,7 @@ One monorepo for sticky / bookmark-worthy tech demos. Prefer adding a new `apps/
 | `apps/nanodreamer-minatar/` | Clean-room NanoDreamer-style world model on MinAtar (Breakout + Space Invaders); upstream unlicensed — no source vendored |
 | `apps/looped-transformer-toy/` | Clean-room full-stack looped transformer on multi-digit addition (arXiv:2610.40325; no official code) |
 | `apps/more-experts-toy/` | Clean-room MoRE (Mixture of Reused Experts) char-LM toy vs matched MoE (arXiv:2609.18176; official code not vendored) |
+| `apps/jepa-platonic-toy/` | Clean-room Platonic JEPA cross-modal alignment toy (arXiv:2610.39302; official prh-proof not vendored) |
 | `tracking/seen-bookmarks.json` | X bookmarks already turned into demos (`url`, `slug`, `date`) |
 | `docs/` | GitHub Pages showcase site (static HTML/CSS) |
 | `AGENTS.md` | Rules for future cloud agents |

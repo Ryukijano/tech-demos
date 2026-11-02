@@ -1,0 +1,26 @@
+jepa-platonic-toy demo — NOTICE
+
+This directory (apps/jepa-platonic-toy/) is a CPU-only clear-experiment
+toy inspired by:
+
+  Balestriero, LeCun,
+  "Proving and Improving the Platonic Representation Hypothesis with JEPAs",
+  Brown University / New York University / AMI Labs, arXiv:2610.39302
+  (October 2026)
+  https://arxiv.org/abs/2610.39302
+  https://arxiv.org/html/2610.39302v1
+  https://huggingface.co/papers/2610.39302
+
+Found via a bookmarked X post by @HuggingPapers:
+  https://x.com/HuggingPapers/status/2116804737207021735
+  (thread with https://x.com/HuggingPapers/status/2116804727228784718)
+
+Paper verified on arXiv and Hugging Face Papers on 2026-11-02. Official
+code (https://github.com/galilai-group/prh-proof) and demo Space
+(https://huggingface.co/spaces/galilai-group/prh_demo) exist but are
+**not vendored**. This app is an **independent clean-room toy** of
+good-view JEPA cross-modal alignment on a synthetic finite world — NOT a
+reproduction of the paper's Flickr / COCO / Recap-DataComp / 70B LM tables.
+
+No warranty. Research / demo use. Trained weights stay out of git (work/ is
+git-ignored).

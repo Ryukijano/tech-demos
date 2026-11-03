@@ -1,0 +1,122 @@
+# Fixed on 2026-11-03 BEFORE the official measured run. Do not edit thresholds
+# after seeing results. One disclosed smoke (tiny iters, seed 0) may verify the
+# code path only; it tunes no threshold and is recorded in smoke.json.
+exp_id: exp1_cpu_pendulum
+hypothesis: >
+  On a tiny rendered damped pendulum (24x24 grayscale pixels + torque actions,
+  no rewards), a clean-room world2vec-style model — CNN encoder over a short
+  frame history + continuous-time action-conditioned latent vector field
+  integrated with Euler steps, trained by multi-step latent dynamics matching
+  with VICReg-style variance/covariance collapse prevention and WITHOUT pixel
+  reconstruction — achieves higher long-horizon Latent Rollout Consistency
+  (LRC at horizon H) than a matched discrete-time next-latent baseline on
+  every seed in {0,1,2}, with mean LRC gap >= 0.05 and mean linear-probe R^2
+  of the true physical state from latents >= 0.50. This is a toy of Schmidt
+  et al. world2vec (arXiv:2610.40637), not a reproduction of MuJoCo / 71
+  attractor / DreamerV3 tables.
+upstream:
+  paper: >
+    Schmidt, Gonzalez Laiz, Szuppinger, Schneider,
+    "world2vec: Mechanistic world models through latent dynamics learning",
+    Helmholtz Munich / MCML, arXiv:2610.40637 (October 2026).
+  paper_url: https://arxiv.org/abs/2610.40637
+  paper_html: https://arxiv.org/html/2610.40637v1
+  project_page: https://worldmodels.science/
+  code_repo: https://github.com/dynamical-inference/world2vec
+  hf_papers: https://huggingface.co/papers/2610.40637
+  bookmark: https://x.com/shumpeiMaxwell/status/2116343144732377139
+  note: >
+    Paper verified on arXiv (abs + HTML) and project page worldmodels.science
+    on 2026-11-03. Official repo dynamical-inference/world2vec exists but
+    code is not yet released ("will be released soon"); nothing is vendored.
+    This app is an independent clean-room toy of continuous-time latent
+    dynamics matching from pixels+actions with no reward / no reconstruction.
+data:
+  img_size: 24
+  history: 2                 # H stacked frames for encoder (partial observability)
+  dt: 0.05                   # integration / sampling interval (s)
+  traj_len: 48
+  n_train_traj: 256
+  n_eval_traj: 64
+  action_scale: 2.0          # torque magnitude for OU / random actions
+  gravity: 9.81
+  length: 1.0
+  mass: 1.0
+  damping: 0.15
+  train_stream_seed: 20261103
+  eval_stream_seed: 910603
+model:
+  latent_dim: 8
+  cnn_channels: [16, 32]
+  dyn_hidden: [64, 64]
+  encoder_mlp_hidden: [64]
+training:
+  steps: 1200
+  batch_size: 64
+  lr: 0.002
+  weight_decay: 0.0
+  grad_clip: 1.0
+  log_every: 200
+  rollout_k: 4               # multi-step matching horizon during training
+  # VICReg-style anti-collapse on encoded latents (no pixel recon)
+  std_coef: 10.0
+  cov_coef: 1.0
+  std_target: 1.0
+  pred_coef: 1.0
+seeds: [0, 1, 2]
+metrics:
+  primary: >
+    lrc_h = Latent Rollout Consistency at horizon H: R^2 between the
+    K-step latent rollout starting from encoded history at t and the
+    encoded latent at t+H (same encoder). Higher is better. Collapse is
+    gated by probe_r2 (linear probe of true [sin θ, cos θ, ω] from
+    latents); a collapsed encoder can inflate LRC but fails the probe bar.
+  report_only:
+    - probe_r2               # linear-probe R^2 of true physical state
+    - lrc_h1
+    - lrc_h4
+    - horizon_state_r2       # probe applied to rolled latents at H
+    - train_wall_s
+    - n_params
+thresholds:
+  pass_condition: >
+    For EVERY seed in {0,1,2}:
+      lrc_h_world2vec > lrc_h_discrete
+    AND mean_over_seeds(lrc_h_world2vec - lrc_h_discrete) >= 0.05
+    AND mean_over_seeds(probe_r2_world2vec) >= 0.50
+  status_rule: >
+    PASS if the pass_condition holds.
+    PARTIAL if mean(lrc_h_world2vec) > mean(lrc_h_discrete) and
+      mean(probe_r2_world2vec) >= 0.40 but any every-seed win or gap/probe
+      bar fails.
+    FAIL otherwise.
+  lrc_gap_min: 0.05
+  probe_r2_mean_min: 0.50
+  eval_horizon: 8
+  train_wall_s_max_report: 1800
+breakpoints:
+  seed: 0
+  long_horizon:
+    story: >
+      Push LRC evaluation horizon beyond the training matching length K=4;
+      continuous-time matching should degrade more slowly than discrete.
+    horizons: [1, 2, 4, 8, 16, 24]
+  observation_noise:
+    story: additive pixel noise at train+eval; dynamics matching under corrupt frames
+    noise_stds: [0.0, 0.05, 0.15]
+    steps: 600
+  irregular_dt:
+    story: >
+      Train with nominal dt, evaluate Euler rollouts with mismatched step
+      sizes (continuous-time inductive bias vs discrete baseline).
+    dt_scales: [0.5, 1.0, 2.0]
+    horizon_steps_nominal: 8
+runtime:
+  device: cpu-only
+  torch_threads: 4
+disclosure: >
+  Thresholds, pendulum size, steps, model sizes, and eval counts fixed before
+  the official run. A disclosed smoke (few steps, seed 0) may verify the code
+  path only and is recorded in smoke.json; no threshold is changed after any
+  result. This is NOT an official reproduction of arXiv:2610.40637. Official
+  code (dynamical-inference/world2vec) is not released / not vendored.

@@ -1,0 +1,26 @@
+{
+  "status": "FAIL",
+  "mean_lrc_world2vec": 0.35101248243514976,
+  "std_lrc_world2vec": 0.1566297227627548,
+  "mean_lrc_discrete": 0.4025699936860054,
+  "std_lrc_discrete": 0.26708647612141984,
+  "mean_lrc_recon": 0.19973245848109814,
+  "std_lrc_recon": 0.05914807378090676,
+  "gap_lrc_vs_discrete": -0.051557511250855614,
+  "mean_probe_r2_world2vec": 0.8370512820658383,
+  "std_probe_r2_world2vec": 0.07658237552017738,
+  "mean_probe_r2_discrete": 0.7414121859862387,
+  "every_seed_lrc_win": false,
+  "per_seed_lrc_win": {
+    "0": true,
+    "1": false,
+    "2": false
+  },
+  "gap_ok": false,
+  "probe_ok": true,
+  "thresholds": {
+    "lrc_gap_min": 0.05,
+    "probe_r2_mean_min": 0.5,
+    "eval_horizon": 8
+  }
+}

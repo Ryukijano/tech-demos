@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Tech Demos · Gyanateet Dutta (@Ryukijano)</title>
-  <meta name="description" content="A monorepo of small, honest kits and UIs for new AI models and runtimes: llama.cpp Decision Models, JEPA-Anything, PixelUMM, EmbeddingGemma 2, active borylation, chest X-ray bone suppression, LoMa matching, a correction-training 2D toy, a syndrome-mitigation QEC experiment, a binary discrete diffusion Sudoku toy, an auditable SAE text detector, a NanoDreamer MinAtar world-model toy, a looped-transformer addition toy, a MoRE reused-experts char-LM toy, and a Platonic JEPA alignment toy.">
+  <meta name="description" content="A monorepo of small, honest kits and UIs for new AI models and runtimes: llama.cpp Decision Models, JEPA-Anything, PixelUMM, EmbeddingGemma 2, active borylation, chest X-ray bone suppression, LoMa matching, a correction-training 2D toy, a syndrome-mitigation QEC experiment, a binary discrete diffusion Sudoku toy, an auditable SAE text detector, a NanoDreamer MinAtar world-model toy, a looped-transformer addition toy, a MoRE reused-experts char-LM toy, a Platonic JEPA alignment toy, and a world2vec continuous-time latent dynamics toy.">
   <meta property="og:title" content="Tech Demos">
   <meta property="og:description" content="Small, honest kits and UIs for new AI models and runtimes, by Gyanateet Dutta (@Ryukijano).">
   <meta property="og:image" content="https://ryukijano.github.io/tech-demos/assets/decision-models-ui.png">
@@ -21,7 +21,7 @@
       <p class="subtitle">Small, honest kits and UIs for new AI models and runtimes, kept in one monorepo with one folder per demo.</p>
       <div class="hero-actions">
         <a class="btn primary" href="https://github.com/Ryukijano/tech-demos">View the repo on GitHub</a>
-        <a class="btn" href="#demos">Browse the 15 demos</a>
+        <a class="btn" href="#demos">Browse the 16 demos</a>
       </div>
       <p class="byline">By <a href="https://github.com/Ryukijano">Gyanateet Dutta</a> · <a href="https://github.com/Ryukijano">@Ryukijano</a></p>
     </div>
@@ -32,7 +32,37 @@
 
     <section class="grid">
 
-      <!-- 0. Platonic JEPA toy (CPU clear-experiment, clean-room) -->
+      <!-- 0. world2vec continuous-time latent dynamics toy (CPU clear-experiment, clean-room) -->
+      <article class="card">
+        <div class="media">
+          <video src="assets/world2vec-toy.mp4" poster="assets/world2vec-toy.png" muted controls playsinline preload="metadata" aria-label="Rendered pendulum rollouts and latent forecast error for world2vec vs discrete baseline"></video>
+        </div>
+        <div class="body">
+          <div class="badges">
+            <span class="badge green">CPU toy · clean-room</span>
+            <span class="badge red">Hypothesis: FAIL</span>
+            <span class="badge muted">PyTorch · Neural ODE · JEPA</span>
+          </div>
+          <h2>world2vec latent dynamics (toy)</h2>
+          <p>Clean-room toy of continuous-time latent dynamics matching from pixels + actions (no reward, no reconstruction) from Schmidt et al. <a href="https://arxiv.org/abs/2610.40637">arXiv:2610.40637</a> (found via <a href="https://x.com/shumpeiMaxwell/status/2116343144732377139">@shumpeiMaxwell</a>). Official <a href="https://github.com/dynamical-inference/world2vec">dynamical-inference/world2vec</a> code not released / not vendored. Tiny rendered pendulum vs discrete next-latent and recon baselines, seeds 0/1/2.</p>
+          <ul class="facts">
+            <li>FAIL: LRC@H=8 world2vec 0.351±0.157 vs discrete 0.403±0.267 (gap −0.052) — only seed 0 wins; probe R² 0.837 clears ≥0.50</li>
+            <li>~85k params; seed-0 long horizons favor continuous; noise / irregular-Δt soft-break</li>
+            <li>Does not reproduce MuJoCo control, DreamerV3/TD-MPC2/LeWM, or 71-attractor ID</li>
+          </ul>
+          <pre><code>cd apps/world2vec-toy
+uv venv .venv && source .venv/bin/activate
+uv pip install --index-url https://download.pytorch.org/whl/cpu torch
+uv pip install -r requirements.txt
+./run_all.sh</code></pre>
+          <div class="links">
+            <a href="https://github.com/Ryukijano/tech-demos/tree/main/apps/world2vec-toy">App folder</a>
+            <a href="https://github.com/Ryukijano/tech-demos/blob/main/apps/world2vec-toy/README.md">README</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- 1. Platonic JEPA toy (CPU clear-experiment, clean-room) -->
       <article class="card">
         <div class="media">
           <video src="assets/jepa-platonic-toy.mp4" poster="assets/jepa-platonic-toy.png" muted controls playsinline preload="metadata" aria-label="Procrustes-aligned JEPA embeddings across two synthetic modalities coloured by world class"></video>

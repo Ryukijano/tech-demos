@@ -206,7 +206,12 @@ class ContinuousDynamics(nn.Module):
         for h in hidden:
             layers += [nn.Linear(d, h), nn.Tanh()]
             d = h
-        layers.append(nn.Linear(d, latent_dim))
+        last = nn.Linear(d, latent_dim)
+        # Residual / Neural-ODE practice: start near ż≈0 so early Euler steps
+        # are near-identity and multi-step matching does not explode.
+        nn.init.zeros_(last.weight)
+        nn.init.zeros_(last.bias)
+        layers.append(last)
         self.net = nn.Sequential(*layers)
 
     def field(self, z: torch.Tensor, a: torch.Tensor) -> torch.Tensor:
@@ -215,8 +220,13 @@ class ContinuousDynamics(nn.Module):
         return self.net(torch.cat([z, a], dim=-1))
 
     def step(self, z: torch.Tensor, a: torch.Tensor, dt: float | None = None) -> torch.Tensor:
-        h = self.dt if dt is None else float(dt)
-        return z + h * self.field(z, a)
+        # f learns the per-training-step latent change (≈ Δt · velocity).
+        # Irregular evaluation scales that increment: α = dt / dt_train.
+        delta = self.field(z, a)
+        if dt is None:
+            return z + delta
+        scale = float(dt) / self.dt
+        return z + scale * delta
 
 
 class DiscreteDynamics(nn.Module):
@@ -236,6 +246,8 @@ class DiscreteDynamics(nn.Module):
         del dt
         if a.dim() == 1:
             a = a.unsqueeze(-1)
+        # Paper §3.1 discrete baseline: Φ(z,a)=MLP(z,a) predicts the next
+        # latent directly (no Euler / dt).
         return self.net(torch.cat([z, a], dim=-1))
 
 
@@ -452,20 +464,23 @@ def train_model(
         act = torch.stack([actions[bi, t + j] for j in range(k)], dim=1)
         zhat = model.rollout(z0, act)  # (B,K,D)
 
-        # targets: encoded futures (stop-grad for JEPA-ish stability)
+        # targets: encoded futures — joint training of (h, f) as in Eq. 6
         targets = []
         for j in range(1, k + 1):
             xj = _history_windows(frames[bi], t + j, history)
             if noise_std > 0:
                 xj = (xj + noise_std * torch.randn_like(xj)).clamp(0, 1)
-            with torch.no_grad():
-                targets.append(model.encoder(xj))
+            targets.append(model.encoder(xj))
         z_tgt = torch.stack(targets, dim=1)
 
-        pred_loss = F.mse_loss(zhat, z_tgt)
-        # anti-collapse on online encodings of x0 (and optionally mix)
+        # Paper-style joint matching (Eq. 6): both sides of ||h(X)-ẑ|| trainable
+        # (no stop-grad). Optional step weights: emphasize earlier horizons.
+        w = torch.linspace(1.0, 0.5, k, device=zhat.device).view(1, k, 1)
+        pred_loss = (w * (zhat - z_tgt) ** 2).mean()
+        # Anti-collapse on encodings (batch of start + mid-horizon targets)
+        z_reg = torch.cat([z0, z_tgt[:, -1].detach()], dim=0)
         reg = vicreg_reg(
-            z0,
+            z_reg,
             float(tcfg["std_coef"]),
             float(tcfg["cov_coef"]),
             float(tcfg["std_target"]),

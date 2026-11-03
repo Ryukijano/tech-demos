@@ -201,12 +201,12 @@ def main() -> None:
                 if upto >= 1:
                     ax.plot(hs[:upto], err_w[:upto], "-o", color="#1b6ca8", lw=2.5, ms=5, label="world2vec")
                     ax.plot(hs[:upto], err_d[:upto], "-s", color="#c47a2c", lw=2.5, ms=5, label="discrete")
+                    ax.legend(loc="upper left", prop={"weight": "bold"})
             ax.set_xlim(1, H_roll)
             ax.set_ylim(0, max(err_w.max(), err_d.max()) * 1.15 + 1e-6)
             ax.set_xlabel("horizon (steps)")
             ax.set_ylabel("latent rollout error")
             ax.set_title("Forecast error vs horizon")
-            ax.legend(loc="upper left", prop={"weight": "bold"})
             ax.grid(True, alpha=0.3)
             fig.suptitle("world2vec-toy · continuous-time latent dynamics", fontweight="bold")
             fig.tight_layout()

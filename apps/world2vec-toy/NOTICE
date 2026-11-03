@@ -1,0 +1,28 @@
+world2vec-toy demo — NOTICE
+
+This directory (apps/world2vec-toy/) is a CPU-only clear-experiment
+toy inspired by:
+
+  Schmidt, Gonzalez Laiz, Szuppinger, Schneider,
+  "world2vec: Mechanistic world models through latent dynamics learning",
+  Helmholtz Munich / Munich Center for Machine Learning (MCML),
+  arXiv:2610.40637 (October 2026)
+  https://arxiv.org/abs/2610.40637
+  https://arxiv.org/html/2610.40637v1
+  https://worldmodels.science/
+  https://huggingface.co/papers/2610.40637
+
+Found via a bookmarked X post by @shumpeiMaxwell (Shumpei Takezaki):
+  https://x.com/shumpeiMaxwell/status/2116343144732377139
+
+Paper verified on arXiv (abs + HTML) and the project page on 2026-11-03.
+Official repository (https://github.com/dynamical-inference/world2vec)
+exists but states code "will be released soon" — **not vendored**. This
+app is an **independent clean-room toy** of continuous-time latent
+dynamics matching from pixels + actions with no reward and no pixel
+reconstruction — NOT a reproduction of the paper's MuJoCo Pendulum /
+Reacher / CartPole tables, DreamerV3 / TD-MPC2 / LeWM comparisons, or
+71-attractor system-identification benchmark.
+
+No warranty. Research / demo use. Trained weights stay out of git (work/
+is git-ignored).

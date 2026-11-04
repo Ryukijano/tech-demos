@@ -1,0 +1,21 @@
+{
+ "status": "PARTIAL",
+ "mean_auroc_covis": 0.8240740740740741,
+ "std_auroc_covis": 0.05782405554072587,
+ "mean_auroc_fg_matches": 0.6435185185185185,
+ "std_auroc_fg_matches": 0.09453971229936176,
+ "mean_auroc_sift": 0.5925925925925926,
+ "std_auroc_sift": 0.11226255234242721,
+ "mean_margin_vs_matchcount": 0.18055555555555555,
+ "std_margin_vs_matchcount": 0.14632852434517693,
+ "clause_auroc": false,
+ "clause_margin": true,
+ "mean_uncached_s": 4.362318679277748,
+ "std_uncached_s": 0.0464914730792561,
+ "mean_match_s": 3.280190323194448,
+ "mean_inliers_pos": 39.111111111111114,
+ "mean_inliers_neg": 27.444444444444446,
+ "auroc_covis_min": 0.9,
+ "auroc_margin_vs_matchcount": 0.05,
+ "auroc_covis_partial_min": 0.8
+}

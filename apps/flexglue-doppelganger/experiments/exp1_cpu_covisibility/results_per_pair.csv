@@ -1,0 +1,37 @@
+seed,pair,scene,label,covisibility,n_matches,n_inliers,n_sift,n_sift_inliers,match_s,uncached_s,n_kpts0,n_kpts1
+0,sc00_pos,Alexander_Nevsky_Cathedral _Sofia,1,0.018988,60,23,23,8,3.4038,4.5320,768,768
+0,sc00_neg,Alexander_Nevsky_Cathedral _Sofia,0,0.003429,53,19,28,10,3.3540,4.3416,768,768
+0,sc01_pos,Alexander_Nevsky_Cathedral _Tallinn,1,0.957438,46,29,17,9,3.2987,4.3491,768,768
+0,sc01_neg,Alexander_Nevsky_Cathedral _Tallinn,0,0.004478,84,40,19,10,3.3132,4.4812,768,768
+0,sc02_pos,Arc_de_Triomphe_de_l%27%C3%89toile_by_angle,1,0.999161,152,70,23,10,3.2442,4.3393,768,768
+0,sc02_neg,Arc_de_Triomphe_de_l%27%C3%89toile_by_angle,0,0.072373,109,37,10,7,3.3182,4.3895,768,768
+0,sc03_pos,Berlin_Cathedral,1,0.067977,83,31,2,0,3.2623,4.3791,768,768
+0,sc03_neg,Berlin_Cathedral,0,0.897804,27,13,12,8,3.2158,4.2936,768,768
+0,sc04_pos,Brandenburg_Gate,1,0.999396,153,59,32,11,3.3042,4.3584,768,768
+0,sc04_neg,Brandenburg_Gate,0,0.071885,31,15,29,16,3.2213,4.2454,768,768
+0,sc06_pos,Deutscher_and_Franz%C3%B6sischer_Dom_(Berlin),1,0.999476,13,9,46,12,3.2522,4.3226,768,768
+0,sc06_neg,Deutscher_and_Franz%C3%B6sischer_Dom_(Berlin),0,0.047519,54,20,35,16,3.2751,4.3816,768,768
+1,sc00_pos,Alexander_Nevsky_Cathedral _Sofia,1,0.018988,69,36,28,10,3.2177,4.3459,768,768
+1,sc00_neg,Alexander_Nevsky_Cathedral _Sofia,0,0.003429,44,23,20,9,3.1946,4.1821,768,768
+1,sc01_pos,Alexander_Nevsky_Cathedral _Tallinn,1,0.957438,60,31,13,8,3.1979,4.2484,768,768
+1,sc01_neg,Alexander_Nevsky_Cathedral _Tallinn,0,0.004478,69,28,14,7,3.2079,4.3759,768,768
+1,sc02_pos,Arc_de_Triomphe_de_l%27%C3%89toile_by_angle,1,0.999161,142,57,26,8,3.2451,4.3402,768,768
+1,sc02_neg,Arc_de_Triomphe_de_l%27%C3%89toile_by_angle,0,0.072373,120,42,7,0,3.2557,4.3270,768,768
+1,sc03_pos,Berlin_Cathedral,1,0.067977,85,28,8,0,3.1954,4.3123,768,768
+1,sc03_neg,Berlin_Cathedral,0,0.897804,27,12,16,8,3.2255,4.3033,768,768
+1,sc05_pos,Church_of_the_Saviour_on_the_Blood,1,0.999039,149,73,31,17,3.2042,4.3257,768,768
+1,sc05_neg,Church_of_the_Saviour_on_the_Blood,0,0.039588,40,15,11,7,3.3215,4.3504,768,768
+1,sc07_pos,Exterior_of_Charlottenburg_Palace,1,0.718241,84,42,26,11,3.2128,4.3427,768,768
+1,sc07_neg,Exterior_of_Charlottenburg_Palace,0,0.089088,85,37,26,11,3.2696,4.3062,768,768
+2,sc00_pos,Alexander_Nevsky_Cathedral _Sofia,1,0.018988,70,29,26,11,3.2607,4.3889,768,768
+2,sc00_neg,Alexander_Nevsky_Cathedral _Sofia,0,0.003429,54,30,32,9,3.2777,4.2652,768,768
+2,sc01_pos,Alexander_Nevsky_Cathedral _Tallinn,1,0.957438,51,25,19,8,3.3018,4.3522,768,768
+2,sc01_neg,Alexander_Nevsky_Cathedral _Tallinn,0,0.004478,71,28,19,11,3.3370,4.5050,768,768
+2,sc02_pos,Arc_de_Triomphe_de_l%27%C3%89toile_by_angle,1,0.999161,133,53,17,9,3.2548,4.3500,768,768
+2,sc02_neg,Arc_de_Triomphe_de_l%27%C3%89toile_by_angle,0,0.072373,116,43,16,8,3.2567,4.3280,768,768
+2,sc05_pos,Church_of_the_Saviour_on_the_Blood,1,0.999039,147,72,20,13,3.2830,4.4045,768,768
+2,sc05_neg,Church_of_the_Saviour_on_the_Blood,0,0.039588,43,23,10,7,3.2972,4.3260,768,768
+2,sc06_pos,Deutscher_and_Franz%C3%B6sischer_Dom_(Berlin),1,0.999476,12,9,46,12,3.3245,4.3948,768,768
+2,sc06_neg,Deutscher_and_Franz%C3%B6sischer_Dom_(Berlin),0,0.047519,51,24,26,9,3.4294,4.5359,768,768
+2,sc07_pos,Exterior_of_Charlottenburg_Palace,1,0.718241,87,28,14,10,3.4697,4.5997,768,768
+2,sc07_neg,Exterior_of_Charlottenburg_Palace,0,0.089088,95,45,25,14,3.3835,4.4201,768,768

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Tech Demos · Gyanateet Dutta (@Ryukijano)</title>
-  <meta name="description" content="A monorepo of small, honest kits and UIs for new AI models and runtimes: llama.cpp Decision Models, JEPA-Anything, PixelUMM, EmbeddingGemma 2, active borylation, chest X-ray bone suppression, LoMa matching, a correction-training 2D toy, a syndrome-mitigation QEC experiment, a binary discrete diffusion Sudoku toy, an auditable SAE text detector, a NanoDreamer MinAtar world-model toy, a looped-transformer addition toy, a MoRE reused-experts char-LM toy, a Platonic JEPA alignment toy, and a world2vec continuous-time latent dynamics toy.">
+  <meta name="description" content="A monorepo of small, honest kits and UIs for new AI models and runtimes: llama.cpp Decision Models, JEPA-Anything, PixelUMM, EmbeddingGemma 2, active borylation, chest X-ray bone suppression, LoMa matching, a correction-training 2D toy, a syndrome-mitigation QEC experiment, a binary discrete diffusion Sudoku toy, an auditable SAE text detector, a NanoDreamer MinAtar world-model toy, a looped-transformer addition toy, a MoRE reused-experts char-LM toy, a Platonic JEPA alignment toy, a world2vec continuous-time latent dynamics toy, and a FlexGlue covisibility-vs-doppelganger CPU experiment.">
   <meta property="og:title" content="Tech Demos">
   <meta property="og:description" content="Small, honest kits and UIs for new AI models and runtimes, by Gyanateet Dutta (@Ryukijano).">
   <meta property="og:image" content="https://ryukijano.github.io/tech-demos/assets/decision-models-ui.png">
@@ -21,7 +21,7 @@
       <p class="subtitle">Small, honest kits and UIs for new AI models and runtimes, kept in one monorepo with one folder per demo.</p>
       <div class="hero-actions">
         <a class="btn primary" href="https://github.com/Ryukijano/tech-demos">View the repo on GitHub</a>
-        <a class="btn" href="#demos">Browse the 16 demos</a>
+        <a class="btn" href="#demos">Browse the 17 demos</a>
       </div>
       <p class="byline">By <a href="https://github.com/Ryukijano">Gyanateet Dutta</a> · <a href="https://github.com/Ryukijano">@Ryukijano</a></p>
     </div>
@@ -32,7 +32,36 @@
 
     <section class="grid">
 
-      <!-- 0. world2vec continuous-time latent dynamics toy (CPU clear-experiment, clean-room) -->
+      <!-- 0. FlexGlue covisibility vs doppelgangers (CPU ONNX clear-experiment) -->
+      <article class="card">
+        <div class="media">
+          <video src="assets/flexglue-doppelganger.mp4" poster="assets/flexglue-doppelganger.png" muted controls playsinline preload="metadata" aria-label="FlexGlue match lines on a covisible pair and a doppelganger pair, then a rotation sweep"></video>
+        </div>
+        <div class="body">
+          <div class="badges">
+            <span class="badge green">CPU ONNX · released weights</span>
+            <span class="badge amber">Hypothesis: PARTIAL</span>
+            <span class="badge muted">ONNX Runtime · SIFT · AUROC</span>
+          </div>
+          <h2>FlexGlue doppelganger rejection</h2>
+          <p>CPU run of <a href="https://github.com/cvg/FlexGlue">cvg/FlexGlue</a> (<a href="https://arxiv.org/abs/2610.32976">arXiv:2610.32976</a>, found via <a href="https://x.com/PhilippCSE/status/2117655733911044147">@PhilippCSE</a>). The covisibility head is scored on a 12-pair sample of the Doppelgangers test set, against a FlexGlue match-count baseline and a SIFT ratio baseline. Seeds 0/1/2. The gated Hugging Face DINOv3 checkpoint is not downloaded.</p>
+          <ul class="facts">
+            <li>PARTIAL: covisibility AUROC 0.824±0.058 misses the 0.90 bar (partial floor 0.80); margin vs match-count 0.181±0.146 clears 0.05</li>
+            <li>SIFT AUROC 0.593±0.112. Matcher ~3.3 s/pair, uncached ~4.4 s, RSS ~2.1 GB. Blur σ=8 and 135° move the score; input resolution does not change CPU time</li>
+            <li>Misses on this sample: Sofia positive 0.019, Berlin positive 0.068, Berlin negative 0.898. Not Table 3</li>
+          </ul>
+          <pre><code>cd apps/flexglue-doppelganger
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+./run_all.sh</code></pre>
+          <div class="links">
+            <a href="https://github.com/Ryukijano/tech-demos/tree/main/apps/flexglue-doppelganger">App folder</a>
+            <a href="https://github.com/Ryukijano/tech-demos/blob/main/apps/flexglue-doppelganger/README.md">README</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- 1. world2vec continuous-time latent dynamics toy (CPU clear-experiment, clean-room) -->
       <article class="card">
         <div class="media">
           <video src="assets/world2vec-toy.mp4" poster="assets/world2vec-toy.png" muted controls playsinline preload="metadata" aria-label="Rendered pendulum rollouts and latent forecast error for world2vec vs discrete baseline"></video>

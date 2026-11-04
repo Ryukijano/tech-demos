@@ -1,0 +1,46 @@
+flexglue-doppelganger demo — NOTICE
+
+This directory (apps/flexglue-doppelganger/) is a thin CPU clear-experiment
+around the public ONNX export of FlexGlue
+(https://github.com/cvg/FlexGlue, MIT — see LICENSE-UPSTREAM).
+
+Demo scripts, the experiment harness, and this documentation are MIT
+(see LICENSE). They are not a copy of the FlexGlue training code. The ONNX
+call sequence follows upstream onnx/match_pair.py (MIT): SIFT keypoints,
+a 512×512 descriptor, then the sparse matcher, which returns matches and a
+pair covisibility score.
+
+Upstream (attribution):
+  Repo:    https://github.com/cvg/FlexGlue
+  Paper:   Lindenberger, Sarlin, Miksik, Pollefeys,
+           "FlexGlue: Sparse-to-Dense Feature Matching and Visual Disambiguation",
+           arXiv:2610.32976 (2026).
+  Weights: GitHub release v0.1 (open download, no Hugging Face login)
+           flexglue_descriptor.onnx
+           flexglue_matcher.onnx
+           https://github.com/cvg/FlexGlue/releases/tag/v0.1
+  Not used: flexglue.pth and facebook/dinov3-convnext-base-pretrain-lvd1689m.
+           The Hugging Face DINOv3 backbone is gated. This demo does not
+           request access and does not route around that gate.
+
+The descriptor ONNX file contains the DINOv3 ConvNeXt-B backbone
+(extractor weights). Upstream states that those weights are under the
+DINOv3 License, which restricts redistribution and use. The license text
+distributed with the FlexGlue release is copied here as DINOv3_LICENSE.md.
+Matcher weights other than that backbone are MIT, per the upstream README.
+Weights are downloaded at run time into work/ and are not committed.
+
+Evaluation images are a small sample of the Doppelgangers test set
+(Cai et al., ICCV 2023; dataset page doppelgangers.cs.cornell.edu;
+code repo RuojinCai/doppelgangers, MIT). Images are Wikimedia Commons
+files. This demo keeps only CC0 / public-domain / CC BY (no NC, no ND,
+no SA) so match visualisations are not forced into share-alike, and it
+records each file's Commons URL, author, and license in
+experiments/exp1_cpu_covisibility/provenance.md. Images are downloaded
+at run time and are not committed.
+
+The upstream demo pair assets/berlin1.jpg + assets/berlin2.jpg (FlexGlue
+repo, MIT tree) is an optional qualitative anchor and is not part of the
+AUROC.
+
+No warranty. Research / demo use.

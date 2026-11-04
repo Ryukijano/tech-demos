@@ -140,7 +140,7 @@ for level in sorted(by_angle, key=lambda s: float(s)):
         if tile.shape[1] < wmax:
             tile = np.hstack([tile, np.zeros((tile.shape[0], wmax - tile.shape[1], 3), np.uint8)])
         padded.append(tile)
-    hold(np.vstack(padded), 4)
+    hold(np.vstack(padded), 8)
 
 mp4_path = os.path.join(ART, "flexglue-doppelganger.mp4")
 if frame_i == 0:

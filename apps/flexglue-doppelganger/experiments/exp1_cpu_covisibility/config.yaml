@@ -48,7 +48,8 @@ dataset:
   code_license: MIT
   pairs_metadata_url: https://doppelgangers.cs.cornell.edu/dataset/pairs_metadata.tar.gz
   attributions_url: https://doppelgangers.cs.cornell.edu/dataset/attributions.json
-  images: "Wikimedia Commons via Special:FilePath, filenames from test_pairs.npy"
+  test_set_url: https://doppelgangers.cs.cornell.edu/dataset/test_set.tar.gz
+  images: "Official Doppelgangers test_set.tar.gz. Licenses from attributions.json (Wikimedia)."
   image_license_allow: ["open", "by"]   # CC0 / public domain / CC BY; no NC, no ND, no SA
   # Selection rule, applied in file order, before any matcher call:
   # scenes sorted alphabetically; within a scene, the first positive pair and
@@ -61,8 +62,9 @@ dataset:
   eval_scenes_per_seed: 6          # seed draws this many of the 8 scenes, without replacement
   ingest_long_side_max: 1600       # CPU memory cap, fixed before the run
   anchor_berlin:                   # qualitative only; excluded from AUROC
-    - {id: berlin1, url: "https://raw.githubusercontent.com/cvg/FlexGlue/main/assets/berlin1.jpg"}
-    - {id: berlin2, url: "https://raw.githubusercontent.com/cvg/FlexGlue/main/assets/berlin2.jpg"}
+    images:
+      - {id: berlin1, url: "https://raw.githubusercontent.com/cvg/FlexGlue/main/assets/berlin1.jpg"}
+      - {id: berlin2, url: "https://raw.githubusercontent.com/cvg/FlexGlue/main/assets/berlin2.jpg"}
     label: 1
     note: "Upstream README demo pair. Treated as covisible. Not in the metric."
 seeds: [0, 1, 2]

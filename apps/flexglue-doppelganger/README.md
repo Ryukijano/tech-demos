@@ -1,39 +1,79 @@
 # flexglue-doppelganger
 
-CPU-only clear experiment for **FlexGlue** ([cvg/FlexGlue](https://github.com/cvg/FlexGlue)): sparse-to-dense matching with a pair covisibility head that is meant to reject doppelgangers (look-alike, non-overlapping pairs). Paper: Lindenberger, Sarlin, Miksik, and Pollefeys, [arXiv:2610.32976](https://arxiv.org/abs/2610.32976). Found via a bookmarked X post by [@PhilippCSE](https://x.com/PhilippCSE/status/2117655733911044147). Claims below were checked against the paper and the repository, not against the post.
+CPU-only clear experiment for **FlexGlue** ([cvg/FlexGlue](https://github.com/cvg/FlexGlue)): sparse-to-dense matching with a pair covisibility head that is meant to reject doppelgangers (look-alike, non-overlapping pairs). Paper: Lindenberger, Sarlin, Miksik, and Pollefeys, [arXiv:2610.32976](https://arxiv.org/abs/2610.32976). Found via a bookmarked X post by [@PhilippCSE](https://x.com/PhilippCSE/status/2117655733911044147). The numbers below were measured from the paper and the official ONNX release, not copied from the post.
 
-> Upstream inference code is **MIT** (`LICENSE-UPSTREAM`). The ONNX descriptor redistributes a DINOv3 ConvNeXt-B backbone under the **DINOv3 License** (`DINOv3_LICENSE.md`). That backbone is gated on Hugging Face; this demo does **not** download `facebook/dinov3-convnext-base-pretrain-lvd1689m` and does not use a token. It uses the public FlexGlue v0.1 ONNX files instead. Weights are not committed.
+![matches](artifacts/flexglue-doppelganger.png)
 
-The measured table, plot, and PASS/PARTIAL/FAIL line are written by `./run_all.sh` into `experiments/exp1_cpu_covisibility/`. This README is updated with those numbers after the official run.
+*Seed-0 protocol pair from the Doppelgangers test set (Alexander Nevsky Cathedral, Sofia). Top: labelled covisible, covisibility 0.019, 60 FlexGlue matches. Bottom: labelled doppelganger, covisibility 0.003, 53 matches. The head rejects both. Video: [`artifacts/flexglue-doppelganger.mp4`](artifacts/flexglue-doppelganger.mp4) holds those two pairs, then rotates image B through 0°, 45°, 90°, 135°, and 180°.*
 
-## What the paper actually reports
+> Upstream inference code is **MIT** (`LICENSE-UPSTREAM`). The ONNX descriptor redistributes a DINOv3 ConvNeXt-B backbone under the **DINOv3 License** (`DINOv3_LICENSE.md`). That backbone is gated on Hugging Face; this demo does **not** download `facebook/dinov3-convnext-base-pretrain-lvd1689m` and does not use a token. It uses the public FlexGlue v0.1 ONNX files. Weights and images are not committed.
 
-Table 3 (detection of doppelgangers), FlexGlue AUROC / AP:
+## Status (honest): **PARTIAL**
 
-| Training labels | Doppelgangers AUROC | ViSym-F AUROC | LaMAR AUROC | GPU time |
+| Check | Threshold (fixed before the matcher run) | Result |
+|---|---|---|
+| Mean AUROC of `covisibility_score` over seeds 0/1/2 | ≥ 0.90 | **not met** (0.8241 ± 0.0578) |
+| Mean margin vs FlexGlue match-count AUROC | ≥ 0.05 | **met** (0.1806 ± 0.1463) |
+| Partial floor | ≥ 0.80 and exactly one of the two checks | **met** → PARTIAL |
+
+SIFT Lowe-ratio AUROC is report-only: **0.5926 ± 0.1123**. It does not enter the status.
+
+## What the paper reports (Table 3)
+
+FlexGlue AUROC on the full benchmarks, and the paper's GPU matching time:
+
+| Training labels | Doppelgangers | ViSym-F | LaMAR | GPU time |
 |---|---|---|---|---|
 | matching only | 0.970 | 0.953 | 0.885 | 28.7 ms |
 | DG + matching | 0.984 | 0.959 | 0.888 | 28.7 ms |
 
-Inference in the paper uses pair threshold \(t = 0.9\). The README example uses `min_covisibility=0.8`. The covisibility score is the mean of per-token votes. Early exit stops on confidently non-covisible pairs; this demo runs the full fp32 matcher so the score is the final one, and it leaves `min_covisibility` at 0 so match counts are not gated by the head.
-
-The 28.7 ms figure is the paper's GPU matching time, not a CPU number.
+The pass bar **0.90** sits below both Doppelgangers figures and above LaMAR (0.888 / 0.885). One rank swap in a 6×6 set moves AUROC by 1/36 ≈ 0.028, so 0.90 allows a few mistakes that 0.984 does not. The partial floor **0.80** sits just under LaMAR. Paper inference uses \(t = 0.9\); the README example uses `min_covisibility=0.8`. This run leaves `min_covisibility` at 0 so the match-count baseline is not gated by the head, and it uses the full fp32 matcher (no early stop) so the score is the final-layer score. The 28.7 ms figure is GPU time, not ours.
 
 ## Hypothesis
 
-FlexGlue's covisibility head separates true covisible pairs from doppelganger pairs on CPU. On a tiny balanced Doppelgangers sample, AUROC of `covisibility_score` is at least **0.90**, and that AUROC beats a plain FlexGlue match-count score by at least **0.05**. SIFT Lowe-ratio match count on the same keypoints is a second, report-only baseline.
+FlexGlue's covisibility head separates true covisible pairs from doppelganger pairs on CPU, with AUROC at least 0.90 on a tiny balanced Doppelgangers sample, and that AUROC beats a plain match count from the same model by at least 0.05.
 
-The 0.90 bar is below both Table 3 Doppelgangers numbers (0.984 and 0.970) and above LaMAR (0.888 / 0.885). The gap is the tiny-set discount: 6 scenes out of 8 (12 pairs), SIFT keypoints instead of the paper's detector, and CPU ONNX numerics. One rank swap in a 6×6 set moves AUROC by about 0.028. The partial floor is **0.80**, just under LaMAR.
+## Experiment (`experiments/exp1_cpu_covisibility/`)
 
-PASS needs both the 0.90 bar and the 0.05 margin. PARTIAL needs AUROC ≥ 0.80 and exactly one of those two. FAIL otherwise. Thresholds live in `experiments/exp1_cpu_covisibility/config.yaml` and were fixed before any matcher call.
+- **Config:** `config.yaml` thresholds were committed before any matcher call. A later edit switched image loading from live Wikimedia (HTTP 429) to the official `test_set.tar.gz` and fixed the anchor YAML. The three AUROC thresholds were not changed. There was no score-based pair picking.
+- **Data:** 8 scenes, alphabetical, first CC0 / public-domain / CC BY positive and first such negative that exist in the tarball (no NC, no ND, no SA). Each seed draws 6 of the 8 scenes (12 pairs). Provenance: `provenance.md`.
+- **Seeds:** 0, 1, 2. The seed draws the scenes and subsamples 768 SIFT points from the top 2048. The covisibility score did not change across seeds for a given pair (it is a token vote, not a function of the keypoints). Match counts did.
+- **Baselines:** FlexGlue match count with the head gate off, and SIFT Lowe ratio 0.75 on the same keypoints. Inliers are USAC_MAGSAC at 1 px, report-only.
+- **Machine:** 4 vCPU, ONNX Runtime CPU, descriptor fixed at 512×512. Peak RSS about 2.1 GB.
 
-## Data
+| seed | AUROC covis | AUROC FG matches | AUROC SIFT | margin | covis pos | covis neg | inliers pos | inliers neg | uncached s |
+|---|---|---|---|---|---|---|---|---|---|
+| 0 | 0.8056 | 0.6111 | 0.5278 | 0.1944 | 0.674 | 0.183 | 36.8 | 24.0 | 4.37 |
+| 1 | 0.7778 | 0.7500 | 0.7222 | 0.0278 | 0.627 | 0.184 | 44.5 | 26.2 | 4.31 |
+| 2 | 0.8889 | 0.5694 | 0.5278 | 0.3194 | 0.782 | 0.043 | 36.0 | 32.2 | 4.41 |
 
-Doppelgangers test pairs (Cai et al., ICCV 2023). Code repo is MIT. Images are Wikimedia Commons. The harness keeps only CC0, public domain, and CC BY (no NC, no ND, no SA), in alphabetical scene order, first positive and first negative that download, 8 scenes, then each seed draws 6 of those 8. Provenance is written to `provenance.md`. Images and ONNX files go to `work/` and are not committed.
+**Mean ± std:** covisibility AUROC **0.8241 ± 0.0578**, FlexGlue match count **0.6435 ± 0.0945**, SIFT **0.5926 ± 0.1123**, margin **0.1806 ± 0.1463**.
 
-The upstream `berlin1` / `berlin2` pair is a qualitative anchor only. It is not in the AUROC.
+Uncached time per pair **4.36 ± 0.05 s** (describe both images + SIFT + match). Matcher only **3.28 ± 0.05 s**. Mean MAGSAC inliers **39.1** on positives vs **27.4** on negatives: doppelgangers still collect geometric inliers, which is why a match count is a weak rejector here.
 
-Seeds 0, 1, and 2 control which scenes are drawn and which SIFT keypoints are kept (768 drawn from the top 2048). The descriptor is the exported 512×512 ONNX graph.
+Seed 1's own margin is 0.028, under 0.05. The pre-registered rule uses the mean across seeds, which clears 0.05. That is why the margin clause passes and the status is PARTIAL rather than FAIL.
+
+The head misses three pairs in the seed-0 pool (scores identical on the other seeds):
+
+- `sc00_pos` (Sofia, positive): covisibility **0.019** with 60 matches
+- `sc03_pos` (Berlin Cathedral, positive): **0.068** with 83 matches
+- `sc03_neg` (Berlin Cathedral, negative): **0.898** with 27 matches
+
+Several other positives sit at 0.96–1.00 and their negatives sit below 0.1. The upstream Berlin demo pair (`assets/berlin1.jpg`, `berlin2.jpg`), which is not in the AUROC, scored **0.993**.
+
+![plot](experiments/exp1_cpu_covisibility/plot.png)
+
+## Breakpoints
+
+Seed 0, first positive and first negative in that seed's scene sample (`sc00`, Sofia). Positive-score tags use the paper threshold 0.9 (ok) and 0.5 (degraded). This positive is already at 0.019 before any stress, so every clean tag is "broken". The sweep still shows where the score moves.
+
+| Stress | What happened |
+|---|---|
+| Rotation of image B, 0/45/90/135/180° | Positive score 0.019, 0.101, 0.070, **0.468**, 0.247. Never reaches 0.9. 135° is the jump. Negative stays ≤ 0.089. |
+| Downscale of B to 0.125 | Positive matches fall to 4 and the score rises to 0.461. Milder scales (0.5, 0.25) leave the score near 0.02. |
+| Blur σ=8 on B | Positive matches fall to 3 and the score rises to **0.769** (degraded, not ok). σ=2 does not move it. |
+| 70% mix toward the mean colour | Positive score 0.105, matches 17. Negative stays at 0.004. |
+| Input long side 512 / 1024 / 1600 | Matcher time stays **3.4–3.6 s**. RSS stays **~2.0–2.1 GB**. The exported descriptor always squashes to 512×512, so extra pixels do not buy a bigger ConvNeXt grid. The score is not invariant: 0.229 at long side 512 vs 0.019 at 1600. |
 
 ## Run (CPU)
 
@@ -42,16 +82,17 @@ cd apps/flexglue-doppelganger
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 ./run_all.sh
-# python3 src/run_experiment.py --smoke   # one pair, disclosed, does not move the AUROC bar
 ```
 
-ONNX downloads are about 550 MB. The image sample is a few dozen Commons files. No GPU.
+Downloads are the FlexGlue v0.1 ONNX models (~550 MB) and the Doppelgangers test tarball (~2 GB) into `work/` (git-ignored). No GPU.
 
-Colab (CPU runtime, not a paid GPU): [`notebooks/flexglue_doppelganger_colab.ipynb`](notebooks/flexglue_doppelganger_colab.ipynb).
+Colab, CPU runtime: [`notebooks/flexglue_doppelganger_colab.ipynb`](notebooks/flexglue_doppelganger_colab.ipynb). A GPU is not required.
 
 ## Caveats
 
-- This is a 12-pair sample, not the full Doppelgangers / ViSym / LaMAR tables.
-- The exported descriptor always squashes to 512×512, so a larger input does not grow the ConvNeXt grid.
-- SIFT is the detector in the upstream ONNX example. The paper's tables use other keypoints.
-- DINOv3 weights inside the ONNX file are under the DINOv3 License, not MIT.
+- Twelve pairs are not Table 3. The 0.824 AUROC is not a claim about the 0.984 Doppelgangers number or the 0.888 LaMAR number.
+- OpenCV SIFT is the detector in the upstream ONNX example. The paper's tables use other keypoints.
+- The Berlin Cathedral negative in this sample is scored 0.898, just under the paper's reject threshold of 0.9, while its positive is scored 0.068. A threshold of 0.9 would reject the true pair and keep the doppelganger.
+- Positives still only average 39 MAGSAC inliers against 27 for negatives. Geometry alone does not separate this sample.
+- DINOv3 weights inside the descriptor ONNX are under the DINOv3 License, not MIT. The gated Hugging Face file was not used.
+- Input resolution does not change CPU time on this export. That is a property of the ONNX graph, not evidence that the paper's higher-resolution setting is free.

@@ -11,7 +11,6 @@ import json
 import os
 import tarfile
 import time
-import urllib.parse
 import urllib.request
 import zlib
 
@@ -142,40 +141,80 @@ def _save_png(rgb: np.ndarray, path: str) -> None:
         handle.write(buf.tobytes())
 
 
-def commons_url(filename: str) -> str:
-    title = filename.replace(" ", "_")
-    return "https://commons.wikimedia.org/wiki/Special:FilePath/" + urllib.parse.quote(title, safe="()'!$+,;@")
-
-
-def fetch_commons_image(filename: str, dest: str, long_side: int) -> tuple[str, tuple[int, int]] | None:
-    if os.path.isfile(dest):
-        rgb = cv2.cvtColor(cv2.imread(dest, cv2.IMREAD_COLOR), cv2.COLOR_BGR2RGB)
-        return dest, (int(rgb.shape[1]), int(rgb.shape[0]))
-    try:
-        data = http_bytes(commons_url(filename), timeout=90)
-    except Exception as exc:  # noqa: BLE001 — network failures skip the pair
-        print(f"  skip download {filename}: {exc}", flush=True)
-        return None
-    rgb = _decode_image(data)
-    if rgb is None:
-        print(f"  skip decode {filename}", flush=True)
-        return None
-    original = (int(rgb.shape[1]), int(rgb.shape[0]))
-    rgb = _cap_long_side(rgb, long_side)
-    _save_png(rgb, dest)
-    return dest, original
-
-
 def _safe(name: str) -> str:
     cleaned = "".join(ch if ch.isalnum() or ch in "._-" else "_" for ch in name)
     return cleaned[:120] or "img"
 
 
+def _test_tar_index(cfg: dict) -> dict[str, str]:
+    """Map a Doppelgangers relative path to a member of test_set.tar.gz."""
+    archive = download(
+        cfg["dataset"]["test_set_url"],
+        os.path.join(WORK, "dataset", "test_set.tar.gz"),
+    )
+    cache = os.path.join(WORK, "dataset", "test_index.json")
+    if os.path.isfile(cache) and os.path.getmtime(cache) >= os.path.getmtime(archive):
+        with open(cache, encoding="utf-8") as handle:
+            index = json.load(handle)
+        print(f"test_set index cached: {len(index)} files", flush=True)
+        return index
+    index = {}
+    with tarfile.open(archive, "r:gz") as tar:
+        for member in tar:
+            if not member.isfile() or "/test_set/" not in member.name:
+                continue
+            rel = member.name.split("/test_set/", 1)[1]
+            index[rel] = member.name
+    with open(cache, "w", encoding="utf-8") as handle:
+        json.dump(index, handle)
+    print(f"test_set index: {len(index)} files", flush=True)
+    return index
+
+
+def _extract_selected(cfg: dict, jobs: list[tuple[str, str, int]]) -> dict[str, tuple[int, int]]:
+    """Extract member -> dest, capped to long side. Returns original (w, h) by dest."""
+    archive = os.path.join(WORK, "dataset", "test_set.tar.gz")
+    pending: dict[str, list[tuple[str, int]]] = {}
+    for member, dest, limit in jobs:
+        if os.path.isfile(dest):
+            continue
+        pending.setdefault(member, []).append((dest, limit))
+    originals: dict[str, tuple[int, int]] = {}
+    if pending:
+        with tarfile.open(archive, "r:gz") as tar:
+            for member in tar:
+                dests = pending.pop(member.name, None)
+                if not dests:
+                    continue
+                extracted = tar.extractfile(member)
+                if extracted is None:
+                    continue
+                rgb = _decode_image(extracted.read())
+                if rgb is None:
+                    print(f"  skip decode {member.name}", flush=True)
+                    continue
+                wh = (int(rgb.shape[1]), int(rgb.shape[0]))
+                capped = _cap_long_side(rgb, dests[0][1])
+                for dest, _limit in dests:
+                    _save_png(capped, dest)
+                    originals[dest] = wh
+                if not pending:
+                    break
+    for _member, dest, _limit in jobs:
+        if dest in originals or not os.path.isfile(dest):
+            continue
+        bgr = cv2.imread(dest, cv2.IMREAD_COLOR)
+        if bgr is not None:
+            originals[dest] = (int(bgr.shape[1]), int(bgr.shape[0]))
+    return originals
+
+
 def materialize_pool(cfg: dict) -> tuple[list[dict], list[dict]]:
-    """First-fit scene sample. Download failure is the only skip. No matcher calls."""
+    """First-fit scene sample from the official test tarball. No matcher calls."""
     ensure_dirs()
     pairs = _load_pairs(cfg)
     attr = _load_attr(cfg)
+    index = _test_tar_index(cfg)
     allow = set(cfg["dataset"]["image_license_allow"])
     n_scenes = int(cfg["dataset"]["n_scenes"])
     max_attempts = int(cfg["dataset"]["max_attempts_per_label"])
@@ -185,7 +224,7 @@ def materialize_pool(cfg: dict) -> tuple[list[dict], list[dict]]:
     log: list[dict] = []
     scene_ord = 0
     for scene in scenes:
-        if len(pool) >= n_scenes:
+        if len({item["scene"] for item in pool}) >= n_scenes:
             break
         found: dict[int, dict] = {}
         attempts = {0: 0, 1: 0}
@@ -195,40 +234,32 @@ def materialize_pool(cfg: dict) -> tuple[list[dict], list[dict]]:
             label = int(row[2])
             if label in found or attempts[label] >= max_attempts:
                 continue
-            names = [str(row[0]).split("/")[-1], str(row[1]).split("/")[-1]]
+            rels = [str(row[0]), str(row[1])]
+            names = [rel.split("/")[-1] for rel in rels]
             metas = []
             eligible = True
-            for name in names:
+            members = []
+            for rel, name in zip(rels, names):
                 meta = attr.get(name)
-                if meta is None or license_bucket(str(meta.get("license", ""))) not in allow:
+                member = index.get(rel)
+                if meta is None or member is None or license_bucket(str(meta.get("license", ""))) not in allow:
                     eligible = False
                     break
                 metas.append(meta)
+                members.append(member)
             if not eligible:
                 continue
             attempts[label] += 1
             slot = f"sc{scene_ord:02d}_{'pos' if label == 1 else 'neg'}"
-            paths = []
-            originals = []
-            ok = True
-            for side, name in enumerate(names):
-                dest = os.path.join(WORK, "images", f"{slot}_{side}_{_safe(name)}.png")
-                got = fetch_commons_image(name, dest, long_side)
-                if got is None:
-                    ok = False
-                    break
-                paths.append(got[0])
-                originals.append({"wh_original": list(got[1]), "file": name})
-            if not ok:
-                log.append({"scene": scene, "label": label, "files": names, "reason": "download_or_decode"})
-                continue
+            dests = [os.path.join(WORK, "images", f"{slot}_{side}_{_safe(name)}.png") for side, name in enumerate(names)]
             found[label] = {
                 "id": slot,
                 "scene": scene,
                 "label": label,
                 "files": names,
-                "paths": paths,
-                "originals": originals,
+                "rels": rels,
+                "members": members,
+                "paths": dests,
                 "n_sift_dataset": int(row[3]),
                 "licenses": [str(m.get("license", "")) for m in metas],
                 "authors": [str(m.get("user", "")) for m in metas],
@@ -244,8 +275,21 @@ def materialize_pool(cfg: dict) -> tuple[list[dict], list[dict]]:
             scene_ord += 1
         else:
             log.append({"scene": scene, "reason": "scene_incomplete", "attempts": attempts})
-    if len(pool) < 2 * n_scenes:
-        raise RuntimeError(f"only {len(pool) // 2} complete scenes; need {n_scenes}")
+    if len({item["scene"] for item in pool}) < n_scenes:
+        raise RuntimeError(f"only {len({item['scene'] for item in pool})} complete scenes; need {n_scenes}")
+    jobs = []
+    for item in pool:
+        for member, dest in zip(item["members"], item["paths"]):
+            jobs.append((member, dest, long_side))
+    originals = _extract_selected(cfg, jobs)
+    for item in pool:
+        item["originals"] = []
+        for dest, name in zip(item["paths"], item["files"]):
+            wh = originals.get(dest)
+            if wh is None:
+                raise RuntimeError(f"missing extracted image for {name}")
+            item["originals"].append({"wh_original": list(wh), "file": name})
+        item.pop("members", None)
     return pool, log
 
 
@@ -255,7 +299,7 @@ def fetch_anchor(cfg: dict) -> dict | None:
         return None
     long_side = int(cfg["dataset"]["ingest_long_side_max"])
     paths = []
-    for item in spec:
+    for item in spec["images"]:
         dest = os.path.join(WORK, "images", f"anchor_{item['id']}.png")
         if not os.path.isfile(dest):
             decoded = _decode_image(http_bytes(item["url"]))
@@ -267,11 +311,11 @@ def fetch_anchor(cfg: dict) -> dict | None:
         "id": "anchor_berlin",
         "scene": "flexglue_readme",
         "label": int(spec["label"]),
-        "files": [item["id"] + ".jpg" for item in spec],
+        "files": [item["id"] + ".jpg" for item in spec["images"]],
         "paths": paths,
         "licenses": ["MIT-repo-asset", "MIT-repo-asset"],
         "authors": ["cvg/FlexGlue", "cvg/FlexGlue"],
-        "urls": [item["url"] for item in spec],
+        "urls": [item["url"] for item in spec["images"]],
         "note": spec.get("note", ""),
         "in_metric": False,
     }

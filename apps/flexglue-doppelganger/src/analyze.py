@@ -176,6 +176,17 @@ for row in seed_rows:
         f"{row['mean_inliers_pos']:.1f} | {row['mean_inliers_neg']:.1f} | {row['mean_uncached_s']:.2f} |"
     )
 md.append("")
+md.append("Pairs where a positive scores below 0.2 or a negative scores above 0.5 (seed 0 shown; the score does not depend on the keypoint subsample):")
+md.append("")
+seen = set()
+for pair in raw["seeds"]["0"]["pairs"]:
+    miss = (int(pair["label"]) == 1 and pair["covisibility"] < 0.2) or (int(pair["label"]) == 0 and pair["covisibility"] > 0.5)
+    if not miss or pair["id"] in seen:
+        continue
+    seen.add(pair["id"])
+    kind = "positive" if int(pair["label"]) == 1 else "negative"
+    md.append(f"- `{pair['id']}` ({kind}, {pair['scene']}): covisibility {pair['covisibility']:.3f}, FlexGlue matches {pair['n_matches']}, SIFT {pair['n_sift']}")
+md.append("")
 md.append("![plot](plot.png)")
 md.append("")
 with open(os.path.join(EXP, "results.md"), "w", encoding="utf-8") as handle:
@@ -295,7 +306,13 @@ axes[0].set_xticklabels(methods)
 axes[0].set_ylim(0, 1.05)
 axes[0].set_ylabel("AUROC")
 axes[0].set_xlabel("Score")
-axes[0].legend(prop={"weight": "bold", "size": 7}, frameon=True, loc="lower right")
+axes[0].legend(
+    prop={"weight": "bold", "size": 7},
+    frameon=False,
+    loc="upper center",
+    bbox_to_anchor=(0.5, -0.28),
+    ncol=2,
+)
 axes[0].set_title("Pair separation", fontsize=10, fontweight="bold")
 
 seed_colors = {0: "#0072B2", 1: "#E69F00", 2: "#009E73"}
@@ -316,7 +333,7 @@ axes[1].set_xticklabels(["Doppelganger", "Covisible"])
 axes[1].set_xlim(-0.4, 1.4)
 axes[1].set_ylim(-0.02, 1.02)
 axes[1].set_ylabel("Covisibility score")
-axes[1].set_xlabel("Doppelgangers label")
+axes[1].set_xlabel("Label")
 axes[1].axhline(0.9, color="#D55E00", ls="--", lw=0.8)
 handles, labels = axes[1].get_legend_handles_labels()
 axes[1].legend(handles, labels, prop={"weight": "bold", "size": 7}, frameon=True, loc="best")
@@ -326,6 +343,6 @@ for ax in axes:
     ax.spines["right"].set_visible(False)
     ax.grid(axis="y", lw=0.4, alpha=0.5)
 fig.tight_layout()
-fig.savefig(os.path.join(EXP, "plot.png"), bbox_inches="tight")
+fig.savefig(os.path.join(EXP, "plot.png"), bbox_inches="tight", pad_inches=0.15)
 fig.savefig(os.path.join(EXP, "plot.pdf"), bbox_inches="tight")
 print("wrote plot", flush=True)

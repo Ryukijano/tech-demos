@@ -1,0 +1,816 @@
+{
+ "rule": "alphabetical scenes, first license-clean pos and neg that download",
+ "n_pairs": 16,
+ "pairs": [
+  {
+   "id": "sc00_pos",
+   "scene": "Alexander_Nevsky_Cathedral,_Sofia",
+   "label": 1,
+   "files": [
+    "\"St. Alexander Nevsky\" Cathedral - \u0425\u0440\u0430\u043c \"\u0421\u0432\u0435\u0442\u0438 \u0410\u043b\u0435\u043a\u0441\u0430\u043d\u0434\u044a\u0440 \u041d\u0435\u0432\u0441\u043a\u0438\" - panoramio.jpg",
+    "05628-Sofia (8268252827).jpg"
+   ],
+   "rels": [
+    "Alexander_Nevsky_Cathedral,_Sofia/north/0/pictures/\"St. Alexander Nevsky\" Cathedral - \u0425\u0440\u0430\u043c \"\u0421\u0432\u0435\u0442\u0438 \u0410\u043b\u0435\u043a\u0441\u0430\u043d\u0434\u044a\u0440 \u041d\u0435\u0432\u0441\u043a\u0438\" - panoramio.jpg",
+    "Alexander_Nevsky_Cathedral,_Sofia/north/0/pictures/05628-Sofia (8268252827).jpg"
+   ],
+   "n_sift_dataset": 18,
+   "licenses": [
+    "CC BY 3.0",
+    "CC BY 2.0"
+   ],
+   "authors": [
+    "Panoramio upload bot",
+    "\u0421\u043f\u0430\u0441\u0438\u043c\u0438\u0440"
+   ],
+   "urls": [
+    "https://commons.wikimedia.org/wiki/File:%22St._Alexander_Nevsky%22_Cathedral_-_%D0%A5%D1%80%D0%B0%D0%BC_%22%D0%A1%D0%B2%D0%B5%D1%82%D0%B8_%D0%90%D0%BB%D0%B5%D0%BA%D1%81%D0%B0%D0%BD%D0%B4%D1%8A%D1%80_%D0%9D%D0%B5%D0%B2%D1%81%D0%BA%D0%B8%22_-_panoramio.jpg",
+    "https://commons.wikimedia.org/wiki/File:05628-Sofia_(8268252827).jpg"
+   ],
+   "license_buckets": [
+    "by",
+    "by"
+   ],
+   "originals": [
+    {
+     "wh_original": [
+      1600,
+      1200
+     ],
+     "file": "\"St. Alexander Nevsky\" Cathedral - \u0425\u0440\u0430\u043c \"\u0421\u0432\u0435\u0442\u0438 \u0410\u043b\u0435\u043a\u0441\u0430\u043d\u0434\u044a\u0440 \u041d\u0435\u0432\u0441\u043a\u0438\" - panoramio.jpg"
+    },
+    {
+     "wh_original": [
+      1800,
+      1205
+     ],
+     "file": "05628-Sofia (8268252827).jpg"
+    }
+   ],
+   "paths": [
+    "work/images/sc00_pos_0__St._Alexander_Nevsky__Cathedral_-_\u0425\u0440\u0430\u043c__\u0421\u0432\u0435\u0442\u0438_\u0410\u043b\u0435\u043a\u0441\u0430\u043d\u0434\u044a\u0440_\u041d\u0435\u0432\u0441\u043a\u0438__-_panoramio.jpg.png",
+    "work/images/sc00_pos_1_05628-Sofia__8268252827_.jpg.png"
+   ]
+  },
+  {
+   "id": "sc00_neg",
+   "scene": "Alexander_Nevsky_Cathedral,_Sofia",
+   "label": 0,
+   "files": [
+    "05628-Sofia (8268252827).jpg",
+    "Alexander Nevsky Cathedral Church (48844850016).jpg"
+   ],
+   "rels": [
+    "Alexander_Nevsky_Cathedral,_Sofia/north/0/pictures/05628-Sofia (8268252827).jpg",
+    "Alexander_Nevsky_Cathedral,_Sofia/north/0/pictures/Alexander Nevsky Cathedral Church (48844850016).jpg"
+   ],
+   "n_sift_dataset": 25,
+   "licenses": [
+    "CC BY 2.0",
+    "CC BY 2.0"
+   ],
+   "authors": [
+    "\u0421\u043f\u0430\u0441\u0438\u043c\u0438\u0440",
+    "Matlin"
+   ],
+   "urls": [
+    "https://commons.wikimedia.org/wiki/File:05628-Sofia_(8268252827).jpg",
+    "https://commons.wikimedia.org/wiki/File:Alexander_Nevsky_Cathedral_Church_(48844850016).jpg"
+   ],
+   "license_buckets": [
+    "by",
+    "by"
+   ],
+   "originals": [
+    {
+     "wh_original": [
+      1600,
+      1071
+     ],
+     "file": "05628-Sofia (8268252827).jpg"
+    },
+    {
+     "wh_original": [
+      1024,
+      768
+     ],
+     "file": "Alexander Nevsky Cathedral Church (48844850016).jpg"
+    }
+   ],
+   "paths": [
+    "work/images/sc00_neg_0_05628-Sofia__8268252827_.jpg.png",
+    "work/images/sc00_neg_1_Alexander_Nevsky_Cathedral_Church__48844850016_.jpg.png"
+   ]
+  },
+  {
+   "id": "sc01_pos",
+   "scene": "Alexander_Nevsky_Cathedral,_Tallinn",
+   "label": 1,
+   "files": [
+    "Church (90625003).jpeg",
+    "Nevski Cathedral.jpg"
+   ],
+   "rels": [
+    "Alexander_Nevsky_Cathedral,_Tallinn/north/0/pictures/Church (90625003).jpeg",
+    "Alexander_Nevsky_Cathedral,_Tallinn/north/0/pictures/Nevski Cathedral.jpg"
+   ],
+   "n_sift_dataset": 46,
+   "licenses": [
+    "CC BY 3.0",
+    "CC BY 2.0"
+   ],
+   "authors": [
+    "Chicocvenancio",
+    "Flickr upload bot"
+   ],
+   "urls": [
+    "https://commons.wikimedia.org/wiki/File:Church_(90625003).jpeg",
+    "https://commons.wikimedia.org/wiki/File:Nevski_Cathedral.jpg"
+   ],
+   "license_buckets": [
+    "by",
+    "by"
+   ],
+   "originals": [
+    {
+     "wh_original": [
+      1366,
+      2048
+     ],
+     "file": "Church (90625003).jpeg"
+    },
+    {
+     "wh_original": [
+      1600,
+      1124
+     ],
+     "file": "Nevski Cathedral.jpg"
+    }
+   ],
+   "paths": [
+    "work/images/sc01_pos_0_Church__90625003_.jpeg.png",
+    "work/images/sc01_pos_1_Nevski_Cathedral.jpg.png"
+   ]
+  },
+  {
+   "id": "sc01_neg",
+   "scene": "Alexander_Nevsky_Cathedral,_Tallinn",
+   "label": 0,
+   "files": [
+    "Alexander Nevsky Cathedral.jpg",
+    "Church (90625003).jpeg"
+   ],
+   "rels": [
+    "Alexander_Nevsky_Cathedral,_Tallinn/north/0/pictures/Alexander Nevsky Cathedral.jpg",
+    "Alexander_Nevsky_Cathedral,_Tallinn/north/0/pictures/Church (90625003).jpeg"
+   ],
+   "n_sift_dataset": 25,
+   "licenses": [
+    "CC BY 2.5",
+    "CC BY 3.0"
+   ],
+   "authors": [
+    "Samulili",
+    "Chicocvenancio"
+   ],
+   "urls": [
+    "https://commons.wikimedia.org/wiki/File:Alexander_Nevsky_Cathedral.jpg",
+    "https://commons.wikimedia.org/wiki/File:Church_(90625003).jpeg"
+   ],
+   "license_buckets": [
+    "by",
+    "by"
+   ],
+   "originals": [
+    {
+     "wh_original": [
+      1200,
+      1600
+     ],
+     "file": "Alexander Nevsky Cathedral.jpg"
+    },
+    {
+     "wh_original": [
+      1067,
+      1600
+     ],
+     "file": "Church (90625003).jpeg"
+    }
+   ],
+   "paths": [
+    "work/images/sc01_neg_0_Alexander_Nevsky_Cathedral.jpg.png",
+    "work/images/sc01_neg_1_Church__90625003_.jpeg.png"
+   ]
+  },
+  {
+   "id": "sc02_pos",
+   "scene": "Arc_de_Triomphe_de_l%27%C3%89toile_by_angle",
+   "label": 1,
+   "files": [
+    "Arc de Triomphe in Parijs Arc de Triomphe (titel op object), RP-F-F01212-34-2.jpg",
+    "Arc de Triomphe te Parijs, RP-F-1996-74.jpg"
+   ],
+   "rels": [
+    "Arc_de_Triomphe_de_l%27%C3%89toile_by_angle/front_right/0/0/pictures/Arc de Triomphe in Parijs Arc de Triomphe (titel op object), RP-F-F01212-34-2.jpg",
+    "Arc_de_Triomphe_de_l%27%C3%89toile_by_angle/front_right/0/pictures/Arc de Triomphe te Parijs, RP-F-1996-74.jpg"
+   ],
+   "n_sift_dataset": 39,
+   "licenses": [
+    "CC0",
+    "CC0"
+   ],
+   "authors": [
+    "Mr.Nostalgic",
+    "Mr.Nostalgic"
+   ],
+   "urls": [
+    "https://commons.wikimedia.org/wiki/File:Arc_de_Triomphe_in_Parijs_Arc_de_Triomphe_(titel_op_object),_RP-F-F01212-34-2.jpg",
+    "https://commons.wikimedia.org/wiki/File:Arc_de_Triomphe_te_Parijs,_RP-F-1996-74.jpg"
+   ],
+   "license_buckets": [
+    "open",
+    "open"
+   ],
+   "originals": [
+    {
+     "wh_original": [
+      1093,
+      1600
+     ],
+     "file": "Arc de Triomphe in Parijs Arc de Triomphe (titel op object), RP-F-F01212-34-2.jpg"
+    },
+    {
+     "wh_original": [
+      1091,
+      1600
+     ],
+     "file": "Arc de Triomphe te Parijs, RP-F-1996-74.jpg"
+    }
+   ],
+   "paths": [
+    "work/images/sc02_pos_0_Arc_de_Triomphe_in_Parijs_Arc_de_Triomphe__titel_op_object___RP-F-F01212-34-2.jpg.png",
+    "work/images/sc02_pos_1_Arc_de_Triomphe_te_Parijs__RP-F-1996-74.jpg.png"
+   ]
+  },
+  {
+   "id": "sc02_neg",
+   "scene": "Arc_de_Triomphe_de_l%27%C3%89toile_by_angle",
+   "label": 0,
+   "files": [
+    "Back left view of the Arc de Triomphe, Paris 21 August 2013.jpg",
+    "Arc de Triomphe, Paris 5-2013.jpeg"
+   ],
+   "rels": [
+    "Arc_de_Triomphe_de_l%27%C3%89toile_by_angle/back_left/0/2/pictures/Back left view of the Arc de Triomphe, Paris 21 August 2013.jpg",
+    "Arc_de_Triomphe_de_l%27%C3%89toile_by_angle/front_right/0/2/pictures/Arc de Triomphe, Paris 5-2013.jpeg"
+   ],
+   "n_sift_dataset": 22,
+   "licenses": [
+    "CC BY 2.0",
+    "Public domain"
+   ],
+   "authors": [
+    "Paris 16",
+    "Ron Clausen"
+   ],
+   "urls": [
+    "https://commons.wikimedia.org/wiki/File:Back_left_view_of_the_Arc_de_Triomphe,_Paris_21_August_2013.jpg",
+    "https://commons.wikimedia.org/wiki/File:Arc_de_Triomphe,_Paris_5-2013.jpeg"
+   ],
+   "license_buckets": [
+    "by",
+    "open"
+   ],
+   "originals": [
+    {
+     "wh_original": [
+      1600,
+      1076
+     ],
+     "file": "Back left view of the Arc de Triomphe, Paris 21 August 2013.jpg"
+    },
+    {
+     "wh_original": [
+      1200,
+      1600
+     ],
+     "file": "Arc de Triomphe, Paris 5-2013.jpeg"
+    }
+   ],
+   "paths": [
+    "work/images/sc02_neg_0_Back_left_view_of_the_Arc_de_Triomphe__Paris_21_August_2013.jpg.png",
+    "work/images/sc02_neg_1_Arc_de_Triomphe__Paris_5-2013.jpeg.png"
+   ]
+  },
+  {
+   "id": "sc03_pos",
+   "scene": "Berlin_Cathedral",
+   "label": 1,
+   "files": [
+    "Berlin Dom 2.JPG",
+    "Berlin \u2013 Dom.jpg"
+   ],
+   "rels": [
+    "Berlin_Cathedral/west/0/pictures/Berlin Dom 2.JPG",
+    "Berlin_Cathedral/west/0/pictures/Berlin \u2013 Dom.jpg"
+   ],
+   "n_sift_dataset": 17,
+   "licenses": [
+    "CC0",
+    "Public domain"
+   ],
+   "authors": [
+    "Zairon",
+    "Jpcuvelier"
+   ],
+   "urls": [
+    "https://commons.wikimedia.org/wiki/File:Berlin_Dom_2.JPG",
+    "https://commons.wikimedia.org/wiki/File:Berlin_%E2%80%93_Dom.jpg"
+   ],
+   "license_buckets": [
+    "open",
+    "open"
+   ],
+   "originals": [
+    {
+     "wh_original": [
+      1600,
+      1200
+     ],
+     "file": "Berlin Dom 2.JPG"
+    },
+    {
+     "wh_original": [
+      1048,
+      1600
+     ],
+     "file": "Berlin \u2013 Dom.jpg"
+    }
+   ],
+   "paths": [
+    "work/images/sc03_pos_0_Berlin_Dom_2.JPG.png",
+    "work/images/sc03_pos_1_Berlin___Dom.jpg.png"
+   ]
+  },
+  {
+   "id": "sc03_neg",
+   "scene": "Berlin_Cathedral",
+   "label": 0,
+   "files": [
+    "Berlin Mitte - Spreepromenade - panoramio.jpg",
+    "Berliner Dom + Fernsethurm (10157386956).jpg"
+   ],
+   "rels": [
+    "Berlin_Cathedral/east/0/pictures/Berlin Mitte - Spreepromenade - panoramio.jpg",
+    "Berlin_Cathedral/west/0/0/pictures/Berliner Dom + Fernsethurm (10157386956).jpg"
+   ],
+   "n_sift_dataset": 15,
+   "licenses": [
+    "CC BY 3.0",
+    "CC BY 2.0"
+   ],
+   "authors": [
+    "Panoramio upload bot",
+    "Sturm"
+   ],
+   "urls": [
+    "https://commons.wikimedia.org/wiki/File:Berlin_Mitte_-_Spreepromenade_-_panoramio.jpg",
+    "https://commons.wikimedia.org/wiki/File:Berliner_Dom_%2B_Fernsethurm_(10157386956).jpg"
+   ],
+   "license_buckets": [
+    "by",
+    "by"
+   ],
+   "originals": [
+    {
+     "wh_original": [
+      1600,
+      1200
+     ],
+     "file": "Berlin Mitte - Spreepromenade - panoramio.jpg"
+    },
+    {
+     "wh_original": [
+      1600,
+      1071
+     ],
+     "file": "Berliner Dom + Fernsethurm (10157386956).jpg"
+    }
+   ],
+   "paths": [
+    "work/images/sc03_neg_0_Berlin_Mitte_-_Spreepromenade_-_panoramio.jpg.png",
+    "work/images/sc03_neg_1_Berliner_Dom___Fernsethurm__10157386956_.jpg.png"
+   ]
+  },
+  {
+   "id": "sc04_pos",
+   "scene": "Brandenburg_Gate",
+   "label": 1,
+   "files": [
+    "Preparation of ZDF new year TV show at Brandenburg gate 2020-12-30 32.jpg",
+    "ZDF new year TV show Brandenburg gate for 2021 from outside 08.jpg"
+   ],
+   "rels": [
+    "Brandenburg_Gate/east/0/pictures/Preparation of ZDF new year TV show at Brandenburg gate 2020-12-30 32.jpg",
+    "Brandenburg_Gate/east/0/pictures/ZDF new year TV show Brandenburg gate for 2021 from outside 08.jpg"
+   ],
+   "n_sift_dataset": 41,
+   "licenses": [
+    "CC0",
+    "CC0"
+   ],
+   "authors": [
+    "GPSLeo",
+    "GPSLeo"
+   ],
+   "urls": [
+    "https://commons.wikimedia.org/wiki/File:Preparation_of_ZDF_new_year_TV_show_at_Brandenburg_gate_2020-12-30_32.jpg",
+    "https://commons.wikimedia.org/wiki/File:ZDF_new_year_TV_show_Brandenburg_gate_for_2021_from_outside_08.jpg"
+   ],
+   "license_buckets": [
+    "open",
+    "open"
+   ],
+   "originals": [
+    {
+     "wh_original": [
+      1600,
+      1068
+     ],
+     "file": "Preparation of ZDF new year TV show at Brandenburg gate 2020-12-30 32.jpg"
+    },
+    {
+     "wh_original": [
+      1600,
+      1068
+     ],
+     "file": "ZDF new year TV show Brandenburg gate for 2021 from outside 08.jpg"
+    }
+   ],
+   "paths": [
+    "work/images/sc04_pos_0_Preparation_of_ZDF_new_year_TV_show_at_Brandenburg_gate_2020-12-30_32.jpg.png",
+    "work/images/sc04_pos_1_ZDF_new_year_TV_show_Brandenburg_gate_for_2021_from_outside_08.jpg.png"
+   ]
+  },
+  {
+   "id": "sc04_neg",
+   "scene": "Brandenburg_Gate",
+   "label": 0,
+   "files": [
+    "Berlin Brandenburger Tor 01.jpg",
+    "-The Darkside of the Tor- (37219797751).jpg"
+   ],
+   "rels": [
+    "Brandenburg_Gate/east/0/pictures/Berlin Brandenburger Tor 01.jpg",
+    "Brandenburg_Gate/west/0/pictures/-The Darkside of the Tor- (37219797751).jpg"
+   ],
+   "n_sift_dataset": 16,
+   "licenses": [
+    "CC BY 3.0",
+    "CC BY 2.0"
+   ],
+   "authors": [
+    "Oltau",
+    "Matlin"
+   ],
+   "urls": [
+    "https://commons.wikimedia.org/wiki/File:Berlin_Brandenburger_Tor_01.jpg",
+    "https://commons.wikimedia.org/wiki/File:-The_Darkside_of_the_Tor-_(37219797751).jpg"
+   ],
+   "license_buckets": [
+    "by",
+    "by"
+   ],
+   "originals": [
+    {
+     "wh_original": [
+      1600,
+      1201
+     ],
+     "file": "Berlin Brandenburger Tor 01.jpg"
+    },
+    {
+     "wh_original": [
+      900,
+      600
+     ],
+     "file": "-The Darkside of the Tor- (37219797751).jpg"
+    }
+   ],
+   "paths": [
+    "work/images/sc04_neg_0_Berlin_Brandenburger_Tor_01.jpg.png",
+    "work/images/sc04_neg_1_-The_Darkside_of_the_Tor-__37219797751_.jpg.png"
+   ]
+  },
+  {
+   "id": "sc05_pos",
+   "scene": "Church_of_the_Saviour_on_the_Blood",
+   "label": 1,
+   "files": [
+    "The Church of the Saviour on Spilled Blood (20956466968).jpg",
+    "\u0421\u043f\u0430\u0441 \u043d\u0430 \u043a\u0440\u043e\u0432\u0438 - panoramio.jpg"
+   ],
+   "rels": [
+    "Church_of_the_Saviour_on_the_Blood/south/0/pictures/The Church of the Saviour on Spilled Blood (20956466968).jpg",
+    "Church_of_the_Saviour_on_the_Blood/south/0/pictures/\u0421\u043f\u0430\u0441 \u043d\u0430 \u043a\u0440\u043e\u0432\u0438 - panoramio.jpg"
+   ],
+   "n_sift_dataset": 161,
+   "licenses": [
+    "CC BY 2.0",
+    "CC BY 3.0"
+   ],
+   "authors": [
+    "Thesupermat2",
+    "Panoramio upload bot"
+   ],
+   "urls": [
+    "https://commons.wikimedia.org/wiki/File:The_Church_of_the_Saviour_on_Spilled_Blood_(20956466968).jpg",
+    "https://commons.wikimedia.org/wiki/File:%D0%A1%D0%BF%D0%B0%D1%81_%D0%BD%D0%B0_%D0%BA%D1%80%D0%BE%D0%B2%D0%B8_-_panoramio.jpg"
+   ],
+   "license_buckets": [
+    "by",
+    "by"
+   ],
+   "originals": [
+    {
+     "wh_original": [
+      1600,
+      1067
+     ],
+     "file": "The Church of the Saviour on Spilled Blood (20956466968).jpg"
+    },
+    {
+     "wh_original": [
+      1200,
+      1600
+     ],
+     "file": "\u0421\u043f\u0430\u0441 \u043d\u0430 \u043a\u0440\u043e\u0432\u0438 - panoramio.jpg"
+    }
+   ],
+   "paths": [
+    "work/images/sc05_pos_0_The_Church_of_the_Saviour_on_Spilled_Blood__20956466968_.jpg.png",
+    "work/images/sc05_pos_1_\u0421\u043f\u0430\u0441_\u043d\u0430_\u043a\u0440\u043e\u0432\u0438_-_panoramio.jpg.png"
+   ]
+  },
+  {
+   "id": "sc05_neg",
+   "scene": "Church_of_the_Saviour_on_the_Blood",
+   "label": 0,
+   "files": [
+    "Our Saviour on the Blood Cathedral (Spas na Krovi), St. Petersburg, Russia (9535176035).jpg",
+    "2007 \u041a\u0430\u043d\u0430\u043b \u0413\u0440\u0438\u0431\u043e\u0435\u0434\u043e\u0432\u0430 - panoramio.jpg"
+   ],
+   "rels": [
+    "Church_of_the_Saviour_on_the_Blood/north/0/pictures/Our Saviour on the Blood Cathedral (Spas na Krovi), St. Petersburg, Russia (9535176035).jpg",
+    "Church_of_the_Saviour_on_the_Blood/south/0/pictures/2007 \u041a\u0430\u043d\u0430\u043b \u0413\u0440\u0438\u0431\u043e\u0435\u0434\u043e\u0432\u0430 - panoramio.jpg"
+   ],
+   "n_sift_dataset": 18,
+   "licenses": [
+    "CC BY 2.0",
+    "CC BY 3.0"
+   ],
+   "authors": [
+    "File Upload Bot (Magnus Manske)",
+    "Panoramio upload bot"
+   ],
+   "urls": [
+    "https://commons.wikimedia.org/wiki/File:Our_Saviour_on_the_Blood_Cathedral_(Spas_na_Krovi),_St._Petersburg,_Russia_(9535176035).jpg",
+    "https://commons.wikimedia.org/wiki/File:2007_%D0%9A%D0%B0%D0%BD%D0%B0%D0%BB_%D0%93%D1%80%D0%B8%D0%B1%D0%BE%D0%B5%D0%B4%D0%BE%D0%B2%D0%B0_-_panoramio.jpg"
+   ],
+   "license_buckets": [
+    "by",
+    "by"
+   ],
+   "originals": [
+    {
+     "wh_original": [
+      1600,
+      1200
+     ],
+     "file": "Our Saviour on the Blood Cathedral (Spas na Krovi), St. Petersburg, Russia (9535176035).jpg"
+    },
+    {
+     "wh_original": [
+      1300,
+      863
+     ],
+     "file": "2007 \u041a\u0430\u043d\u0430\u043b \u0413\u0440\u0438\u0431\u043e\u0435\u0434\u043e\u0432\u0430 - panoramio.jpg"
+    }
+   ],
+   "paths": [
+    "work/images/sc05_neg_0_Our_Saviour_on_the_Blood_Cathedral__Spas_na_Krovi___St._Petersburg__Russia__9535176035_.jpg.png",
+    "work/images/sc05_neg_1_2007_\u041a\u0430\u043d\u0430\u043b_\u0413\u0440\u0438\u0431\u043e\u0435\u0434\u043e\u0432\u0430_-_panoramio.jpg.png"
+   ]
+  },
+  {
+   "id": "sc06_pos",
+   "scene": "Deutscher_and_Franz%C3%B6sischer_Dom_(Berlin)",
+   "label": 1,
+   "files": [
+    "Frankzosischer Dom, Gendarmenmarkt, Berlin, 1701-1705 (3) (40149700952).jpg",
+    "\u0424\u0440\u0430\u043d\u0446\u0443\u0437\u0441\u043a\u0438\u0439 \u0441\u043e\u0431\u043e\u0440 (\u0416\u0430\u043d\u0434\u0430\u0440\u043c\u0435\u043d\u043c\u0430\u0440\u043a\u0442, \u0411\u0435\u0440\u043b\u0438\u043d).jpg"
+   ],
+   "rels": [
+    "Deutscher_and_Franz%C3%B6sischer_Dom_(Berlin)/west/0/pictures/Frankzosischer Dom, Gendarmenmarkt, Berlin, 1701-1705 (3) (40149700952).jpg",
+    "Deutscher_and_Franz%C3%B6sischer_Dom_(Berlin)/west/0/pictures/\u0424\u0440\u0430\u043d\u0446\u0443\u0437\u0441\u043a\u0438\u0439 \u0441\u043e\u0431\u043e\u0440 (\u0416\u0430\u043d\u0434\u0430\u0440\u043c\u0435\u043d\u043c\u0430\u0440\u043a\u0442, \u0411\u0435\u0440\u043b\u0438\u043d).jpg"
+   ],
+   "n_sift_dataset": 15,
+   "licenses": [
+    "CC BY 2.0",
+    "CC0"
+   ],
+   "authors": [
+    "Meisam",
+    "Elenafeonina"
+   ],
+   "urls": [
+    "https://commons.wikimedia.org/wiki/File:Frankzosischer_Dom,_Gendarmenmarkt,_Berlin,_1701-1705_(3)_(40149700952).jpg",
+    "https://commons.wikimedia.org/wiki/File:%D0%A4%D1%80%D0%B0%D0%BD%D1%86%D1%83%D0%B7%D1%81%D0%BA%D0%B8%D0%B9_%D1%81%D0%BE%D0%B1%D0%BE%D1%80_(%D0%96%D0%B0%D0%BD%D0%B4%D0%B0%D1%80%D0%BC%D0%B5%D0%BD%D0%BC%D0%B0%D1%80%D0%BA%D1%82,_%D0%91%D0%B5%D1%80%D0%BB%D0%B8%D0%BD).jpg"
+   ],
+   "license_buckets": [
+    "by",
+    "open"
+   ],
+   "originals": [
+    {
+     "wh_original": [
+      1600,
+      1067
+     ],
+     "file": "Frankzosischer Dom, Gendarmenmarkt, Berlin, 1701-1705 (3) (40149700952).jpg"
+    },
+    {
+     "wh_original": [
+      1194,
+      1600
+     ],
+     "file": "\u0424\u0440\u0430\u043d\u0446\u0443\u0437\u0441\u043a\u0438\u0439 \u0441\u043e\u0431\u043e\u0440 (\u0416\u0430\u043d\u0434\u0430\u0440\u043c\u0435\u043d\u043c\u0430\u0440\u043a\u0442, \u0411\u0435\u0440\u043b\u0438\u043d).jpg"
+    }
+   ],
+   "paths": [
+    "work/images/sc06_pos_0_Frankzosischer_Dom__Gendarmenmarkt__Berlin__1701-1705__3___40149700952_.jpg.png",
+    "work/images/sc06_pos_1_\u0424\u0440\u0430\u043d\u0446\u0443\u0437\u0441\u043a\u0438\u0439_\u0441\u043e\u0431\u043e\u0440__\u0416\u0430\u043d\u0434\u0430\u0440\u043c\u0435\u043d\u043c\u0430\u0440\u043a\u0442__\u0411\u0435\u0440\u043b\u0438\u043d_.jpg.png"
+   ]
+  },
+  {
+   "id": "sc06_neg",
+   "scene": "Deutscher_and_Franz%C3%B6sischer_Dom_(Berlin)",
+   "label": 0,
+   "files": [
+    "Berlin .Gendarmenmarkt .Deutscher Dom 003.jpg",
+    "French Cathedral(Franz\u00f6sischer Dom).jpg"
+   ],
+   "rels": [
+    "Deutscher_and_Franz%C3%B6sischer_Dom_(Berlin)/east/0/pictures/Berlin .Gendarmenmarkt .Deutscher Dom 003.jpg",
+    "Deutscher_and_Franz%C3%B6sischer_Dom_(Berlin)/west/0/1/pictures/French Cathedral(Franz\u00f6sischer Dom).jpg"
+   ],
+   "n_sift_dataset": 20,
+   "licenses": [
+    "CC BY 3.0",
+    "CC BY 3.0"
+   ],
+   "authors": [
+    "JoJan",
+    "Captcha-Nick"
+   ],
+   "urls": [
+    "https://commons.wikimedia.org/wiki/File:Berlin_.Gendarmenmarkt_.Deutscher_Dom_003.jpg",
+    "https://commons.wikimedia.org/wiki/File:French_Cathedral(Franz%C3%B6sischer_Dom).jpg"
+   ],
+   "license_buckets": [
+    "by",
+    "by"
+   ],
+   "originals": [
+    {
+     "wh_original": [
+      1200,
+      1600
+     ],
+     "file": "Berlin .Gendarmenmarkt .Deutscher Dom 003.jpg"
+    },
+    {
+     "wh_original": [
+      1600,
+      1147
+     ],
+     "file": "French Cathedral(Franz\u00f6sischer Dom).jpg"
+    }
+   ],
+   "paths": [
+    "work/images/sc06_neg_0_Berlin_.Gendarmenmarkt_.Deutscher_Dom_003.jpg.png",
+    "work/images/sc06_neg_1_French_Cathedral_Franz\u00f6sischer_Dom_.jpg.png"
+   ]
+  },
+  {
+   "id": "sc07_pos",
+   "scene": "Exterior_of_Charlottenburg_Palace",
+   "label": 1,
+   "files": [
+    "Le ch\u00e2teau de Charlottenburg (Berlin) (6341255482).jpg",
+    "Schloss Charlottenburg 2005 284.JPG"
+   ],
+   "rels": [
+    "Exterior_of_Charlottenburg_Palace/south/0/pictures/Le ch\u00e2teau de Charlottenburg (Berlin) (6341255482).jpg",
+    "Exterior_of_Charlottenburg_Palace/south/0/pictures/Schloss Charlottenburg 2005 284.JPG"
+   ],
+   "n_sift_dataset": 20,
+   "licenses": [
+    "CC BY 2.0",
+    "CC BY 2.5"
+   ],
+   "authors": [
+    "File Upload Bot (Magnus Manske)",
+    "Rotatebot"
+   ],
+   "urls": [
+    "https://commons.wikimedia.org/wiki/File:Le_ch%C3%A2teau_de_Charlottenburg_(Berlin)_(6341255482).jpg",
+    "https://commons.wikimedia.org/wiki/File:Schloss_Charlottenburg_2005_284.JPG"
+   ],
+   "license_buckets": [
+    "by",
+    "by"
+   ],
+   "originals": [
+    {
+     "wh_original": [
+      1600,
+      1200
+     ],
+     "file": "Le ch\u00e2teau de Charlottenburg (Berlin) (6341255482).jpg"
+    },
+    {
+     "wh_original": [
+      1200,
+      1600
+     ],
+     "file": "Schloss Charlottenburg 2005 284.JPG"
+    }
+   ],
+   "paths": [
+    "work/images/sc07_pos_0_Le_ch\u00e2teau_de_Charlottenburg__Berlin___6341255482_.jpg.png",
+    "work/images/sc07_pos_1_Schloss_Charlottenburg_2005_284.JPG.png"
+   ]
+  },
+  {
+   "id": "sc07_neg",
+   "scene": "Exterior_of_Charlottenburg_Palace",
+   "label": 0,
+   "files": [
+    "Berlin 1990 (4387755679).jpg",
+    "Berlin 07-2011 (ubt-39).JPG"
+   ],
+   "rels": [
+    "Exterior_of_Charlottenburg_Palace/north/0/0/pictures/Berlin 1990 (4387755679).jpg",
+    "Exterior_of_Charlottenburg_Palace/south/0/pictures/Berlin 07-2011 (ubt-39).JPG"
+   ],
+   "n_sift_dataset": 32,
+   "licenses": [
+    "CC BY 2.0",
+    "CC BY 3.0"
+   ],
+   "authors": [
+    "File Upload Bot (Magnus Manske)",
+    "Tsca.bot"
+   ],
+   "urls": [
+    "https://commons.wikimedia.org/wiki/File:Berlin_1990_(4387755679).jpg",
+    "https://commons.wikimedia.org/wiki/File:Berlin_07-2011_(ubt-39).JPG"
+   ],
+   "license_buckets": [
+    "by",
+    "by"
+   ],
+   "originals": [
+    {
+     "wh_original": [
+      1600,
+      1066
+     ],
+     "file": "Berlin 1990 (4387755679).jpg"
+    },
+    {
+     "wh_original": [
+      1600,
+      1200
+     ],
+     "file": "Berlin 07-2011 (ubt-39).JPG"
+    }
+   ],
+   "paths": [
+    "work/images/sc07_neg_0_Berlin_1990__4387755679_.jpg.png",
+    "work/images/sc07_neg_1_Berlin_07-2011__ubt-39_.JPG.png"
+   ]
+  }
+ ],
+ "skips": [
+  {
+   "scene": "Cathedral_of_St_Alexander_Nevsky,_Pre%C5%A1ov",
+   "reason": "scene_incomplete",
+   "attempts": {
+    "0": 1,
+    "1": 0
+   }
+  }
+ ]
+}

@@ -1,0 +1,121 @@
+# Fixed on 2026-11-04 BEFORE any FlexGlue matcher call. Do not edit thresholds after seeing scores.
+# A disclosed smoke may record one pair's runtime. It must not change auroc_covis_min,
+# auroc_covis_partial_min, or auroc_margin_vs_matchcount.
+exp_id: exp1_cpu_covisibility
+hypothesis: >
+  FlexGlue's covisibility head separates true covisible pairs from doppelganger
+  (look-alike, non-covisible) pairs on CPU. On a tiny balanced sample of the
+  Doppelgangers test set, the AUROC of covisibility_score is at least 0.90,
+  and that AUROC exceeds the AUROC of a plain FlexGlue match-count score
+  (same ONNX model, min_covisibility 0) by at least 0.05. A classic SIFT
+  Lowe-ratio match count on the same keypoints is the second baseline and
+  is report-only.
+upstream:
+  repo: https://github.com/cvg/FlexGlue
+  paper: https://arxiv.org/abs/2610.32976
+  release: https://github.com/cvg/FlexGlue/releases/tag/v0.1
+  onnx_descriptor: https://github.com/cvg/FlexGlue/releases/download/v0.1/flexglue_descriptor.onnx
+  onnx_matcher: https://github.com/cvg/FlexGlue/releases/download/v0.1/flexglue_matcher.onnx
+  descriptor_sha256: 93fab8a4ccde1b7331640915357d96cff0929ea87134872f37f7b0150d9914ff
+  matcher_sha256: a0baf84f00b32fc613206511a464fc3e71f4321e9d34df3a83362bd7d2a73012
+  api: "ONNX Runtime CPU, protocol of upstream onnx/match_pair.py"
+  gated_not_used: facebook/dinov3-convnext-base-pretrain-lvd1689m
+paper_reference:
+  table: 3
+  # AUROC on DG / ViSym-F / LaMAR, and GPU matching time, from the HTML paper.
+  rows:
+    - {labelled_data: "DG + matching", dg_auroc: 0.984, visym_f_auroc: 0.959, lamar_auroc: 0.888, time_ms_gpu: 28.7}
+    - {labelled_data: "matching", dg_auroc: 0.970, visym_f_auroc: 0.953, lamar_auroc: 0.885, time_ms_gpu: 28.7}
+  inference_threshold_t: 0.9
+  readme_example_min_covisibility: 0.8
+  early_stop_decay_gamma_paper: 0.9
+  scaling_note: >
+    The pass bar 0.90 sits below both Doppelgangers AUROCs in Table 3
+    (0.984 for DG+matching and 0.970 for matching-only) by at least seven
+    points, and above the hardest reported figure (LaMAR 0.888 / 0.885).
+    The discount is for a 6-of-8 scene subsample (12 pairs), OpenCV SIFT
+    keypoints instead of the paper's detector, and CPU ONNX numerics.
+    One rank swap among 6×6 pairs moves AUROC by 1/36 ≈ 0.028, so 0.90
+    allows a few mistakes that 0.984 does not. The partial floor 0.80
+    sits just under LaMAR, so a tiny-set score between a failed
+    separation and the out-of-distribution benchmark is not a PASS.
+    The released checkpoint is a single file; the bar is below both
+    rows so it does not depend on which training stage was exported.
+dataset:
+  name: Doppelgangers test set
+  paper: "Cai et al., Doppelgangers: Learning to Disambiguate Images of Similar Structures, ICCV 2023"
+  code: https://github.com/RuojinCai/doppelgangers
+  code_license: MIT
+  pairs_metadata_url: https://doppelgangers.cs.cornell.edu/dataset/pairs_metadata.tar.gz
+  attributions_url: https://doppelgangers.cs.cornell.edu/dataset/attributions.json
+  images: "Wikimedia Commons via Special:FilePath, filenames from test_pairs.npy"
+  image_license_allow: ["open", "by"]   # CC0 / public domain / CC BY; no NC, no ND, no SA
+  # Selection rule, applied in file order, before any matcher call:
+  # scenes sorted alphabetically; within a scene, the first positive pair and
+  # the first negative pair whose images are both in the allow-list and
+  # actually download and decode. Skip a scene that cannot fill both labels
+  # within max_attempts_per_label. Take the first n_scenes complete scenes.
+  # Download failure is the only reason to skip an otherwise eligible pair.
+  n_scenes: 8
+  max_attempts_per_label: 6
+  eval_scenes_per_seed: 6          # seed draws this many of the 8 scenes, without replacement
+  ingest_long_side_max: 1600       # CPU memory cap, fixed before the run
+  anchor_berlin:                   # qualitative only; excluded from AUROC
+    - {id: berlin1, url: "https://raw.githubusercontent.com/cvg/FlexGlue/main/assets/berlin1.jpg"}
+    - {id: berlin2, url: "https://raw.githubusercontent.com/cvg/FlexGlue/main/assets/berlin2.jpg"}
+    label: 1
+    note: "Upstream README demo pair. Treated as covisible. Not in the metric."
+seeds: [0, 1, 2]
+runtime:
+  device: cpu
+  intra_op_threads: 4
+  num_keypoints: 768               # seeded subsample
+  candidate_keypoints: 2048        # subsample is drawn from the top-response SIFT points
+  max_detect: 4096
+  filter_threshold: 0.1            # upstream default
+  max_distance_px: 3.0             # upstream default, pixels of the 512px descriptor input
+  min_covisibility: 0.0            # off, so match counts are not gated by the head
+  sift_ratio: 0.75                 # Lowe ratio
+  fundamental_reproj_px: 1.0       # USAC_MAGSAC; report-only inlier count
+  descriptor_hw: [512, 512]        # fixed by the exported ONNX graph
+metrics:
+  primary: auroc_covisibility_score
+  baseline_same_model: auroc_flexglue_match_count
+  baseline_classic: auroc_sift_ratio_count   # report-only
+  report_only: [n_matches, n_inliers, n_sift, runtime_s_per_pair]
+thresholds:
+  auroc_covis_min: 0.90
+  auroc_margin_vs_matchcount: 0.05
+  auroc_covis_partial_min: 0.80
+pass_rule: >
+  PASS if the mean over seeds of AUROC(covisibility_score) >= auroc_covis_min
+  AND the mean over seeds of (AUROC(covisibility_score) - AUROC(FlexGlue match count))
+  >= auroc_margin_vs_matchcount.
+  PARTIAL if the mean AUROC(covisibility_score) >= auroc_covis_partial_min
+  AND exactly one of those two clauses holds.
+  FAIL otherwise, or if the ONNX weights cannot be downloaded without a login.
+  SIFT AUROC, inlier counts, and runtime are reported and do not change the status.
+  Sample standard deviation (ddof=1) across the three seeds.
+disclosure: >
+  Thresholds and the pair-selection rule were written before any FlexGlue
+  matcher call. DINOv3 ConvNeXt-B on the Hugging Face hub is gated; this
+  experiment does not download it. The openly downloadable FlexGlue v0.1
+  ONNX models are the fallback, and they still contain the redistributed
+  DINOv3 backbone under the DINOv3 License.
+breakpoints:
+  seed: 0
+  # First positive and first negative pair among the seed-0 scene sample.
+  rotate_deg: [0, 45, 90, 135, 180]          # image B, expanded canvas
+  downscale: [1.0, 0.5, 0.25, 0.125]         # image B
+  blur_sigma: [0, 2, 8]                      # image B
+  texture_mix: [0.0, 0.7]                    # image B mixed toward its mean colour
+  long_side_px: [512, 1024, 1600]            # both images; descriptor still squashes to 512
+  positive_score_labels:
+    ok: 0.9                                  # paper inference threshold t
+    degraded: 0.5
+  story: >
+    Push one true pair and one doppelganger pair through heavy rotation,
+    downscaling, blur, and low texture, and record CPU time and RSS as the
+    input long side grows. The exported descriptor does not change its
+    512×512 grid, so extra input pixels land on SIFT and the bitmap, not
+    on a larger ConvNeXt map.

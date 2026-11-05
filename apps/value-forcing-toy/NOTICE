@@ -1,0 +1,35 @@
+value-forcing-toy demo — NOTICE
+
+This directory (apps/value-forcing-toy/) is a CPU-only clear-experiment toy
+inspired by:
+
+  Zheng, Zhou, Li, Eysenbach, Levine,
+  "Value Forcing: Aligning Return Distributions at All Noise Levels",
+  Princeton University / University of California, Berkeley,
+  arXiv:2611.02160 (1 Nov 2026)
+  https://arxiv.org/abs/2611.02160
+  https://arxiv.org/html/2611.02160
+  https://chongyi-zheng.github.io/value-forcing/
+
+Found via a bookmarked X post by @svlevine (not re-fetched; the method was
+checked on the arXiv paper and the project page):
+  https://x.com/svlevine/status/2117824001565479007
+
+Verified operator (paper Eq. 5; project page "Flow Bellman equation"):
+
+  Z(s, a, τ)  =d  τ r(s, a) + γ Z(s', a', τ) + (1-τ) sqrt(1-γ²) N
+  N ~ Normal(0, 1) independent of the flow noise.
+
+At τ = 0 the Gaussian correction keeps both sides standard normal. At τ = 1
+it disappears and the equation is the distributional Bellman equation.
+Practical losses in paper §4.2 / project-page Eqs. (1)–(2) multiply the
+reward by (1-γ). This toy does that, then divides generated samples by
+(1-γ) before comparing them to the unscaled true return.
+
+Official code: https://github.com/chongyi-zheng/value-forcing (JAX, MIT).
+Not vendored. This directory is an independent clean-room reimplementation
+of the flow Bellman operator on a tiny Markov reward process. It is not a
+reproduction of the paper's OGBench / OCBench runs.
+
+No warranty. Research / demo use. Trained weights stay out of git (work/ is
+git-ignored).

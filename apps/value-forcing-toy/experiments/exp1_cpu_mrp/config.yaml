@@ -1,0 +1,137 @@
+# Fixed on 2026-11-05 BEFORE the official measured run. Do not edit thresholds
+# after seeing results. One disclosed smoke (tiny steps, seed 0) may verify the
+# code path only; it tunes no threshold and is recorded in smoke.json.
+exp_id: exp1_cpu_mrp
+hypothesis: >
+  On a small infinite-horizon Markov reward process whose return laws are
+  known in closed form (a 50/50 branch into a high-reward path and a
+  zero-reward path, plus a skewed geometric-reward state), with a LIMITED
+  stratified offline dataset of 64 transitions, a flow-matching model trained
+  with Value Forcing's flow Bellman operator at every noise level gets a
+  lower mean Wasserstein-1 distance to the true return distribution than
+  (a) an endpoint-only flow-matching distributional TD baseline (sample-based
+  Bellman target at τ=1 only) and (b) a QR-DQN quantile-regression baseline,
+  and does not collapse. Averaged over seeds 0, 1 and 2.
+upstream:
+  paper: >
+    Zheng, Zhou, Li, Eysenbach, Levine, "Value Forcing: Aligning Return
+    Distributions at All Noise Levels", Princeton / UC Berkeley,
+    arXiv:2611.02160 (1 Nov 2026).
+  paper_url: https://arxiv.org/abs/2611.02160
+  project_page: https://chongyi-zheng.github.io/value-forcing/
+  code_repo: https://github.com/chongyi-zheng/value-forcing
+  code_license: MIT
+  bookmark: https://x.com/svlevine/status/2117824001565479007
+  operator: >
+    Paper Eq. 5: Z(s,τ) =d τ r + γ Z(s',τ) + (1-τ) sqrt(1-γ^2) N,
+    N~N(0,1) independent. Practical training loss (paper §4.2) replaces r
+    by (1-γ) r. Verified on arXiv HTML and the project page on 2026-11-05.
+  note: >
+    Official JAX repo is MIT and is not vendored. This app is a clean-room
+    MRP policy-evaluation toy, not the paper's 26-task OGBench/OCBench run.
+mrp:
+  # Primary environment. Rewards are unscaled; training multiplies by (1-γ).
+  gamma: 0.8
+  high_reward: 1.5          # HIGH -> HIGH2 -> SINK, each edge this reward
+  chain_reward: 0.4         # CHAIN -> MIX
+  wide_p_stay: 0.55         # WIDE self-loop probability
+  wide_r_stay: 1.0
+  wide_r_exit: 0.0
+  chain_depth: 1            # 1 = the single CHAIN state in the primary MRP
+  n_transitions: 64         # limited offline data; stratified across states
+  stratified: true
+data_seed_offset: 0
+model:
+  hidden: 128
+  embed_dim: 16
+  n_quantiles: 32           # QR-DQN fixed quantile fractions (i+0.5)/N
+  huber_kappa: 1.0
+training:
+  steps: 2000
+  batch_size: 128
+  lr: 0.001
+  weight_decay: 0.0
+  grad_clip: 1.0
+  ema: 0.99
+  n_euler: 8                # Euler steps on [0, 1]; same count at train and eval
+  reward_scale: true        # paper's practical (1-γ) reward scaling
+  log_every: 500
+eval:
+  n_samples: 4096           # flow samples per state for W1 / std
+  std_floor: 0.2            # states with true std below this are excluded from the collapse ratio
+seeds: [0, 1, 2]
+metrics:
+  primary: >
+    mean_W1 = unweighted mean, over MRP states, of the 1-Wasserstein distance
+    between the predicted return law and the closed-form return law.
+    Flow models: empirical quantiles of n_samples Euler rollouts, unscaled by
+    1/(1-γ). QR: interpolated quantile function, same unscaling.
+    Lower is better.
+  collapse: >
+    std_ratio = mean, over states whose true return std is at least std_floor,
+    of (predicted population std / true population std). 1 means the spread
+    matches. Collapse is a ratio near 0.
+  report_only:
+    - per_state_w1
+    - per_state_std
+    - n_params
+    - train_wall_s
+    - mix_high_fraction
+thresholds:
+  pass_condition: >
+    On the limited-data primary setting (n_transitions=64, gamma=0.8,
+    chain_depth=1, n_euler=8), averaging seeds {0,1,2}:
+      mean_W1(VF) <= 0.80 * mean_W1(endpoint)
+      AND mean_W1(VF) < mean_W1(QR)
+      AND std_ratio(VF) is inside [0.8, 1.2].
+    mean_W1(method) is the mean over seeds of that seed's mean-over-states W1.
+    std_ratio(VF) is the mean over seeds of that seed's std_ratio.
+  status_rule: >
+    PASS if the pass_condition holds.
+    PARTIAL if mean_W1(VF) < mean_W1(endpoint) AND std_ratio(VF) is inside
+      [0.5, 1.5], but the 20% reduction, the QR comparison, or the tight
+      [0.8, 1.2] band fails.
+    FAIL otherwise.
+  w1_reduction_vs_endpoint: 0.20
+  std_ratio_min: 0.8
+  std_ratio_max: 1.2
+  partial_std_ratio_min: 0.5
+  partial_std_ratio_max: 1.5
+breakpoints:
+  seed: 0
+  few_transitions:
+    story: >
+      Stratified offline sets smaller and larger than 64, including one
+      transition per state. Ground truth stays the true MRP, so a missing
+      branch cannot be recovered by any method.
+    n_transitions: [8, 16, 32, 128, 512]
+  gamma_near_one:
+    story: >
+      Same graph and 64 transitions, discount pushed toward 1. The Gaussian
+      correction sqrt(1-γ^2) shrinks, and the effective horizon grows.
+      Reward scaling still uses that run's (1-γ).
+    gamma: [0.9, 0.95, 0.99]
+  long_horizon:
+    story: >
+      Deterministic chain of length L into MIX. L=1 is the primary CHAIN.
+      Each state still gets 8 stratified transitions, so this stresses backup
+      depth rather than starving the dataset. Report mean W1 and W1 at the
+      farthest chain state (C0 / CHAIN).
+    chain_depth: [0, 2, 4, 8]
+    transitions_per_state: 8
+  flow_steps:
+    story: >
+      Euler steps on the flow ODE, used both to build bootstrap targets and
+      to sample returns at eval. One step is a coarse integrator; more steps
+      approach the ODE the losses were derived under. QR has no flow steps.
+    n_euler: [1, 2, 4, 16]
+runtime:
+  device: cpu-only
+  torch_threads_per_worker: 1
+  max_workers: 4
+disclosure: >
+  Thresholds, MRP, step budget, widths, Euler count, and the 64-transition
+  limited-data setting were fixed before the official run. A disclosed smoke
+  may verify the code path only and is recorded in smoke.json. No threshold
+  is changed after any result. This is not an official reproduction of
+  arXiv:2611.02160. Upstream MIT code is not vendored.

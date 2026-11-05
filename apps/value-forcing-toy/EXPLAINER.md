@@ -1,0 +1,9 @@
+# Value Forcing — short explainer
+
+Value Forcing (Zheng, Zhou, Li, Eysenbach, and Levine, arXiv:2611.02160) models return distributions with flow matching and applies a Bellman backup at every noise level, not only at the clean return. The noisy return equals, in distribution, the noise level times the reward, plus the discount times the next state's noisy return, plus a Gaussian correction that keeps the marginal standard normal at full noise and vanishes on a clean return. Training multiplies rewards by (1−γ).
+
+This CPU toy uses an 8-state Markov reward process with known returns: an equal mixture of a high return and zero, a skewed geometric sum, and five point masses. Each method sees 64 offline transitions. A 19,201-parameter network with the flow Bellman loss is compared with an endpoint-only flow and with QR-DQN on seeds 0, 1, and 2. The bar was fixed before the run: mean Wasserstein-1 at least 20% below the endpoint baseline, also below QR, and a spread ratio inside [0.8, 1.2].
+
+The result is a fail. Mean Wasserstein-1 is 0.442 for Value Forcing, 0.438 for the endpoint flow, and 0.222 for QR-DQN: a −0.9% gap, not −20%. The spread ratio is 0.753. Value Forcing is the least collapsed and closer on the spread-out states, but blur on the point masses lets QR win the average. One transition per state collapses every method. At discount 0.99, undoing the reward scaling inflates integration error (64 vs 7.9 vs 1.2). One or two Euler steps shrink the spread; a chain of length 8 does not.
+
+Links: [paper](https://arxiv.org/abs/2611.02160), [project](https://chongyi-zheng.github.io/value-forcing/), [bookmark](https://x.com/svlevine/status/2117824001565479007), [official MIT code](https://github.com/chongyi-zheng/value-forcing) (not vendored), README `apps/value-forcing-toy/README.md`.

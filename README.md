@@ -22,6 +22,7 @@ One monorepo for sticky / bookmark-worthy tech demos. Prefer adding a new `apps/
 | `apps/jepa-platonic-toy/` | Clean-room Platonic JEPA cross-modal alignment toy (arXiv:2610.39302; official prh-proof not vendored) |
 | `apps/world2vec-toy/` | Clean-room world2vec continuous-time latent dynamics on a rendered pendulum (arXiv:2610.40637; official code not released) |
 | `apps/flexglue-doppelganger/` | FlexGlue covisibility head vs doppelganger pairs on CPU ONNX (arXiv:2610.32976; DINOv3 HF weights not used) |
+| `apps/value-forcing-toy/` | Clean-room Value Forcing flow-Bellman return distributions on a tiny MRP (arXiv:2611.02160; official MIT code not vendored) |
 | `tracking/seen-bookmarks.json` | X bookmarks already turned into demos (`url`, `slug`, `date`) |
 | `docs/` | GitHub Pages showcase site (static HTML/CSS) |
 | `AGENTS.md` | Rules for future cloud agents |

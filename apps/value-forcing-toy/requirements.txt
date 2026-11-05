@@ -1,0 +1,7 @@
+# torch installed separately from the CPU index:
+#   python3 -m venv .venv && source .venv/bin/activate
+#   pip install --index-url https://download.pytorch.org/whl/cpu torch
+#   pip install -r requirements.txt
+numpy>=1.26
+matplotlib>=3.8
+pyyaml>=6.0

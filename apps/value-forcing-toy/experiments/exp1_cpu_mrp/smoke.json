@@ -1,0 +1,23 @@
+{
+  "disclosure": "smoke: tiny step budget, not used to set or edit thresholds",
+  "steps": 40,
+  "seeds": {
+    "0": {
+      "vf": {
+        "mean_w1": 2.8229384331743,
+        "std_ratio": 3.782939380068983,
+        "final_loss": 0.3131764829158783
+      },
+      "endpoint": {
+        "mean_w1": 2.581049077305921,
+        "std_ratio": 3.462086707960974,
+        "final_loss": 1.7214518785476685
+      },
+      "qr": {
+        "mean_w1": 0.8190726681704067,
+        "std_ratio": 0.8241880971259093,
+        "final_loss": 0.009309192188084126
+      }
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "status": "FAIL",
+  "checks": {
+    "vf_w1_at_least_20pct_below_endpoint": false,
+    "vf_w1_below_qr": false,
+    "vf_std_ratio_in_0.8_1.2": false,
+    "vf_w1_below_endpoint": false,
+    "vf_std_ratio_in_0.5_1.5": true
+  },
+  "reduction_vs_endpoint": -0.00865821578295464,
+  "summary": {
+    "vf": {
+      "w1_mean": 0.4422355390058395,
+      "w1_std": 0.014430952892025378,
+      "ratio_mean": 0.7527891113420875,
+      "ratio_std": 0.008533700302450976
+    },
+    "endpoint": {
+      "w1_mean": 0.43843943576324446,
+      "w1_std": 0.022410801951771316,
+      "ratio_mean": 0.6368766306364263,
+      "ratio_std": 0.04968374938078408
+    },
+    "qr": {
+      "w1_mean": 0.22224765021757173,
+      "w1_std": 0.005426034787416356,
+      "ratio_mean": 0.4982552396232996,
+      "ratio_std": 0.011334892106788513
+    },
+    "reduction_vs_endpoint": -0.00865821578295464
+  },
+  "rule": "PASS if the pass_condition holds. PARTIAL if mean_W1(VF) < mean_W1(endpoint) AND std_ratio(VF) is inside\n  [0.5, 1.5], but the 20% reduction, the QR comparison, or the tight\n  [0.8, 1.2] band fails.\nFAIL otherwise."
+}

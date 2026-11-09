@@ -269,7 +269,7 @@ def summarize_shots(rows: list[dict[str, Any]]) -> dict[str, Any]:
         "tunnel_rate": float(tun.mean()) if n else float("nan"),
         "contact_rate": float(contact.mean()) if n else float("nan"),
         "mean_max_penetration_m": float(pen.mean()) if n else float("nan"),
-        "mean_ke_rel_drift": float(np.nanmean(drift)) if n else float("nan"),
+        "mean_ke_rel_drift": float(np.nanmean(drift)) if n and np.isfinite(drift).any() else float("nan"),
         "n_diverged": int(sum(1 for row in rows if row["diverged"])),
         "wall_s": float(sum(row["wall_s"] for row in rows)),
     }

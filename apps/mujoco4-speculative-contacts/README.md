@@ -26,18 +26,31 @@ The shot box is fixed so that, at 0.002 s, `speed × dt` is shorter than `thickn
 
 **Tunneled** means the sphere center’s maximum x satisfies `center_x − radius > half_thickness + 0.1 mm`. That counts a missed collision and a contact that does not keep the sphere on the near side. Secondary, not gated: contact rate, peak contact penetration, and `(KE_final − KE_init) / KE_init`.
 
-## Status (honest): **PENDING**
+## Status (honest): **PASS**
 
-Official seeds 0/1/2 are recorded by `./run_all.sh` into `experiments/exp1_cpu_tunnel/results.md` and `status.json`. This headline is updated from that run. Thresholds below were written before that run.
+| Check (fixed in `config.yaml` before the run) | Threshold | Result |
+|---|---|---|
+| ON tunneling rate at 2, 4, 8, and 16 ms | ≤ 0.05 | **met** (0.000 at all four) |
+| OFF tunneling rate at 2 ms (1×) | ≤ 0.10 | **met** (0.005 ± 0.009) |
+| OFF tunneling rate at 8 ms (4×) | ≥ 0.35 | **met** (0.792 ± 0.024) |
+| OFF tunneling rate at 16 ms (8×) | ≥ 0.60 | **met** (0.958 ± 0.024) |
 
-| Check (fixed in `config.yaml` before the run) | Threshold |
-|---|---|
-| ON tunneling rate at 2, 4, 8, and 16 ms | ≤ 0.05 |
-| OFF tunneling rate at 2 ms (1×) | ≤ 0.10 |
-| OFF tunneling rate at 8 ms (4×) | ≥ 0.35 |
-| OFF tunneling rate at 16 ms (8×) | ≥ 0.60 |
+Status rule: **PASS** needs all four. **PARTIAL** if ON stays ≤ 0.20 at every primary timestep, OFF − ON ≥ 0.25 at 16 ms, and OFF > ON at 8 ms, but a strict bar fails. **FAIL** otherwise. The 0.35 and 0.60 floors sit below the kinematic skip prior (0.455 at 4×, 0.828 at 8×). All four bars were met.
 
-Status rule: **PASS** needs all four. **PARTIAL** if ON stays ≤ 0.20 at every primary timestep, OFF − ON ≥ 0.25 at 16 ms, and OFF > ON at 8 ms, but a strict bar fails. **FAIL** otherwise. The 0.35 and 0.60 floors sit below the kinematic skip prior (0.455 at 4×, 0.828 at 8×).
+### Tunneling rate, mean ± sample std over seeds 0/1/2
+
+| dt | OFF | ON | Kinematic skip | OFF KE drift | ON KE drift |
+|---|---:|---:|---:|---:|---:|
+| 2 ms (1×) | 0.005 ± 0.009 | **0.000** | 0.000 | −0.974 ± 0.010 | −1.000 |
+| 4 ms (2×) | 0.443 ± 0.050 | **0.000** | 0.010 ± 0.018 | −0.553 ± 0.049 | −1.000 |
+| 8 ms (4×) | 0.792 ± 0.024 | **0.000** | 0.448 ± 0.077 | −0.208 ± 0.024 | −1.000 |
+| 16 ms (8×) | 0.958 ± 0.024 | **0.000** | 0.807 ± 0.055 | −0.042 ± 0.024 | −1.000 |
+
+ON contact rate is 1.000 at every cell. Mean peak contact penetration with the flag on stays about 0.3–0.4 mm. With the flag off it is several millimetres at 2–8 ms, then the 16 ms mean drops to 0.88 mm because most of those shots never generate a contact (contact rate about 0.19) and a miss contributes 0.
+
+OFF tunneling sits above the kinematic skip rate. A sample can overlap the wall only after the center has already crossed the far face. That contact is unilateral and does not push the sphere back, so the shot still counts as a tunnel. At 16 ms the two rates are closer, because most failures are pure misses.
+
+Seed 0 at 2 ms is the only primary cell where the disabled flag lets a shot through: 1/64, rate 0.016. Seeds 1 and 2 at 2 ms are 0. The mean 0.005 is inside the 0.10 hold.
 
 ## Experiment (`experiments/exp1_cpu_tunnel/`)
 
@@ -45,7 +58,7 @@ Status rule: **PASS** needs all four. **PARTIAL** if ON stays ≤ 0.20 at every 
 - **Shots:** 64 per seed. Horizon is a 0.30 m free flight plus 8 settle steps.
 - **Pre-registration:** `config.yaml` holds the hypothesis, the metric, and the thresholds. A disclosed design probe (one deterministic shot, then 40 shots on seed 0) checked the flag bit and that a near-face overlap stops a density-1000 sphere. It did not move a threshold. `smoke.json`, when present, is a 4-shot code-path check only.
 - **Seeds:** 0, 1, 2.
-- **Machine:** CPU only. `./run_all.sh` runs the sweep, the breakpoints, the figure, and the video.
+- **Machine:** 4-vCPU Linux box, `mujoco==4.0.0`, Python 3.12. The official sweep plus tables was under 3 seconds. The OSMesa video added about 6 seconds.
 
 ![plot](experiments/exp1_cpu_tunnel/plot.png)
 
@@ -53,13 +66,13 @@ Tables: `results.md` / `results.csv`. Verdict: `status.json`. Raw rollouts: `raw
 
 ## Breakpoints (`breakpoints.md`)
 
-Seed 0, one controlled projectile per cell. Not part of the PASS rule.
+Seed 0, one controlled projectile per cell (7 mm sphere, 4 m/s, 4 mm wall, unless the cell says otherwise). Not part of the PASS rule.
 
-- **Huge speed.** 20, 80, 300, and 1000 m/s at 2 ms and at 16 ms. The sweep uses pre-step velocity, so a fast constant speed is the case the flag is for, until time-of-impact or the solver gives up.
-- **Huge timestep.** 32 ms through 0.5 s at 4 m/s. No applied acceleration, so a miss here is numerical. The docs say a timestep still cannot be arbitrarily large when acceleration during the step is ignored; that is the next cell.
-- **Thinner wall.** Half-thickness 0.5 mm, 0.1 mm, 0.02 mm, and 0.005 mm, at 16 ms.
-- **Acceleration from rest.** `qvel = 0`, gravity 50, 200, and 800 m/s² along +x, 16 ms, 1 mm wall. The first Euler step moves `a dt²`. Once that step clears the wall, both flags are expected to tunnel.
-- **Wall-clock.** Microseconds per `mj_step`, flag off vs on, 1 and 8 fast spheres, 2 ms and 16 ms, after a warmup.
+- **Huge speed.** 20 to 1000 m/s, at 2 ms and at 16 ms. OFF tunnels in every cell except 20 m/s at 2 ms, where the step still overlaps and the contact holds. ON does not tunnel in any of these cells. At 1000 m/s and 16 ms the disabled sphere is at x = 144 m; the enabled sphere stops at x = −7.6 mm, with 1.4 mm of contact penetration into the 4 mm wall.
+- **Huge timestep.** 32 ms through 0.5 s (250× the default) at 4 m/s. OFF tunnels with no contact. ON stops on the near side in every cell. Nothing diverged. This sweep has no applied acceleration, and it did not find a numerical failure.
+- **Thinner wall.** Half-thickness 0.5 mm down to 0.005 mm, at 16 ms. OFF tunnels. ON does not, including the 0.01 mm wall.
+- **Acceleration from rest.** This is where speculative contacts fail, as the computation chapter describes. Gravity 200 and 800 m/s², sphere released from rest, 16 ms, 1 mm wall: the first Euler step lands at x = 0.021 m and x = 0.175 m. Both flags tunnel and neither records a contact, because the sweep looked at `qvel = 0`. At 50 m/s² the first step only reaches x = −0.017 m. OFF still tunnels on later steps, once the speed has grown. ON does not.
+- **Wall-clock.** After 100 warmup steps, 2000 `mj_step`s. One fast sphere: 1.72 µs/step off vs 1.83 µs/step on at 2 ms (1.07×), and 1.73 vs 1.81 at 16 ms (1.05×). Eight fast spheres: 3.54 vs 4.09 at 2 ms (1.15×), and 3.54 vs 4.24 at 16 ms (1.20×). The flag is a few percent to about 20% more per step on this scene. An 8× timestep that no longer tunnels is still a large cut in steps per simulated second.
 
 ## Run (CPU)
 

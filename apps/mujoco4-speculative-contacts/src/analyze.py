@@ -185,7 +185,7 @@ def _write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
 
 def _plot(summary: dict[str, Any], timesteps: list[float], path: Path) -> None:
     xs = np.array([dt * 1e3 for dt in timesteps], dtype=np.float64)
-    fig, axes = plt.subplots(1, 2, figsize=(10.2, 4.3), constrained_layout=True)
+    fig, axes = plt.subplots(1, 2, figsize=(10.2, 4.5), constrained_layout=True)
     ax = axes[0]
     for mode in ("off", "on"):
         means = np.array([summary[mode][dt]["rate_mean"] for dt in timesteps])
@@ -215,9 +215,9 @@ def _plot(summary: dict[str, Any], timesteps: list[float], path: Path) -> None:
     ax.set_xlabel("Timestep (ms)")
     ax.set_ylabel("Tunneling rate")
     ax.set_title("Sphere vs 4 mm wall")
-    ax.set_ylim(-0.05, 1.05)
+    ax.set_ylim(-0.05, 1.55)
     ax.set_xticks(xs)
-    _bold_legend(ax, frameon=True, loc="upper left")
+    _bold_legend(ax, frameon=False, loc="upper left", fontsize=9, borderpad=0.2)
 
     ax = axes[1]
     for mode in ("off", "on"):
@@ -237,8 +237,9 @@ def _plot(summary: dict[str, Any], timesteps: list[float], path: Path) -> None:
     ax.set_xlabel("Timestep (ms)")
     ax.set_ylabel("Mean peak contact penetration (mm)")
     ax.set_title("Contact penetration")
+    ax.set_ylim(-0.15, 7.4)
     ax.set_xticks(xs)
-    _bold_legend(ax, frameon=True, loc="best")
+    _bold_legend(ax, frameon=False, loc="upper right", fontsize=9, borderpad=0.2)
     fig.savefig(path)
     fig.savefig(path.with_suffix(".pdf"))
     plt.close(fig)

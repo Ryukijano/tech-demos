@@ -115,10 +115,12 @@ def _mujoco_frames(cfg: dict[str, Any], speculative: bool, spec: dict[str, float
     renderer = mujoco.Renderer(model, height=480, width=640)
     cam = mujoco.MjvCamera()
     mujoco.mjv_defaultCamera(cam)
-    cam.lookat[:] = np.array([0.0, 0.0, 0.0])
-    cam.distance = 0.11
+    # Wide enough to show the launch point (x = -0.08 m) and the first
+    # steps after a 16 ms jump, before the missed sphere leaves the view.
+    cam.lookat[:] = np.array([-0.03, 0.0, 0.0])
+    cam.distance = 0.28
     cam.azimuth = 90
-    cam.elevation = -8
+    cam.elevation = -10
     frames: list[np.ndarray] = []
     xs: list[float] = []
 
@@ -129,12 +131,15 @@ def _mujoco_frames(cfg: dict[str, Any], speculative: bool, spec: dict[str, float
         xs.append(float(data.qpos[0]))
 
     grab()
-    steps = scene.n_steps_for(
-        spec["speed"],
-        spec["dt"],
-        float(scene_cfg["travel_m"]),
-        int(scene_cfg["settle_steps"]),
-        None,
+    steps = min(
+        6,
+        scene.n_steps_for(
+            spec["speed"],
+            spec["dt"],
+            float(scene_cfg["travel_m"]),
+            int(scene_cfg["settle_steps"]),
+            None,
+        ),
     )
     for _ in range(steps):
         mujoco.mj_step(model, data)

@@ -23,6 +23,7 @@ One monorepo for sticky / bookmark-worthy tech demos. Prefer adding a new `apps/
 | `apps/world2vec-toy/` | Clean-room world2vec continuous-time latent dynamics on a rendered pendulum (arXiv:2610.40637; official code not released) |
 | `apps/flexglue-doppelganger/` | FlexGlue covisibility head vs doppelganger pairs on CPU ONNX (arXiv:2610.32976; DINOv3 HF weights not used) |
 | `apps/value-forcing-toy/` | Clean-room Value Forcing flow-Bellman return distributions on a tiny MRP (arXiv:2611.02160; official MIT code not vendored) |
+| `apps/mujoco4-speculative-contacts/` | MuJoCo 4.0.0 speculative contacts vs a thin wall (CPU, Apache-2.0; flag on/off tunneling sweep) |
 | `tracking/seen-bookmarks.json` | X bookmarks already turned into demos (`url`, `slug`, `date`) |
 | `docs/` | GitHub Pages showcase site (static HTML/CSS) |
 | `AGENTS.md` | Rules for future cloud agents |

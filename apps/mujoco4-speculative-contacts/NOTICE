@@ -1,0 +1,35 @@
+mujoco4-speculative-contacts — NOTICE
+
+This directory (apps/mujoco4-speculative-contacts/) is a CPU-only clear
+experiment on speculative contacts in MuJoCo 4.0.0. The MuJoCo physics
+engine is used as a PyPI dependency. Its source is not vendored.
+
+  MuJoCo
+  Copyright DeepMind Technologies Limited
+  https://github.com/google-deepmind/mujoco
+  PyPI: mujoco==4.0.0
+  License: Apache License, Version 2.0
+  https://www.apache.org/licenses/LICENSE-2.0
+
+Release notes (6 November 2026):
+  https://github.com/google-deepmind/mujoco/releases/tag/4.0.0
+  https://mujoco.readthedocs.io/en/stable/changelog.html
+
+Announcement:
+  https://github.com/google-deepmind/mujoco/discussions/3773
+
+Speculative contacts:
+  https://mujoco.readthedocs.io/en/latest/computation/speculative.html
+  MJCF flag: <flag speculative="enable"/>, default "disable"
+  Bit: mjENBL_SPECULATIVE (1<<7) in mjModel.opt.enableflags
+
+Found via a bookmarked X post by @_bbelousov. That post was not fetched.
+The feature was checked on the sources above and on an installed
+mujoco==4.0.0 wheel:
+  https://x.com/_bbelousov/status/2119200725008024035
+
+This experiment is not DeepMind's playing-card, Newton's-cradle, or
+robot-arm demonstration, and it does not test elasto-plasticity, MuJoCo
+Studio, or Filament rendering.
+
+No warranty. Research / demo use.

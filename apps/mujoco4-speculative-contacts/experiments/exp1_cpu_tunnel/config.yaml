@@ -1,0 +1,176 @@
+# Fixed BEFORE the official measured run. Do not edit thresholds after seeing
+# those results. A disclosed design probe (one deterministic shot and 40 shots
+# on seed 0) checked that a density-1000 sphere stops when a sample lands on
+# the near face, and that the XML flag sets mjENBL_SPECULATIVE. It tuned no
+# threshold. The official run is seeds 0/1/2 with n_shots below.
+exp_id: exp1_cpu_tunnel
+hypothesis: >
+  With MuJoCo 4.0.0 speculative contacts enabled (MJCF flag speculative="enable",
+  bit mjENBL_SPECULATIVE = 1<<7 in mjModel.opt.enableflags), a free sphere given
+  an initial +x velocity into a thin fixed box stays on the near side of that
+  wall across timesteps 1×, 2×, 4× and 8× the default 0.002 s. With the flag
+  left at its default (disable), the same shots tunnel at 4× and 8×, where a
+  single step can jump the contact window, and the wall still holds at 1×,
+  where every shot's step is shorter than the near-face gap. Averaged over
+  seeds 0, 1 and 2. The two modes differ only by that flag.
+upstream:
+  package: mujoco==4.0.0
+  pypi: https://pypi.org/project/mujoco/4.0.0/
+  repo: https://github.com/google-deepmind/mujoco
+  release: https://github.com/google-deepmind/mujoco/releases/tag/4.0.0
+  changelog: https://mujoco.readthedocs.io/en/stable/changelog.html
+  discussion: https://github.com/google-deepmind/mujoco/discussions/3773
+  computation: https://mujoco.readthedocs.io/en/latest/computation/speculative.html
+  xml_reference: https://mujoco.readthedocs.io/en/stable/XMLreference.html
+  license: Apache-2.0
+  bookmark: https://x.com/_bbelousov/status/2119200725008024035
+  api: >
+    Optional MJCF flag <flag speculative="enable|disable"/>, default disable.
+    Python/C bit mujoco.mjtEnableBit.mjENBL_SPECULATIVE = 128 (1<<7) in
+    mjModel.opt.enableflags. Covers convex primitives and meshes on CPU.
+    Verified against PyPI mujoco==4.0.0, the 4.0.0 changelog, discussion 3773,
+    and the XML reference / speculative-contacts chapter. The X post was not fetched.
+scene:
+  # Primary scene. Chosen so v*dt at 0.002 s is shorter than thickness+radius
+  # for every shot (a discrete sample cannot jump from separated to a center
+  # already past the far face), while v*dt at 0.008 s and 0.016 s usually
+  # clears the whole overlap window.
+  x0: -0.08
+  half_thickness_m: 0.002          # 4 mm wall
+  half_yz_m: 0.05
+  radius_min_m: 0.006
+  radius_max_m: 0.008
+  speed_min_m_s: 2.5
+  speed_max_m_s: 4.5
+  density_kg_m3: 1000
+  gravity: [0.0, 0.0, 0.0]
+  integrator: Euler                # MuJoCo 4.0.0 default (mjINT_EULER)
+  solver: Newton                   # MuJoCo 4.0.0 default (mjSOL_NEWTON)
+  iterations: 100                  # library default
+  ls_iterations: 50                # library default
+  ccd_iterations: 35               # library default
+  solref: "0.002 1"
+  solimp: "0.95 0.99 0.001"
+  condim: 1
+  travel_m: 0.30                   # free-flight distance that would pass the wall
+  settle_steps: 8
+  clear_eps_m: 0.0001
+  default_timestep_s: 0.002
+  timesteps_s: [0.002, 0.004, 0.008, 0.016]
+  n_shots: 64
+  # Kinematic discrete-skip prior, seed 0, 20000 uniform draws, NOT a MuJoCo
+  # result. A shot "skips" if no sampled center overlaps the wall before the
+  # sphere is strictly past the far face. The 4×/8× PASS floors sit below this prior.
+  kinematic_skip_prior:
+    "0.002": 0.0
+    "0.004": 0.0114
+    "0.008": 0.4554
+    "0.016": 0.82785
+media_shot:
+  radius_m: 0.007
+  speed_m_s: 4.0
+  timestep_s: 0.016
+seeds: [0, 1, 2]
+metrics:
+  primary: >
+    tunneling_rate = fraction of shots whose maximum sphere-center x satisfies
+    center_x - radius > half_thickness + clear_eps (the sphere lies strictly
+    on the far side). Counts a missed collision and a detected contact that
+    does not keep the sphere on the near side. Lower is better for speculative
+    ON. The same shot list is reused across modes and timesteps within a seed.
+  secondary:
+    - contact_rate
+    - mean_max_contact_penetration_m
+    - mean_ke_rel_drift
+    - kinematic_skip_rate
+    - wall_s
+  ke_rel_drift: >
+    (KE_final - KE_init) / KE_init from mjData.energy with the energy flag on.
+    A stopped sphere is near -1. A missed collision that keeps its speed is near 0.
+    Report only. Not part of the PASS rule.
+thresholds:
+  pass_condition: >
+    Mean over seeds {0,1,2} of tunneling_rate:
+      speculative ON  <= 0.05 at every timestep in {0.002, 0.004, 0.008, 0.016}
+      AND speculative OFF <= 0.10 at 0.002 s (1×; the wall holds)
+      AND speculative OFF >= 0.35 at 0.008 s (4×)
+      AND speculative OFF >= 0.60 at 0.016 s (8×).
+    0.35 and 0.60 are below the kinematic skip prior at 4× (0.455) and 8× (0.828).
+  status_rule: >
+    PASS if the pass_condition holds.
+    PARTIAL if ON <= 0.20 at every primary timestep AND (OFF - ON) >= 0.25 at
+      0.016 s AND OFF > ON at 0.008 s, but the strict floors or the 1× hold fail.
+    FAIL otherwise.
+  on_max_rate: 0.05
+  off_max_rate_at_1x: 0.10
+  off_min_rate_at_4x: 0.35
+  off_min_rate_at_8x: 0.60
+  partial_on_max_rate: 0.20
+  partial_min_gap_at_8x: 0.25
+breakpoints:
+  seed: 0
+  huge_velocity:
+    story: >
+      Same 4 mm wall and 7 mm sphere as the media shot, initial speed pushed
+      far above the primary band. Pre-step velocity is what speculative
+      contacts sweep, so a large constant speed should still be caught until
+      the time-of-impact search or the solver breaks.
+    speeds_m_s: [20, 80, 300, 1000]
+    timesteps_s: [0.002, 0.016]
+    radius_m: 0.007
+  huge_timestep:
+    story: >
+      Media-shot speed and radius, timestep past 8× and up to 0.5 s. The
+      docs say a timestep cannot be arbitrarily large when acceleration during
+      the step is ignored. This sweep has no applied acceleration, so a failure
+      here is numerical rather than the documented acceleration miss.
+    timesteps_s: [0.032, 0.064, 0.128, 0.256, 0.5]
+    speed_m_s: 4.0
+    radius_m: 0.007
+  thinner_wall:
+    story: >
+      Media-shot speed, radius, and 16 ms timestep. Wall half-thickness from
+      0.5 mm down to 0.005 mm. Speculative contacts are documented for thin
+      convex geoms; this is where a too-thin box stops being a reliable wall.
+    half_thicknesses_m: [0.0005, 0.0001, 0.00002, 0.000005]
+    timestep_s: 0.016
+    speed_m_s: 4.0
+    radius_m: 0.007
+  accel_from_rest:
+    story: >
+      Documented limitation, not a PASS gate. Speculative sweeps use pre-step
+      qvel and ignore acceleration. The sphere starts at rest (qvel=0) and
+      gravity along +x accelerates it toward a 1 mm wall. Semi-implicit Euler
+      moves x by a*dt^2 on the first step. Once that displacement clears the
+      wall, both flags are expected to tunnel. A smaller gravity that does not
+      clear the wall on step 1 can still be caught later, because qvel is then
+      nonzero.
+    timestep_s: 0.016
+    gravities_m_s2: [50, 200, 800]
+    x0: -0.03
+    radius_m: 0.006
+    half_thickness_m: 0.0005
+    n_steps: 30
+  wallclock:
+    story: >
+      CPU microseconds per mj_step, flag off vs on, for 1 and 8 fast spheres
+      against one wall. Warm up, then time a fixed step count. Not a PASS gate.
+      The docs say the extra cost scales with geoms whose step travel exceeds
+      their thickness, and that a larger usable timestep can still win.
+    n_steps: 2000
+    warmup_steps: 100
+    n_spheres: [1, 8]
+    timesteps_s: [0.002, 0.016]
+    speed_m_s: 4.0
+    radius_m: 0.007
+runtime:
+  device: cpu-only
+  max_workers: 4
+  omp_threads_per_worker: 1
+disclosure: >
+  Thresholds, the shot box, the 4 mm wall, solver defaults, and the PASS rule
+  were fixed before the official seeds 0/1/2 run. A design probe on this scene
+  confirmed the flag bit and that an overlapping near-face contact stops a
+  density-1000 sphere; it is not the official result and it did not move a
+  threshold. Kinematic skip priors are geometry of the sampled positions, not
+  MuJoCo output. This is not DeepMind's playing-card or robot-arm demo.

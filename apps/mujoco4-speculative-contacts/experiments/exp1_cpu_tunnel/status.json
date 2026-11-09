@@ -1,0 +1,63 @@
+{
+  "status": "PASS",
+  "checks": {
+    "on_rate_at_most_0.05_all_primary_dts": true,
+    "off_rate_at_most_0.10_at_1x": true,
+    "off_rate_at_least_0.35_at_4x": true,
+    "off_rate_at_least_0.60_at_8x": true,
+    "partial_on_rate_at_most_0.20": true,
+    "partial_gap_at_least_0.25_at_8x": true,
+    "partial_off_above_on_at_4x": true
+  },
+  "mujoco": {
+    "version": "4.0.0",
+    "mjENBL_SPECULATIVE": 128,
+    "mjENBL_ENERGY": 2,
+    "xml_flag": "speculative",
+    "xml_values": [
+      "disable",
+      "enable"
+    ],
+    "default": "disable"
+  },
+  "on_rate_mean": {
+    "0.002": 0.0,
+    "0.004": 0.0,
+    "0.008": 0.0,
+    "0.016": 0.0
+  },
+  "off_rate_mean": {
+    "0.002": 0.005208333333333333,
+    "0.004": 0.4427083333333333,
+    "0.008": 0.7916666666666666,
+    "0.016": 0.9583333333333334
+  },
+  "on_rate_std": {
+    "0.002": 0.0,
+    "0.004": 0.0,
+    "0.008": 0.0,
+    "0.016": 0.0
+  },
+  "off_rate_std": {
+    "0.002": 0.009021097956087904,
+    "0.004": 0.050227347713504976,
+    "0.008": 0.023867581744561665,
+    "0.016": 0.023867581744561665
+  },
+  "kinematic_skip_mean": {
+    "0.002": 0.0,
+    "0.004": 0.010416666666666666,
+    "0.008": 0.4479166666666667,
+    "0.016": 0.8072916666666666
+  },
+  "thresholds": {
+    "pass_condition": "Mean over seeds {0,1,2} of tunneling_rate:\n  speculative ON  <= 0.05 at every timestep in {0.002, 0.004, 0.008, 0.016}\n  AND speculative OFF <= 0.10 at 0.002 s (1\u00d7; the wall holds)\n  AND speculative OFF >= 0.35 at 0.008 s (4\u00d7)\n  AND speculative OFF >= 0.60 at 0.016 s (8\u00d7).\n0.35 and 0.60 are below the kinematic skip prior at 4\u00d7 (0.455) and 8\u00d7 (0.828).\n",
+    "status_rule": "PASS if the pass_condition holds. PARTIAL if ON <= 0.20 at every primary timestep AND (OFF - ON) >= 0.25 at\n  0.016 s AND OFF > ON at 0.008 s, but the strict floors or the 1\u00d7 hold fail.\nFAIL otherwise.\n",
+    "on_max_rate": 0.05,
+    "off_max_rate_at_1x": 0.1,
+    "off_min_rate_at_4x": 0.35,
+    "off_min_rate_at_8x": 0.6,
+    "partial_on_max_rate": 0.2,
+    "partial_min_gap_at_8x": 0.25
+  }
+}

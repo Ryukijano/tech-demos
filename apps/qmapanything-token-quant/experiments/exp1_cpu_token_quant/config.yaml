@@ -1,0 +1,172 @@
+# Fixed on 2026-11-10 BEFORE the official measured run.
+# Do not edit thresholds after seeing official scores.
+# A disclosed smoke may check that the toy instantiates S1/S3 and that the
+# FP head fits. It must not change any number under `thresholds`.
+exp_id: exp1_cpu_token_quant
+hypothesis: >
+  On a CPU toy with MapAnything-like structure — one small special token and
+  many heavy-tailed patch tokens sharing a per-tensor activation grid, metric
+  output read from the special token, special token written only by global
+  blocks — a randomized Hadamard rotation cuts typical-token quantization
+  error but leaves the special-token SNR ratio unchanged and the metric
+  output degraded. A QMapAnything-style row-selective affine correction on
+  top of that rotation restores special-token fidelity and metric-scale error
+  at a small fake-quant latency cost versus rotation alone.
+substitution: >
+  MapAnything (facebookresearch/map-anything, Apache-2.0) is a DINOv2
+  feed-forward geometry transformer and is not run here. QMapAnything code
+  was not available: arXiv:2611.07955 says code and configs will be released
+  upon acceptance. This app is a clean-room toy: a 4-block pre-LN transformer
+  (d=64) trained on synthetic metric scenes. Patch linear inputs get
+  Laplace outlier channels after LayerNorm so the shared absmax grid is
+  heavy-tailed (S3). The scale token bypasses LayerNorm, is updated only in
+  global blocks (S4), and is the only input to the metric-scale head (S2).
+  An auxiliary loss targets residual-stream 1/kappa = 6.02, the MapAnything
+  value in the paper's Table 5. Global qkv/fc1 inputs also rescale the
+  special row onto max-patch L2 / 6.02. A disclosed probe without that pin
+  measured qkv 1/kappa near 95, because Laplace outliers added after
+  LayerNorm dominate the grid; the pin puts the quantizer on the Table 5
+  statistic the config already names. It is not MapAnything, VGGT, or DA3.
+upstream:
+  paper: https://arxiv.org/abs/2611.07955
+  paper_html: https://arxiv.org/html/2611.07955
+  title: "Rotation Is Token-Blind: A Structural Criterion for Post-Training Quantization of Feed-Forward Geometry Transformers"
+  authors: "He, Zhang, Zhang, Sui, See, Boukhers, Yang"
+  host_model: https://github.com/facebookresearch/map-anything
+  host_license: Apache-2.0
+  qmapanything_code: "not released (reproducibility statement: upon acceptance)"
+  bookmark_post_not_fetched: https://x.com/vincieye/status/2119415188013138070
+paper_reference:
+  table2_w4a4_scale_rel: {rtn: 0.48, quarot: 0.20, qmapanything: 0.12, fp: 0.05}
+  table2_w4a8_scale_rel: {rtn: 0.10, quarot: 0.05, qmapanything: 0.05, fp: 0.05}
+  table5_mapanything_w4a4_auc30_eth3d: {fp: 98.9, naive: 77.0, rotation: 83.7, rotation_beta: 88.2, full: 91.4}
+  table5_inv_kappa_s: 6.02
+  table5_gamma: 1.35e5
+  table4_w8a8_latency_vs_fp: {naive: 0.32, ours: 0.32, auc_naive: 91.9, auc_ours: 98.9, auc_fp: 98.9}
+  appendix_d_heldout_scale_token_mse_drop: 0.342
+  quantizer: "symmetric signed absmax, per-output-channel weights, per-tensor activations"
+  rotation: "randomized Hadamard R = D H, signs applied first (App. D)"
+seeds: [0, 1, 2]
+model:
+  d: 64
+  ff: 128
+  n_heads: 4
+  n_patches: 32
+  # frame blocks do not write the scale token (S4). global blocks do.
+  block_kinds: [frame, global, frame, global]
+  kappa_inv_target: 6.02
+  range_loss_weight: 0.05
+  n_outlier_channels: 2
+  outlier_scale: 2.5
+  outlier_gain: 1.0
+  patch_std: 0.5
+  m_lo: 0.5
+  m_hi: 2.0
+training:
+  steps: 300
+  batch_size: 128
+  lr: 0.002
+  weight_decay: 0.0
+  grad_clip: 1.0
+data:
+  n_calib: 512
+  n_test: 256
+runtime:
+  device: cpu
+  torch_threads: 4
+  speed_warmup: 20
+  speed_repeats: 80
+bitwidths:
+  # Gated accuracy is W4A4. Gated latency is W8A8. W4A8 is the paper's
+  # near-lossless setting and is report-only.
+  gated: [[4, 4], [8, 8]]
+  report: [[4, 8]]
+methods: [naive, rotation, uniform, qmap]
+metrics:
+  primary: w4a4_special_token_relative_l2
+  co_primary: w4a4_metric_scale_relative_error
+  speed: w8a8_qmap_over_rotation_latency
+  definitions: >
+    special_rel is the mean over test scenes of ||h_s_quant - h_s_fp||_2 / ||h_s_fp||_2
+    on the final residual scale token. patch_rel is the same mean over patch tokens.
+    special_mse is the mean squared error of that scale token versus FP.
+    metric_rel is the mean of |m_hat - m_true| / |m_true|.
+    uniform is rotation plus the token-uniform bias beta. qmap is uniform plus
+    the row-selective b_s on global blocks only (Eq. 8), fit on the calibration
+    set after rotation. Heads stay in FP. Fake quantization, not packed integers.
+thresholds:
+  # Prop. 1: orthogonal rotation leaves the special/patch SNR-proxy ratio
+  # unchanged (numerical tolerance) and must actually shrink the shared step
+  # on the heavy-tailed qkv and fc1 inputs (Fig. 3b sites).
+  prop1_snr_ratio_rel_change_max: 0.02
+  delta_shrink_min: 1.25
+  # Common-mode: rotation helps typical tokens. Paper W4A4 point rel 0.30 -> 0.18
+  # is a 40% cut. Toy bar is a 20% cut (ratio <= 0.80).
+  w4a4_patch_rel_vs_naive_max: 0.80
+  # Token-blind: special-token relative error stays at least 2x patch error
+  # after rotation. Paper 1/kappa = 6.02 implies a much larger SNR gap; 2x is
+  # the discounted realized-error bar.
+  w4a4_special_over_patch_min: 2.0
+  # Restoration of the special token. App. D: held-out scale-token MSE drops
+  # 34.2% after the affine fit. Toy bar is a 20% drop versus rotation
+  # (ratio <= 0.80), and the MSE being corrected must be real (> 1e-8).
+  w4a4_special_mse_vs_rotation_max: 0.80
+  special_mse_floor: 1.0e-8
+  # Downstream metric scale. Table 2 W4A4: QMap 0.12 / QuaRot 0.20 = 0.60.
+  # Toy bar is ratio <= 0.80. Rotation must still degrade the output:
+  # >= 1.5x the FP error (paper 0.20/0.05 = 4; discounted) AND >= 0.05 absolute
+  # so a numerical zero cannot pass.
+  w4a4_metric_rel_vs_rotation_max: 0.80
+  w4a4_metric_rel_vs_fp_min: 1.5
+  w4a4_rotation_metric_rel_min: 0.05
+  # Row-selective term must beat token-uniform beta on the special token.
+  # Table 3: b_s is not subsumed by beta. Toy bar: 10% further MSE cut.
+  w4a4_special_mse_vs_uniform_max: 0.90
+  # W8A8 latency: Table 4, naive and QMapAnything are the same 0.32x FP32 on
+  # TensorRT. We do not claim that speedup (fake quant on CPU). The bar is
+  # that the row-selective add costs <= 15% versus the same rotated fake quant.
+  w8a8_latency_vs_rotation_max: 1.15
+  # W8A8 ordering, with 2% slack for CPU noise. Paper: naive AUC 91.9, ours 98.9.
+  w8a8_metric_order_slack: 0.02
+pass_rule: >
+  PASS if all of the following hold on the mean over seeds 0/1/2:
+  (1) prop1 SNR-ratio relative change <= prop1_snr_ratio_rel_change_max
+  AND mean qkv/fc1 delta shrink >= delta_shrink_min;
+  (2) W4A4 patch_rel(rotation) <= w4a4_patch_rel_vs_naive_max * patch_rel(naive);
+  (3) W4A4 special_rel(rotation) / patch_rel(rotation) >= w4a4_special_over_patch_min;
+  (4) W4A4 special_mse(rotation) > special_mse_floor AND
+  special_mse(qmap) <= w4a4_special_mse_vs_rotation_max * special_mse(rotation);
+  (5) W4A4 metric_rel(qmap) <= w4a4_metric_rel_vs_rotation_max * metric_rel(rotation);
+  (6) W4A4 metric_rel(rotation) >= w4a4_metric_rel_vs_fp_min * metric_rel(fp)
+  AND metric_rel(rotation) >= w4a4_rotation_metric_rel_min;
+  (7) W4A4 special_mse(uniform) > special_mse_floor AND
+  special_mse(qmap) <= w4a4_special_mse_vs_uniform_max * special_mse(uniform);
+  (8) W8A8 median latency(qmap) / median latency(rotation) <= w8a8_latency_vs_rotation_max;
+  (9) W8A8 metric_rel(qmap) <= (1+slack)*metric_rel(rotation)
+  AND metric_rel(rotation) <= (1+slack)*metric_rel(naive).
+  PARTIAL if (1)(2)(3)(8) hold AND at least one of (4) or (5) holds, but not all nine.
+  FAIL otherwise. Sample standard deviation uses ddof=1.
+  W4A8, up-to-scale point error, Gamma, eta, and breakpoints are report-only.
+disclosure: >
+  Thresholds were written from the arXiv HTML (Tables 2, 3, 4, 5 and Appendix D)
+  before the official three-seed run and were not edited after the smoke or
+  the one-seed design probe. The X post was not fetched. smoke.json is 40
+  steps. The probe (300 steps, seed 0, no pin) fit the FP head (metric rel
+  0.014) but measured qkv 1/kappa ≈ 95 and delta shrink ≈ 4.5. The pin was
+  added so the quantizer sees the pre-registered Table 5 gap of 6.02; no
+  threshold moved. MapAnything weights are not downloaded.
+breakpoints:
+  seed: 0
+  lower_bits: [[3, 3], [2, 2], [4, 2]]
+  patch_counts: [16, 64, 256, 1024]
+  patch_probe_trials: 64
+  patch_probe_layer: "b1.qkv"
+  speed_tokens: [33, 128, 512]
+  speed_batch: 8
+  speed_repeats: 30
+  story: >
+    Push bit-width below the gated settings, grow the number of patch tokens
+    that compete for one absmax (the paper's S1 trend with more views), remove
+    the special token's max-abs deficit and refit b_s (the VGGT-like control,
+    where the grid factor in Gamma is gone), and time one global block as the
+    sequence grows. None of these enter the PASS rule.

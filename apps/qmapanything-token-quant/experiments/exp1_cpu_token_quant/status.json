@@ -1,0 +1,279 @@
+{
+  "status": "FAIL",
+  "gates": {
+    "prop1": true,
+    "common_mode": true,
+    "token_blind": true,
+    "restore_special": false,
+    "restore_metric": false,
+    "still_degrades": true,
+    "row_selective": false,
+    "speed": true,
+    "w8_order": false
+  },
+  "means": {
+    "fp_metric": 0.018635962158441544,
+    "fp_metric_std": 0.00026244947850567556,
+    "snr_ratio_rel_change": 9.268107858950714e-08,
+    "delta_shrink_qkv_fc1": 4.627620011493524,
+    "delta_shrink_std": 0.4148519711552402,
+    "inv_kappa_qkv": 6.020000298817952,
+    "inv_kappa_std": 2.753020616481904e-07,
+    "gamma": 280518.3802083333,
+    "gamma_std": 29704.42074070957,
+    "max_norm_rel_error": 2.477576875511052e-07,
+    "eta_w4": 0.17685694616726763,
+    "eta_std": 0.02103806547749405,
+    "w4_patch_naive": 0.6848476330439249,
+    "w4_patch_rot": 0.3496146500110626,
+    "w4_special_rot": 1.2340679168701172,
+    "w4_special_naive": 1.058959186077118,
+    "w4_special_qmap": 1.154016415278117,
+    "w4_mse_rot": 0.04067336147030195,
+    "w4_mse_uniform": 0.039145233730475106,
+    "w4_mse_qmap": 0.035779627660910286,
+    "w4_metric_naive": 0.6176750163237253,
+    "w4_metric_rot": 0.2646428048610687,
+    "w4_metric_qmap": 0.25631163517634076,
+    "w4_metric_uniform": 0.26274388035138446,
+    "w8_metric_naive": 0.028202729299664497,
+    "w8_metric_rot": 0.0235500776519378,
+    "w8_metric_qmap": 0.024247532710433006,
+    "w8_latency_ratio": 1.0264320931199276,
+    "w4_latency_ratio": 0.9924060575343723
+  },
+  "per_bit": {
+    "W4A4": {
+      "naive": {
+        "special_rel": 1.058959186077118,
+        "patch_rel": 0.6848476330439249,
+        "metric_rel": 0.6176750163237253,
+        "special_mse": 0.03510278028746446,
+        "latency_s": 0.012316399266668061,
+        "upscale_rel": 0.9213679035504659,
+        "metric_points_rel": 0.8018356561660767
+      },
+      "rotation": {
+        "special_rel": 1.2340679168701172,
+        "patch_rel": 0.3496146500110626,
+        "metric_rel": 0.2646428048610687,
+        "special_mse": 0.04067336147030195,
+        "latency_s": 0.02618125796666391,
+        "upscale_rel": 0.23765784998734793,
+        "metric_points_rel": 0.38762351870536804
+      },
+      "uniform": {
+        "special_rel": 1.2147176265716553,
+        "patch_rel": 0.34630828102429706,
+        "metric_rel": 0.26274388035138446,
+        "special_mse": 0.039145233730475106,
+        "latency_s": 0.01541666540000127,
+        "upscale_rel": 0.23887539903322855,
+        "metric_points_rel": 0.38757165273030597
+      },
+      "qmap": {
+        "special_rel": 1.154016415278117,
+        "patch_rel": 0.3463163375854492,
+        "metric_rel": 0.25631163517634076,
+        "special_mse": 0.035779627660910286,
+        "latency_s": 0.02598243899998731,
+        "upscale_rel": 0.23866275946299234,
+        "metric_points_rel": 0.3780839244524638
+      }
+    },
+    "W8A8": {
+      "naive": {
+        "special_rel": 0.1473484014471372,
+        "patch_rel": 0.05003158996502558,
+        "metric_rel": 0.028202729299664497,
+        "special_mse": 0.0005744526570197195,
+        "latency_s": 0.011913107433322996,
+        "upscale_rel": 0.04983942831556002,
+        "metric_points_rel": 0.060236177096764244
+      },
+      "rotation": {
+        "special_rel": 0.07544005289673805,
+        "patch_rel": 0.019432684717079002,
+        "metric_rel": 0.0235500776519378,
+        "special_mse": 0.00014878984560103467,
+        "latency_s": 0.02226620863333058,
+        "upscale_rel": 0.03573253626624743,
+        "metric_points_rel": 0.04561492552359899
+      },
+      "uniform": {
+        "special_rel": 0.07529756302634875,
+        "patch_rel": 0.019293516253431637,
+        "metric_rel": 0.023616846650838852,
+        "special_mse": 0.00014820237023135027,
+        "latency_s": 0.01764009609999751,
+        "upscale_rel": 0.03594102958838145,
+        "metric_points_rel": 0.04575866709152857
+      },
+      "qmap": {
+        "special_rel": 0.07536875084042549,
+        "patch_rel": 0.01928980089724064,
+        "metric_rel": 0.024247532710433006,
+        "special_mse": 0.00014783846563659608,
+        "latency_s": 0.02285475113335451,
+        "upscale_rel": 0.035972870886325836,
+        "metric_points_rel": 0.04616462936004003
+      }
+    },
+    "W4A8": {
+      "naive": {
+        "special_rel": 0.23445149759451547,
+        "patch_rel": 0.10464729865392049,
+        "metric_rel": 0.030712446197867393,
+        "special_mse": 0.0014548322651535273,
+        "latency_s": 0.012291556900011831,
+        "upscale_rel": 0.07722913225491841,
+        "metric_points_rel": 0.08582056562105815
+      },
+      "rotation": {
+        "special_rel": 0.2697102228800456,
+        "patch_rel": 0.11541323115428288,
+        "metric_rel": 0.031748631969094276,
+        "special_mse": 0.0019614347256720066,
+        "latency_s": 0.022233184900005653,
+        "upscale_rel": 0.06729012727737427,
+        "metric_points_rel": 0.07825285693009694
+      },
+      "uniform": {
+        "special_rel": 0.2348256210486094,
+        "patch_rel": 0.10625665138165157,
+        "metric_rel": 0.02969571885963281,
+        "special_mse": 0.0015030591748654842,
+        "latency_s": 0.01770175700000133,
+        "upscale_rel": 0.06782445808251698,
+        "metric_points_rel": 0.07734779765208562
+      },
+      "qmap": {
+        "special_rel": 0.18034669756889343,
+        "patch_rel": 0.10627692192792892,
+        "metric_rel": 0.028771890327334404,
+        "special_mse": 0.0009013079300833245,
+        "latency_s": 0.022839313700023924,
+        "upscale_rel": 0.06779653703173001,
+        "metric_points_rel": 0.07704721887906392
+      }
+    }
+  },
+  "per_bit_std": {
+    "W4A4": {
+      "naive": {
+        "special_rel": 0.1487408864018919,
+        "patch_rel": 0.0477344685451347,
+        "metric_rel": 0.24918457922727588,
+        "special_mse": 0.007608904799213512,
+        "latency_s": 0.0006087584091947564,
+        "upscale_rel": 0.04120462316521411,
+        "metric_points_rel": 0.08950683136871627
+      },
+      "rotation": {
+        "special_rel": 0.15782858194721341,
+        "patch_rel": 0.07252813501653912,
+        "metric_rel": 0.015205594484973812,
+        "special_mse": 0.0054920382798343366,
+        "latency_s": 5.732395393411101e-05,
+        "upscale_rel": 0.033151914240111054,
+        "metric_points_rel": 0.041696329318667597
+      },
+      "uniform": {
+        "special_rel": 0.14413852448850908,
+        "patch_rel": 0.07254246837847325,
+        "metric_rel": 0.014299589546957906,
+        "special_mse": 0.004960746870250214,
+        "latency_s": 5.6605052152848e-05,
+        "upscale_rel": 0.03302661675240116,
+        "metric_points_rel": 0.03877583827424357
+      },
+      "qmap": {
+        "special_rel": 0.12003554661221526,
+        "patch_rel": 0.07242337137156257,
+        "metric_rel": 0.011057146275174205,
+        "special_mse": 0.003922425747798576,
+        "latency_s": 0.00015115282135251356,
+        "upscale_rel": 0.03420731730529212,
+        "metric_points_rel": 0.02011678255638183
+      }
+    },
+    "W8A8": {
+      "naive": {
+        "special_rel": 0.03147832751610594,
+        "patch_rel": 0.010083780996973093,
+        "metric_rel": 0.003364043329040426,
+        "special_mse": 0.00015587491386915038,
+        "latency_s": 6.110604873809939e-05,
+        "upscale_rel": 0.005166428175329819,
+        "metric_points_rel": 0.005466185874023415
+      },
+      "rotation": {
+        "special_rel": 0.018423442752347835,
+        "patch_rel": 0.004139448829973077,
+        "metric_rel": 0.001045109715256725,
+        "special_mse": 5.3155029918108364e-05,
+        "latency_s": 0.006647480017337425,
+        "upscale_rel": 0.0023443725232954768,
+        "metric_points_rel": 0.0019645178641218694
+      },
+      "uniform": {
+        "special_rel": 0.018097304379627012,
+        "patch_rel": 0.00419096473576273,
+        "metric_rel": 0.0013245985296717567,
+        "special_mse": 5.065440389254929e-05,
+        "latency_s": 0.003889551461232469,
+        "upscale_rel": 0.0019903775514807146,
+        "metric_points_rel": 0.0019261124777094434
+      },
+      "qmap": {
+        "special_rel": 0.01855719493314392,
+        "patch_rel": 0.004205344031261069,
+        "metric_rel": 0.0005753805105670664,
+        "special_mse": 5.193318396896145e-05,
+        "latency_s": 0.00525445991205442,
+        "upscale_rel": 0.002001631023680423,
+        "metric_points_rel": 0.0014389778715020079
+      }
+    },
+    "W4A8": {
+      "naive": {
+        "special_rel": 0.022042968108156053,
+        "patch_rel": 0.005729071323909335,
+        "metric_rel": 0.005573047839645513,
+        "special_mse": 9.903021493923594e-05,
+        "latency_s": 0.0009087987026648405,
+        "upscale_rel": 0.0042999663161275925,
+        "metric_points_rel": 0.0023576888628970972
+      },
+      "rotation": {
+        "special_rel": 0.005756560170015821,
+        "patch_rel": 0.011339890875674401,
+        "metric_rel": 0.0059755015885578815,
+        "special_mse": 0.0002133594225999092,
+        "latency_s": 0.006646979416539183,
+        "upscale_rel": 0.006472193725513645,
+        "metric_points_rel": 0.005023013715608065
+      },
+      "uniform": {
+        "special_rel": 0.027644673801402286,
+        "patch_rel": 0.01256486378353612,
+        "metric_rel": 0.00738317194765227,
+        "special_mse": 0.0001331834464158553,
+        "latency_s": 0.0036174466373028675,
+        "upscale_rel": 0.007434487302104821,
+        "metric_points_rel": 0.0036672408743171317
+      },
+      "qmap": {
+        "special_rel": 0.02133019996387604,
+        "patch_rel": 0.012574453634948237,
+        "metric_rel": 0.009122185811993843,
+        "special_mse": 9.170641967702487e-05,
+        "latency_s": 0.005472337160228348,
+        "upscale_rel": 0.007517626782126463,
+        "metric_points_rel": 0.004261147429627809
+      }
+    }
+  },
+  "paper_code_available": false,
+  "substitution": "clean-room CPU toy; MapAnything weights not run; QMapAnything code not released"
+}

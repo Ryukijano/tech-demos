@@ -1,0 +1,168 @@
+{
+  "exp_id": "exp1_cpu_token_quant",
+  "smoke": true,
+  "seeds": {
+    "0": {
+      "seed": 0,
+      "train_s": 0.4825485849996767,
+      "train_loss": 0.043564826250076294,
+      "n_params": 136451,
+      "fp": {
+        "metric_rel": 0.0960211530327797,
+        "upscale_rel": 0.12875841557979584,
+        "lambda_s": 0.0017043418483808637,
+        "lambda_patch": 0.0,
+        "inv_kappa_qkv": 6.020000457763672,
+        "inv_kappa_residual": 8.022939682006836,
+        "gamma": 855579.6875,
+        "qkv_max_over_p99": 5.548097610473633,
+        "frame_scale_delta": 0.0,
+        "global_scale_delta": 1.5548658967018127,
+        "snr_ratio_rel_change": 7.630414303183564e-08,
+        "delta_shrink_all": 3.124694946049783,
+        "delta_shrink_qkv_fc1": 5.0552875212958615,
+        "max_norm_rel_error": 2.441997821733821e-07
+      },
+      "bits": {
+        "W4A4": {
+          "methods": {
+            "naive": {
+              "special_rel": 0.9427582025527954,
+              "patch_rel": 0.6257642507553101,
+              "special_mse": 0.059727031737565994,
+              "metric_rel": 0.6701151132583618,
+              "metric_rel_vs_fp": 0.6526679396629333,
+              "upscale_rel": 0.8343186974525452,
+              "metric_points_rel": 0.7874964475631714,
+              "latency_s": 0.003448191999723349
+            },
+            "rotation": {
+              "special_rel": 0.811255931854248,
+              "patch_rel": 0.2908509075641632,
+              "special_mse": 0.03800094500184059,
+              "metric_rel": 0.2289075404405594,
+              "metric_rel_vs_fp": 0.22157011926174164,
+              "upscale_rel": 0.2501094341278076,
+              "metric_points_rel": 0.3520163893699646,
+              "latency_s": 0.0043225310000707395
+            },
+            "uniform": {
+              "special_rel": 0.7719694375991821,
+              "patch_rel": 0.2855798900127411,
+              "special_mse": 0.03592763468623161,
+              "metric_rel": 0.21107706427574158,
+              "metric_rel_vs_fp": 0.19065064191818237,
+              "upscale_rel": 0.24978524446487427,
+              "metric_points_rel": 0.3374919295310974,
+              "latency_s": 0.0043006310002056125
+            },
+            "qmap": {
+              "special_rel": 0.7313200235366821,
+              "patch_rel": 0.28557148575782776,
+              "special_mse": 0.03346863389015198,
+              "metric_rel": 0.2034216672182083,
+              "metric_rel_vs_fp": 0.19724389910697937,
+              "upscale_rel": 0.251351535320282,
+              "metric_points_rel": 0.3387913703918457,
+              "latency_s": 0.004585045999647264
+            }
+          },
+          "eta_heldout_special_mse_drop": 0.1250354650925027
+        },
+        "W8A8": {
+          "methods": {
+            "naive": {
+              "special_rel": 0.09091619402170181,
+              "patch_rel": 0.042471881955862045,
+              "special_mse": 0.0004649125621654093,
+              "metric_rel": 0.09558425843715668,
+              "metric_rel_vs_fp": 0.0162916649132967,
+              "upscale_rel": 0.13181611895561218,
+              "metric_points_rel": 0.1685609519481659,
+              "latency_s": 0.0034025439999822993
+            },
+            "rotation": {
+              "special_rel": 0.045503631234169006,
+              "patch_rel": 0.015961235389113426,
+              "special_mse": 0.000124663274618797,
+              "metric_rel": 0.09619171172380447,
+              "metric_rel_vs_fp": 0.012810518965125084,
+              "upscale_rel": 0.12965305149555206,
+              "metric_points_rel": 0.16838489472866058,
+              "latency_s": 0.0041428240001550876
+            },
+            "uniform": {
+              "special_rel": 0.04589490592479706,
+              "patch_rel": 0.015749268233776093,
+              "special_mse": 0.00012294022599235177,
+              "metric_rel": 0.09684393554925919,
+              "metric_rel_vs_fp": 0.011408722028136253,
+              "upscale_rel": 0.12943865358829498,
+              "metric_points_rel": 0.1686425358057022,
+              "latency_s": 0.004171630000200821
+            },
+            "qmap": {
+              "special_rel": 0.04437801614403725,
+              "patch_rel": 0.015744846314191818,
+              "special_mse": 0.00011741953494492918,
+              "metric_rel": 0.09612558782100677,
+              "metric_rel_vs_fp": 0.011019484139978886,
+              "upscale_rel": 0.12940925359725952,
+              "metric_points_rel": 0.16797101497650146,
+              "latency_s": 0.004422271000294131
+            }
+          },
+          "eta_heldout_special_mse_drop": null
+        },
+        "W4A8": {
+          "methods": {
+            "naive": {
+              "special_rel": 0.15152232348918915,
+              "patch_rel": 0.09391981363296509,
+              "special_mse": 0.0013184365816414356,
+              "metric_rel": 0.09465854614973068,
+              "metric_rel_vs_fp": 0.025754304602742195,
+              "upscale_rel": 0.1496938019990921,
+              "metric_points_rel": 0.18396542966365814,
+              "latency_s": 0.00402864799980307
+            },
+            "rotation": {
+              "special_rel": 0.1802310198545456,
+              "patch_rel": 0.11984026432037354,
+              "special_mse": 0.0019043349893763661,
+              "metric_rel": 0.09885188937187195,
+              "metric_rel_vs_fp": 0.018748845905065536,
+              "upscale_rel": 0.14697930216789246,
+              "metric_points_rel": 0.179432213306427,
+              "latency_s": 0.0061785359998793865
+            },
+            "uniform": {
+              "special_rel": 0.1589464247226715,
+              "patch_rel": 0.10670328140258789,
+              "special_mse": 0.0014682516921311617,
+              "metric_rel": 0.09236002713441849,
+              "metric_rel_vs_fp": 0.02050943858921528,
+              "upscale_rel": 0.1466951072216034,
+              "metric_points_rel": 0.17552611231803894,
+              "latency_s": 0.005848907000199688
+            },
+            "qmap": {
+              "special_rel": 0.12351525574922562,
+              "patch_rel": 0.1067463830113411,
+              "special_mse": 0.0009078335715457797,
+              "metric_rel": 0.09318140149116516,
+              "metric_rel_vs_fp": 0.0186378862708807,
+              "upscale_rel": 0.14660854637622833,
+              "metric_points_rel": 0.17621508240699768,
+              "latency_s": 0.007390955000118993
+            }
+          },
+          "eta_heldout_special_mse_drop": null
+        }
+      }
+    }
+  },
+  "wall_s": 1.8244194779999816,
+  "torch": "2.15.0+cpu",
+  "threads": 4
+}

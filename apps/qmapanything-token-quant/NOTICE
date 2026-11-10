@@ -1,0 +1,27 @@
+qmapanything-token-quant demo — NOTICE
+
+This directory (apps/qmapanything-token-quant/) is a CPU-only clear-experiment
+toy inspired by:
+
+  He, Zhang, Zhang, Sui, See, Boukhers, and Yang,
+  "Rotation Is Token-Blind: A Structural Criterion for Post-Training
+  Quantization of Feed-Forward Geometry Transformers",
+  arXiv:2611.07955 (November 2026)
+  https://arxiv.org/abs/2611.07955
+  https://arxiv.org/html/2611.07955
+
+The reproducibility statement says code and configuration files will be
+released upon acceptance. No QMapAnything repository was found on 2026-11-10.
+The host model MapAnything lives at
+https://github.com/facebookresearch/map-anything (Apache-2.0) and is not
+vendored and not executed. This app does not download weights.
+
+Found via a bookmarked X post by @vincieye:
+  https://x.com/vincieye/status/2119415188013138070
+That post was not fetched. The claim was checked on the arXiv HTML.
+
+The Hadamard transform and symmetric absmax quantizer implemented here are
+classical. QuaRot (Ashkboos et al., 2024) is cited by the paper as the
+rotation baseline and is not vendored.
+
+No warranty. Research / demo use.

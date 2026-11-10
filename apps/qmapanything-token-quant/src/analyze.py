@@ -110,7 +110,7 @@ def _status(flags: dict[str, bool]) -> str:
 
 
 def _plot(stats_mean: dict[str, dict[str, float]], stats_std: dict[str, dict[str, float]], path_png: Path, path_pdf: Path) -> None:
-    fig, axes = plt.subplots(1, 2, figsize=(6.75, 3.15), sharey=True)
+    fig, axes = plt.subplots(1, 2, figsize=(6.75, 3.15), sharey=False)
     metric_keys = [("special_rel", "Special token"), ("patch_rel", "Patch token"), ("metric_rel", "Metric scale")]
     show = ("naive", "rotation", "qmap")
     for ax, tag, title in zip(axes, ("W4A4", "W8A8"), ("W4A4", "W8A8")):
@@ -133,7 +133,7 @@ def _plot(stats_mean: dict[str, dict[str, float]], stats_std: dict[str, dict[str
             )
         ax.set_xticks(x, [label for _, label in metric_keys])
         ax.set_title(title)
-        ax.set_ylabel("Relative error" if tag == "W4A4" else "")
+        ax.set_ylabel("Relative error")
         ax.spines["top"].set_visible(False)
         ax.spines["right"].set_visible(False)
     _bold_legend(axes[1], frameon=False, loc="upper right")

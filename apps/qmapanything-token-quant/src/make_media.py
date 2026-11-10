@@ -131,7 +131,7 @@ def _video(frame_dir: Path, dest: Path) -> str:
         ffmpeg,
         "-y",
         "-framerate",
-        "2",
+        "1",
         "-i",
         str(frame_dir / "frame_%03d.png"),
         "-c:v",

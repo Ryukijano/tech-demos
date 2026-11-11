@@ -1,0 +1,164 @@
+# Fixed on 2026-11-11 BEFORE the official measured run.
+# Do not edit thresholds, datasets, or budgets after seeing official scores.
+# A disclosed smoke may check that FAISS imports and that one tiny train
+# returns finite centroids. It must not change any number under `thresholds`.
+# Runtime-sizing probes on the same day measured wall time of a few
+# (n, d, k) shapes so this file stays inside a few CPU minutes. Those probes
+# were not the seeds below, and they were not used to move 1.01 or 0.10.
+exp_id: exp1_cpu_emeans
+hypothesis: >
+  On CPU, FAISS 1.16.0 e-means (NumpyEmeans, scaling laws left on auto,
+  no batch or step override) reaches the training k-means objective of
+  FAISS Lloyd at 25 iterations within 1% after 2.5 epochs, which is 10x
+  fewer epochs, and does so in at most 1/10 the wall-clock time.
+substitution: >
+  This is not a reimplementation. e-means is faiss.contrib.e_means.NumpyEmeans
+  from faiss-cpu 1.16.0. Lloyd is faiss.Kmeans from the same build. The
+  library's shipped batch and step coefficients differ slightly from the
+  paper's Table 2; the run uses the library values and does not retune them.
+  Shipped initial EMA mass is 2^-16; the paper writes 1e-10. Both are left
+  as the library ships them. No GPU, no IVF assignment, no DINO10B.
+upstream:
+  paper: https://arxiv.org/abs/2611.09501
+  paper_html: https://arxiv.org/html/2611.09501
+  project: https://e-means.github.io/
+  faiss_repo: https://github.com/facebookresearch/faiss
+  faiss_tree: https://github.com/facebookresearch/faiss/tree/v1.16.0/contrib/e_means
+  faiss_changelog: https://github.com/facebookresearch/faiss/blob/v1.16.0/CHANGELOG.md
+  faiss_version: "1.16.0"
+  faiss_license: MIT
+  bookmark_post_not_fetched: https://x.com/swann_bessa/status/2120200714630594911
+paper_reference:
+  abstract_epochs_to_lloyd25: "1.4 to 2.6"
+  abstract_gpu_speedup: "10-45x vs Flash-KMeans"
+  table11_cpu_speedup: "8-15x vs Faiss on 64 cores, VIBE"
+  lloyd_budget_iterations: 25
+  init: "random rows of the training set, shared by both methods"
+  objective: "mean squared L2 to the nearest centroid"
+seeds: [0, 1, 2]
+epoch_budgets: ["1", "2", "2.5", "5"]
+gate_epochs: "2.5"
+lloyd_iterations: 25
+baseline:
+  # Library defaults that we keep: nredo=1, spherical=false, gpu=false,
+  # verbose=false, niter=25. Two sampling caps are overridden so Lloyd sees
+  # the full matrix. The library default max_points_per_centroid=256 would
+  # train on a subset and would not be the paper's Faiss-CPU baseline
+  # (benchs/e_means/paper_bench.py sets 1e9 and min_points_per_centroid=1).
+  nredo: 1
+  spherical: false
+  gpu: false
+  max_points_per_centroid: 1000000000
+  min_points_per_centroid: 1
+  shared_init: true
+e_means:
+  batch_law: auto
+  # null means the library picks alpha0 and the batch size.
+  batch_size: null
+  alpha0: null
+metrics:
+  primary: train_mse_ratio_at_gate_epochs
+  co_primary: wall_time_ratio_at_gate_epochs
+  definitions: >
+    train_mse is the mean, over training rows, of squared L2 distance to the
+    nearest final centroid (faiss.knn, k=1). The same scorer is used for both
+    methods. train_mse_ratio is e-means train_mse at gate_epochs divided by
+    Lloyd train_mse at lloyd_iterations, computed per seed. wall_time_ratio is
+    the same quotient of perf_counter around train() only, excluding data
+    generation and the scoring search. Test MSE is report-only.
+thresholds:
+  train_mse_ratio_max: 1.01
+  wall_time_ratio_max: 0.10
+pass_rule: >
+  PASS if, on every gated dataset, the mean over seeds 0/1/2 of
+  train_mse_ratio is <= train_mse_ratio_max AND the mean of wall_time_ratio
+  is <= wall_time_ratio_max.
+  PARTIAL if every gated dataset meets the train_mse_ratio bar and at least
+  one misses the wall_time_ratio bar.
+  FAIL if any gated dataset misses the train_mse_ratio bar.
+  Sample standard deviation uses ddof=1. Breakpoints, the library-default
+  subsample control, test MSE, and the epoch ladder other than 2.5 are
+  report-only.
+disclosure: >
+  Bars 1.01 and 0.10 were taken from the claim (within 1%, 10x fewer epochs
+  and an order-of-magnitude wall-clock cut) before the official three-seed
+  run. The X post was not fetched. smoke.json is a tiny mixture, not a gate.
+runtime:
+  device: cpu
+  workers: 2
+  omp_threads: 2
+datasets:
+  mixture:
+    family: mixture
+    n_train: 20000
+    n_test: 4000
+    d: 32
+    k: 512
+    dataset_seed: 1000
+    zipf: false
+  stretched:
+    family: stretched
+    n_train: 20000
+    n_test: 4000
+    d: 64
+    k: 512
+    stretch_a: 1.0
+    dataset_seed: 1001
+  mnist:
+    family: mnist
+    n_train: 10000
+    n_test: 2000
+    k: 256
+    dataset_seed: 1002
+    urls:
+      - https://storage.googleapis.com/cvdf-datasets/mnist/train-images-idx3-ubyte.gz
+      - https://ossci-datasets.s3.amazonaws.com/mnist/train-images-idx3-ubyte.gz
+    label_urls:
+      - https://storage.googleapis.com/cvdf-datasets/mnist/train-labels-idx1-ubyte.gz
+      - https://ossci-datasets.s3.amazonaws.com/mnist/train-labels-idx1-ubyte.gz
+breakpoints:
+  seed: 0
+  story: >
+    Push k until n/k is 4, push dimension to 512, switch the mixture to Zipf
+    sizes, and shrink n to 200. The d=16 tiny case also hits the library
+    rule that batch_law=auto selects the quality law at d<=16. None of these
+    enter the PASS rule. A separate control runs Lloyd on the mixture with
+    the library's default point caps (max 256 per centroid, min 39) so the
+    full-data override is visible.
+  cases:
+    - name: large_k
+      family: mixture
+      n_train: 8000
+      n_test: 1000
+      d: 32
+      k: 2000
+      dataset_seed: 2000
+      zipf: false
+    - name: high_dim
+      family: stretched
+      n_train: 4000
+      n_test: 800
+      d: 512
+      k: 64
+      stretch_a: 1.0
+      dataset_seed: 2001
+    - name: imbalanced
+      family: mixture
+      n_train: 20000
+      n_test: 4000
+      d: 32
+      k: 128
+      dataset_seed: 2002
+      zipf: true
+    - name: tiny_n
+      family: mixture
+      n_train: 200
+      n_test: 80
+      d: 16
+      k: 20
+      dataset_seed: 2003
+      zipf: false
+control:
+  dataset: mixture
+  seed: 0
+mnist_cache: work/mnist

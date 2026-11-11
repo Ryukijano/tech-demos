@@ -1,0 +1,31 @@
+{
+  "smoke": true,
+  "result": {
+    "role": "smoke",
+    "name": "smoke",
+    "seed": 0,
+    "n": 400,
+    "d": 16,
+    "k": 8,
+    "n_test": 80,
+    "lloyd": {
+      "train_mse": 6.07859925866127,
+      "test_mse": 6.362054915726185,
+      "seconds": 0.00037623299999722803
+    },
+    "emeans": {
+      "1": {
+        "train_mse": 6.408825932443142,
+        "test_mse": 6.061150336265564,
+        "seconds": 0.012721044000045367,
+        "batch_size": 1,
+        "alpha0": 0.021319388905835648,
+        "batch_law": "quality",
+        "n_splits": 7,
+        "train_mse_ratio": 1.0543261135879847,
+        "wall_ratio": 33.811611422015325
+      }
+    }
+  },
+  "faiss": "1.16.0"
+}

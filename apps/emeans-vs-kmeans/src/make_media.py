@@ -138,7 +138,7 @@ def main() -> None:
     if frame_dir.exists():
         shutil.rmtree(frame_dir)
     frame_dir.mkdir(parents=True)
-    reveals = [1, 2, 3, 4, 4, 4]
+    reveals = [1, 1, 2, 2, 3, 3, 4, 4, 4, 4, 4, 4]
     for index, reveal in enumerate(reveals):
         _draw(status, media, reveal, frame_dir / f"frame_{index:03d}.png")
     still = ART / "emeans-vs-kmeans.png"

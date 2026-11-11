@@ -25,6 +25,7 @@ One monorepo for sticky / bookmark-worthy tech demos. Prefer adding a new `apps/
 | `apps/value-forcing-toy/` | Clean-room Value Forcing flow-Bellman return distributions on a tiny MRP (arXiv:2611.02160; official MIT code not vendored) |
 | `apps/mujoco4-speculative-contacts/` | MuJoCo 4.0.0 speculative contacts vs a thin wall (CPU, Apache-2.0; flag on/off tunneling sweep) |
 | `apps/qmapanything-token-quant/` | Clean-room QMapAnything token-quant toy: Hadamard vs row-selective W4A4/W8A8 (arXiv:2611.07955; code not released; CPU, FAIL) |
+| `apps/emeans-vs-kmeans/` | FAISS 1.16.0 e-means vs Lloyd k-means on CPU (arXiv:2611.09501; FAISS not vendored; PARTIAL) |
 | `tracking/seen-bookmarks.json` | X bookmarks already turned into demos (`url`, `slug`, `date`) |
 | `docs/` | GitHub Pages showcase site (static HTML/CSS) |
 | `AGENTS.md` | Rules for future cloud agents |

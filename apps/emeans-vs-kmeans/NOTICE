@@ -1,0 +1,37 @@
+emeans-vs-kmeans demo — NOTICE
+
+This directory (apps/emeans-vs-kmeans/) runs a CPU comparison of e-means and
+Lloyd k-means. It does not reimplement e-means.
+
+e-means is the algorithm in:
+
+  Bessa, Mazaré, Szilvasy, Touvron, Picard, Douze, and Jégou,
+  "e-means: outperforming k-means (in one-tenth the epochs)",
+  arXiv:2611.09501 (November 2026)
+  https://arxiv.org/abs/2611.09501
+  https://arxiv.org/html/2611.09501
+  Project page: https://e-means.github.io/
+
+The implementation used here is the one released in FAISS 1.16.0
+(9 November 2026), import path faiss.contrib.e_means.NumpyEmeans:
+
+  https://github.com/facebookresearch/faiss/tree/v1.16.0/contrib/e_means
+  https://github.com/facebookresearch/faiss/blob/v1.16.0/CHANGELOG.md
+  PyPI package: faiss-cpu==1.16.0
+
+FAISS is Copyright (c) Meta Platforms, Inc. and affiliates, and is licensed
+under the MIT License:
+  https://github.com/facebookresearch/faiss/blob/v1.16.0/LICENSE
+
+FAISS is not copied into this directory. Install it from PyPI. The Lloyd
+baseline is faiss.Kmeans from that same build.
+
+Found via a bookmarked X post by @swann_bessa:
+  https://x.com/swann_bessa/status/2120200714630594911
+That post was not fetched. The claim was checked on the arXiv HTML, the
+project page, the FAISS changelog, and the installed 1.16.0 module.
+
+MNIST digits, if downloaded into work/mnist/, come from the CVDF / OSSCI
+mirrors of the Yann LeCun dataset and are not redistributed here.
+
+No warranty. Research / demo use.

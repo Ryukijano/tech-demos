@@ -1,0 +1,14 @@
+# Runtime imports for VisMatch 1.4.0's raco-lightglue and aliked-lightglue
+# on CPU. Install torch and torchvision from the CPU wheel index first,
+# then `pip install vismatch==1.4.0 --no-deps`, then this file.
+# vismatch's declared extras (e2cnn, uniception, poselib, tensorflow, ...)
+# belong to other matchers and are not imported by this experiment.
+kornia>=0.7.3,<0.8.3
+opencv-python-headless>=4.5.4
+numpy>=1.26
+matplotlib>=3.8
+pyyaml>=6.0
+packaging>=20.9
+huggingface_hub>=0.22
+yacs>=0.1.8
+Pillow>=10

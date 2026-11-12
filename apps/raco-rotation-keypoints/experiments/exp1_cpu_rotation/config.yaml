@@ -1,0 +1,189 @@
+# Fixed on 2026-11-12 BEFORE the official measured run.
+# Do not edit thresholds, angles, the image pool, or the keypoint budget
+# after seeing official scores.
+# A disclosed smoke may check that both detectors return finite keypoints
+# on one synthetic image. It must not change any number under `thresholds`.
+exp_id: exp1_cpu_rotation
+hypothesis: >
+  On CPU, RaCo keypoints from VisMatch 1.4.0 stay more repeatable under
+  known in-plane rotations than ALIKED-N16 from that same install.
+  Mean repeatability over 30-150 degrees is at least 0.10 higher, and
+  RaCo's own repeatability drops by at most 0.10 from 0 degrees to its
+  worst angle on the sweep.
+substitution: >
+  This is not a reimplementation. Detectors are the objects
+  get_matcher builds: raco-lightglue's RaCo extractor (ranker and
+  covariance heads off, as that wrapper ships them) and
+  aliked-lightglue's ALIKED extractor left on model_name aliked-n16.
+  aliked-n16rot is not loaded. Descriptors and LightGlue are constructed
+  by get_matcher and are not used in the score. ALIKED's internal
+  long-edge resize of 1024 is overridden with resize=None so both
+  detectors run on the same 512 canvas the paper uses. ALIKED's default
+  detection_threshold of 0.2 is replaced by a top-k of the same budget
+  as RaCo, because the paper extracts a fixed count of 200 keypoints and
+  a threshold would return a different count. SuperPoint is not the
+  baseline: RaCo's backbone is ALIKED-N(16) (paper Sec 4.1), Table 3
+  reports ALIKED's rotation AUC, and SuperPoint's weights are under a
+  restrictive license. RaCo is not an equivariant architecture. The
+  paper says full-circle rotation augmentation produces the robustness,
+  and that equivariant convolutions add about 3 points of repeatability
+  at about 10x the inference cost. The bookmark's "rotationally
+  equivariant" wording is treated as a claim about repeatability under
+  rotation, which is what this file measures.
+upstream:
+  vismatch_repo: https://github.com/gmberton/vismatch
+  vismatch_release: https://github.com/gmberton/vismatch/releases/tag/v1.4.0
+  vismatch_pypi: https://pypi.org/project/vismatch/1.4.0/
+  vismatch_version: "1.4.0"
+  vismatch_license: BSD-3-Clause
+  raco_submodule: 35790eb48074ed14839d0fb496b8806caa4e766b
+  lightglue_submodule: eb42fee2d71449efb0aa5c10549752b5d75384d8
+  raco_paper: https://arxiv.org/abs/2602.15755
+  raco_paper_html: https://arxiv.org/html/2602.15755
+  raco_repo: https://github.com/cvg/RaCo
+  raco_license: Apache-2.0
+  raco_weights: https://github.com/cvg/RaCo/releases/download/v1.0.0/raco.pth
+  aliked_repo: https://github.com/Shiaoming/ALIKED
+  aliked_license: BSD-3-Clause
+  aliked_weights: https://github.com/Shiaoming/ALIKED/raw/main/models/aliked-n16.pth
+  aliked_model_name: aliked-n16
+  hpatches_repo: https://github.com/hpatches/hpatches-dataset
+  hpatches_mirror: https://huggingface.co/datasets/honggyuAn/hpatches-sequences-release
+  bookmark_post_not_fetched: https://x.com/gabriberton/status/2116957948497039474
+paper_reference:
+  section: "4.3 Rotation Equivariance"
+  protocol: >
+    First 20 HPatches images, largest square that can be rotated through
+    360 degrees, 10 degree steps, resize to 512, Gaussian noise sigma 10
+    on the 0-255 scale, 200 keypoints, repeatability at 1/2/3 px.
+    Figure 5 plots repeatability at 2 px. The prose says RaCo stays near
+    80 percent at every angle. Table 3 rotation AUC at 3 px is 79.5 for
+    RaCo and 16.7 for ALIKED. Those AUC numbers are not this run's gate.
+  not_equivariant_architecture: >
+    Abstract and Sec 3.2: rotational robustness comes from augmentation
+    over the full circle, without equivariant convolutions. Table 3
+    "Ours w/ ReCONV" is a separate, slower variant and is not installed
+    by VisMatch.
+baseline: aliked
+baseline_why: >
+  ALIKED-N16 is the learned, non-equivariant detector VisMatch ships
+  next to RaCo, and it is the backbone RaCo is built on. The paper's
+  rotation table shows this checkpoint, not the rotation-augmented one,
+  losing most of its repeatability as the angle changes.
+seeds: [0, 1, 2]
+angles_deg: [0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180]
+gate_angle_min_deg: 30
+gate_angle_max_deg: 150
+keypoint_budget: 200
+image_size: 512
+pixel_threshold: 3.0
+noise_sigma: 10.0
+pool_size: 20
+images_per_seed: 4
+metrics:
+  primary: symmetric_repeatability_at_3px
+  optional: geometric_mnn_inlier_ratio_at_3px
+  definitions: >
+    Both views are the same center square of the original photograph
+    after rotating that photograph about the square's center, resized
+    to image_size. The square side is floor(min(H, W) / sqrt(2)), so a
+    360 degree rotation of the square stays inside the photograph.
+    Independent Gaussian noise of sigma 10 is added to each view on the
+    0-255 scale and clipped. The homography is the rotation (and, in
+    scale breakpoints, the extra scale) about the resized center that
+    cv2.resize assigns to the crop center. A keypoint is eligible when
+    it and its warp both lie at least pixel_threshold inside the canvas.
+    It is repeatable when the nearest detection in the other view is
+    closer than pixel_threshold. Symmetric repeatability is
+    (n_repeatable_0 + n_repeatable_1) / (n_eligible_0 + n_eligible_1).
+    Geometric MNN inlier ratio is the fraction of mutual nearest
+    neighbors within the same threshold, divided by the smaller of the
+    two in-canvas counts. It does not use descriptors. It is report-only.
+thresholds:
+  gap_min: 0.10
+  drop_max: 0.10
+pass_rule: >
+  Let R(detector, angle) be the mean over seeds of the mean over that
+  seed's images of symmetric repeatability. gap is the mean of
+  R(raco, angle) - R(aliked, angle) over angles from gate_angle_min_deg
+  through gate_angle_max_deg, inclusive. drop is R(raco, 0) minus the
+  minimum of R(raco, angle) over every angle in angles_deg.
+  PASS if gap >= gap_min AND drop <= drop_max.
+  PARTIAL if exactly one of those two comparisons holds.
+  FAIL if neither holds.
+  Both comparisons are inclusive. Sample standard deviation uses ddof=1
+  and is not part of the rule. The optional MNN ratio, the 1 px and 2 px
+  repeatabilities, and every breakpoint are report-only.
+disclosure: >
+  gap_min 0.10 and drop_max 0.10 are the suggested bars from the task,
+  written down before the official three-seed run and not fit to it.
+  They were not taken from a measured number on these images. The X post
+  was not fetched. smoke.json, if present, is a synthetic checkerboard
+  and is not a gate. The first 20 reference frames in the HPatches
+  sequences archive sort as illumination sequences i_*; that is the
+  archive order, recorded here before the run, not a choice made after
+  scores.
+runtime:
+  device: cpu
+  torch_threads: 4
+  opencv_threads: 1
+dataset:
+  reference_frame: "1.ppm"
+  pool_rule: first pool_size reference frames in sorted sequence-folder order
+breakpoints:
+  seed: 0
+  story: >
+    One image, the first of seed 0's sample. Not part of the PASS rule.
+    Push off the 15 degree grid, add a scale change on top of a 45 degree
+    rotation, blur only the rotated view, shrink the canvas to 64 px,
+    and move the keypoint budget to 16 and to 2048.
+  cases:
+    - name: angle_7
+      angle_deg: 7
+      scale: 1.0
+      blur_sigma: 0.0
+      image_size: 512
+      keypoint_budget: 200
+    - name: angle_23
+      angle_deg: 23
+      scale: 1.0
+      blur_sigma: 0.0
+      image_size: 512
+      keypoint_budget: 200
+    - name: scale_half
+      angle_deg: 45
+      scale: 0.5
+      blur_sigma: 0.0
+      image_size: 512
+      keypoint_budget: 200
+    - name: scale_double
+      angle_deg: 45
+      scale: 2.0
+      blur_sigma: 0.0
+      image_size: 512
+      keypoint_budget: 200
+    - name: blur_sigma3
+      angle_deg: 45
+      scale: 1.0
+      blur_sigma: 3.0
+      image_size: 512
+      keypoint_budget: 200
+    - name: tiny_64
+      angle_deg: 45
+      scale: 1.0
+      blur_sigma: 0.0
+      image_size: 64
+      keypoint_budget: 200
+    - name: budget_16
+      angle_deg: 45
+      scale: 1.0
+      blur_sigma: 0.0
+      image_size: 512
+      keypoint_budget: 16
+    - name: budget_2048
+      angle_deg: 45
+      scale: 1.0
+      blur_sigma: 0.0
+      image_size: 512
+      keypoint_budget: 2048
+hpatches_cache: work/hpatches

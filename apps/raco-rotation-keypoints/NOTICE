@@ -1,0 +1,60 @@
+raco-rotation-keypoints demo — NOTICE
+
+This directory (apps/raco-rotation-keypoints/) measures keypoint repeatability
+under synthetic in-plane rotation. It does not reimplement RaCo or ALIKED.
+
+VisMatch 1.4.0 (15 October 2026), PyPI package vismatch==1.4.0:
+  https://github.com/gmberton/vismatch
+  https://github.com/gmberton/vismatch/releases/tag/v1.4.0
+  https://pypi.org/project/vismatch/1.4.0/
+  License: BSD 3-Clause
+  https://github.com/gmberton/vismatch/blob/v1.4.0/LICENSE
+  The wheel bundles third-party checkouts. This experiment uses
+  get_matcher("raco-lightglue") and get_matcher("aliked-lightglue").
+  Pinned submodule commits at tag v1.4.0:
+    vismatch/third_party/RaCo      35790eb48074ed14839d0fb496b8806caa4e766b
+    vismatch/third_party/LightGlue eb42fee2d71449efb0aa5c10549752b5d75384d8
+
+RaCo: Shenoi, Lindenberger, Sarlin, and Pollefeys,
+  "RaCo: Ranking and Covariance for Practical Learned Keypoints",
+  3DV 2026. arXiv:2602.15755 (17 February 2026).
+  https://arxiv.org/abs/2602.15755
+  https://arxiv.org/html/2602.15755
+  Code: https://github.com/cvg/RaCo (Apache-2.0)
+  https://github.com/cvg/RaCo/blob/main/LICENSE
+  Weights, downloaded at run time, not committed:
+  https://github.com/cvg/RaCo/releases/download/v1.0.0/raco.pth
+  VisMatch 1.4.0 constructs RaCo with ranker=False and
+  covariance_estimator=False. The wrapper states that disabling those
+  heads leaves the keypoints unchanged.
+
+ALIKED: Zhao et al., "ALIKED: A Lighter Keypoint and Descriptor Extraction
+  Network via Deformable Transformation", IEEE TIM 2023.
+  https://github.com/Shiaoming/ALIKED
+  The copy executed here is LightGlue's lightglue/aliked.py, whose file
+  header is BSD 3-Clause, Copyright (c) 2022, Zhao Xiaoming.
+  Default checkpoint, downloaded at run time, not committed:
+  https://github.com/Shiaoming/ALIKED/raw/main/models/aliked-n16.pth
+  This run pins model_name aliked-n16. It does not load aliked-n16rot.
+
+LightGlue: Lindenberger, Sarlin, and Pollefeys, ICCV 2023.
+  https://github.com/cvg/LightGlue (Apache-2.0)
+  get_matcher also downloads the LightGlue matcher checkpoints. The
+  repeatability score does not use descriptors or the matcher.
+
+HPatches full sequences, reference frame 1.ppm only, downloaded at run
+  time into work/ and not committed:
+  https://huggingface.co/datasets/honggyuAn/hpatches-sequences-release
+  (mirror of hpatches-sequences-release, 116 sequences)
+  Dataset description repo: https://github.com/hpatches/hpatches-dataset
+  (MIT). The images come from earlier sequences; the HPatches repo asks
+  users to cite the original sources (Balntas et al., CVPR 2017, and the
+  per-sequence notes). This demo does not relicense those photographs.
+
+Found via a bookmarked X post by @gabriberton:
+  https://x.com/gabriberton/status/2116957948497039474
+That post was not fetched. The release notes, the installed
+vismatch==1.4.0 modules, the RaCo paper HTML, and the RaCo README were
+checked instead.
+
+No warranty. Research / demo use.

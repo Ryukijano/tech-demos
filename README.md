@@ -27,6 +27,7 @@ One monorepo for sticky / bookmark-worthy tech demos. Prefer adding a new `apps/
 | `apps/qmapanything-token-quant/` | Clean-room QMapAnything token-quant toy: Hadamard vs row-selective W4A4/W8A8 (arXiv:2611.07955; code not released; CPU, FAIL) |
 | `apps/emeans-vs-kmeans/` | FAISS 1.16.0 e-means vs Lloyd k-means on CPU (arXiv:2611.09501; FAISS not vendored; PARTIAL) |
 | `apps/raco-rotation-keypoints/` | VisMatch 1.4.0 RaCo vs ALIKED-N16 repeatability under in-plane rotation (arXiv:2602.15755; CPU, PASS) |
+| `apps/dejaview-loop-knob/` | Déjà View (DVLT) loop-count K as a CPU compute/quality dial (arXiv:2605.30215; official code not vendored; NVIDIA weights non-commercial; PARTIAL) |
 | `tracking/seen-bookmarks.json` | X bookmarks already turned into demos (`url`, `slug`, `date`) |
 | `docs/` | GitHub Pages showcase site (static HTML/CSS) |
 | `AGENTS.md` | Rules for future cloud agents |

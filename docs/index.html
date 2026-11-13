@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Tech Demos · Gyanateet Dutta (@Ryukijano)</title>
-  <meta name="description" content="A monorepo of small, honest kits and UIs for new AI models and runtimes: a RaCo vs ALIKED rotation-repeatability experiment, an e-means vs FAISS k-means CPU experiment, a QMapAnything token-quantization toy, a MuJoCo 4.0 speculative-contacts tunneling experiment, a Value Forcing return-distribution toy, a FlexGlue covisibility-vs-doppelganger CPU experiment, a world2vec continuous-time latent dynamics toy, a Platonic JEPA alignment toy, a MoRE reused-experts char-LM toy, a looped-transformer addition toy, a NanoDreamer MinAtar world-model toy, an auditable SAE text detector, a binary discrete diffusion Sudoku toy, a syndrome-mitigation QEC experiment, a correction-training 2D toy, LoMa matching, chest X-ray bone suppression, active borylation, EmbeddingGemma 2, PixelUMM, JEPA-Anything, and llama.cpp Decision Models.">
+  <meta name="description" content="A monorepo of small, honest kits and UIs for new AI models and runtimes: a Déjà View loop-count compute/quality-dial experiment, a RaCo vs ALIKED rotation-repeatability experiment, an e-means vs FAISS k-means CPU experiment, a QMapAnything token-quantization toy, a MuJoCo 4.0 speculative-contacts tunneling experiment, a Value Forcing return-distribution toy, a FlexGlue covisibility-vs-doppelganger CPU experiment, a world2vec continuous-time latent dynamics toy, a Platonic JEPA alignment toy, a MoRE reused-experts char-LM toy, a looped-transformer addition toy, a NanoDreamer MinAtar world-model toy, an auditable SAE text detector, a binary discrete diffusion Sudoku toy, a syndrome-mitigation QEC experiment, a correction-training 2D toy, LoMa matching, chest X-ray bone suppression, active borylation, EmbeddingGemma 2, PixelUMM, JEPA-Anything, and llama.cpp Decision Models.">
   <meta property="og:title" content="Tech Demos">
   <meta property="og:description" content="Small, honest kits and UIs for new AI models and runtimes, by Gyanateet Dutta (@Ryukijano).">
   <meta property="og:image" content="https://ryukijano.github.io/tech-demos/assets/decision-models-ui.png">
@@ -21,7 +21,7 @@
       <p class="subtitle">Small, honest kits and UIs for new AI models and runtimes, kept in one monorepo with one folder per demo.</p>
       <div class="hero-actions">
         <a class="btn primary" href="https://github.com/Ryukijano/tech-demos">View the repo on GitHub</a>
-        <a class="btn" href="#demos">Browse the 22 demos</a>
+        <a class="btn" href="#demos">Browse the 23 demos</a>
       </div>
       <p class="byline">By <a href="https://github.com/Ryukijano">Gyanateet Dutta</a> · <a href="https://github.com/Ryukijano">@Ryukijano</a></p>
     </div>
@@ -31,6 +31,36 @@
     <p class="note">These demos run on your own machine. This page shows recordings and status; follow each README to run them.</p>
 
     <section class="grid">
+
+      <!-- 0. Déjà View loop knob (CPU clear-experiment, official nv-tlabs/dvlt) -->
+      <article class="card">
+        <div class="media">
+          <video src="assets/dejaview-loop-knob.mp4" poster="assets/dejaview-loop-knob.png" muted controls playsinline preload="metadata" aria-label="Sweeping the DVLT loop count K and watching pose, depth, and latency react"></video>
+        </div>
+        <div class="body">
+          <div class="badges">
+            <span class="badge green">CPU · official dvlt code + weights</span>
+            <span class="badge amber">Hypothesis: PARTIAL</span>
+            <span class="badge muted">looped transformer · 3D reconstruction · 117M</span>
+          </div>
+          <h2>Déjà View loop knob</h2>
+          <p>CPU experiment on the loop count K of NVIDIA's Déjà View / DVLT (Burzio, Fischer et al., <a href="https://arxiv.org/abs/2605.30215">arXiv:2605.30215</a>, found via <a href="https://x.com/NVIDIAAI/status/2120617173286883692">@NVIDIAAI</a>; the post was not fetched). One shared transformer block looped K times is the inference-time compute/quality dial; official code at a pinned commit, weights (non-commercial NVIDIA licence) download at run time. Synthetic multi-view scenes with exact GT cameras and depth, seeds 0/1/2.</p>
+          <ul class="facts">
+            <li>PARTIAL: latency is linear in K (R² = 0.9998, 0.106 s/loop + 1.10 s fixed) and depth improves 8→16 (AbsRel 0.0615→0.0454), but pose AUC@30 <em>falls</em> 0.693→0.611 — the dial splits by task on this easy domain</li>
+            <li>Pose actually peaks at K=6 (AUC@30 0.700), outside the stated [8,16] validity range; K ∈ {1,2} collapses completely (rotation error ≈ 95–99°)</li>
+            <li>Breaks at low resolution (140²): K=16 is less stable than K=8 — two of four scenes collapse to 52–61° rotation error. More loops amplify failure on degraded inputs</li>
+          </ul>
+          <pre><code>cd apps/dejaview-loop-knob
+bash setup.sh
+.venv/bin/python src/make_scenes.py --out data/scenes
+.venv/bin/python src/run_experiment.py && .venv/bin/python src/analyze.py
+python3 -m http.server 43130 -d viewer</code></pre>
+          <div class="links">
+            <a href="https://github.com/Ryukijano/tech-demos/tree/main/apps/dejaview-loop-knob">App folder</a>
+            <a href="https://github.com/Ryukijano/tech-demos/blob/main/apps/dejaview-loop-knob/README.md">README</a>
+          </div>
+        </div>
+      </article>
 
       <!-- 0. RaCo vs ALIKED rotation repeatability (CPU clear-experiment, VisMatch 1.4.0) -->
       <article class="card">

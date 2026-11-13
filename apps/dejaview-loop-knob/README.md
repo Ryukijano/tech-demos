@@ -44,7 +44,94 @@ the config SHA-256). The bars:
 PASS = all five. FAIL = floor broken, or no quality improvement at all 8→16
 (neither H1a nor H1c). PARTIAL = anything else. Breakpoints are report-only.
 
-## Status (honest): **pending — run not yet executed at this commit**
+![plot](experiments/exp1_cpu_loop_knob/plot.png)
+
+*Quality and latency vs K, 4 scenes × seeds 0/1/2, trained range shaded. Video:
+[`artifacts/dejaview-loop-knob.mp4`](artifacts/dejaview-loop-knob.mp4). Still:
+[`artifacts/dejaview-loop-knob.png`](artifacts/dejaview-loop-knob.png).*
+
+## Status (honest): **PARTIAL**
+
+Three of five pre-registered bars hold; the two that fail, fail in a direction
+the hypothesis did not predict. The bars were not moved
+(`config_sha256` in `raw.json` = frozen config = `7672a6c3…edc1`;
+pre-registration commit `cf75964`).
+
+| Check | Bar | Result |
+|---|---|---:|
+| Floor: mean pose AUC@30 at K=16 | ≥ 0.40 | **0.611 — PASS** |
+| H1a: mean AUC@30 gain, 8 → 16 | ≥ +0.01 | **−0.082 — FAIL** |
+| H1b: AUC@30 monotone over {8,10,12,14,16} | each step ≥ −0.005 | **0.69→0.67→0.65→0.62→0.61 — FAIL** |
+| H1c: depth AbsRel, 16 vs 8 | ≤ | **0.0454 vs 0.0615 — PASS** |
+| H2: latency linear in K over {1…32} | R² ≥ 0.98, slope > 0 | **R² = 0.9998, 0.106 s/step — PASS** |
+
+**What actually happened:** on these easy synthetic scenes the K dial splits by
+task. Depth improves steadily with K exactly as hypothesised (AbsRel
+0.0615 → 0.0454, monotone to K=20). Camera pose does the opposite: it peaks at
+K≈6–8 (AUC@30 0.700 at K=6, R err 8.3°) and *declines gently* through the
+trained range to 0.611 at K=16 (R err 11.4°), then plateaus. Latency is almost
+perfectly linear: **0.106 s per extra loop + 1.10 s fixed cost** (DINOv2 encode
++ decode heads) per 6-view scene on 4 CPU threads. The compute dial works; the
+"more loops ⇒ better pose" half of the pre-registered hypothesis does not hold
+in this domain, so by the frozen rule (quality must improve on at least one of
+pose or depth 8→16 to avoid FAIL, all five bars for PASS) this is **PARTIAL**.
+
+### Results (mean over 4 scenes × seeds 0/1/2; ± is seed std)
+
+| K | grid | pose AUC@30 | R err (°) | T err (°) | depth AbsRel | latency (s) |
+|---:|---|---:|---:|---:|---:|---:|
+| 1 | break | 0.004 ± 0.003 | 98.93 | 55.35 | 0.1142 ± 0.0193 | 1.20 |
+| 2 | break | 0.037 ± 0.020 | 94.73 | 47.84 | 0.0888 ± 0.0091 | 1.31 |
+| 4 | break | 0.580 ± 0.073 | 17.70 | 9.98 | 0.0569 ± 0.0072 | 1.51 |
+| 6 | break | 0.700 ± 0.038 | 8.31 | 5.52 | 0.0551 ± 0.0053 | 1.75 |
+| 8 | main | 0.693 ± 0.034 | 8.57 | 5.58 | 0.0615 ± 0.0014 | 1.96 |
+| 10 | main | 0.670 ± 0.035 | 9.37 | 6.05 | 0.0582 ± 0.0039 | 2.15 |
+| 12 | main | 0.649 ± 0.047 | 10.31 | 6.52 | 0.0507 ± 0.0044 | 2.35 |
+| 14 | main | 0.617 ± 0.036 | 11.15 | 7.50 | 0.0471 ± 0.0037 | 2.57 |
+| 16 | main | 0.611 ± 0.056 | 11.38 | 7.68 | 0.0454 ± 0.0029 | 2.81 |
+| 20 | break | 0.606 ± 0.039 | 11.50 | 7.50 | 0.0451 ± 0.0026 | 3.23 |
+| 24 | break | 0.591 ± 0.024 | 11.59 | 7.90 | 0.0462 ± 0.0026 | 3.62 |
+| 32 | break | 0.607 ± 0.050 | 11.28 | 7.56 | 0.0506 ± 0.0018 | 4.48 |
+
+Full per-cell data: `experiments/exp1_cpu_loop_knob/raw.json`; per-K CSV:
+`results.csv`; machine: 4 vCPU, Python 3.12.3, torch 2.5.1+cpu, fp32,
+`torch.set_num_threads(4)`; measured run wall time 405 s with weights cached.
+
+### Breakpoints (report-only — where it breaks)
+
+- **K below the trained range:** hard collapse at K ∈ {1,2} — pose is random
+  (R err ≈ 95–99°, AUC@30 ≈ 0) and depth roughly doubles its error. K=4
+  mostly works; K=6 is the best pose setting on this data despite being
+  outside the stated [8,16] validity range.
+- **K above the trained range:** no catastrophe. Pose plateaus (~0.59–0.61);
+  depth bottoms out at K=20 (0.0451) and drifts slightly worse by K=32
+  (0.0506). You pay 0.106 s/loop for nothing past ~K=16–20.
+- **Very few views (2):** still works (AUC@30 0.55–0.74); same pose-vs-depth
+  split between K=8 and K=16.
+- **Low resolution (140²):** the real breakpoint. Quality drops overall, and
+  K=16 is *less stable* than K=8: two of four scenes collapse at K=16
+  (R err 52–61°, AUC@30 0.06–0.23) while K=8 stays at 8–18°. More loops
+  amplify failure on degraded inputs.
+- **More views (12):** fine on CPU (4.4–6.6 s/scene); same gentle pose decline
+  at K=16, best depth. Latency stays linear.
+
+Full table: `experiments/exp1_cpu_loop_knob/breakpoints.md`.
+
+### Caveats
+
+- Synthetic, textured-primitive scenes are an easy, narrow domain. The paper's
+  benchmark claim (K buys quality up to 16) is made on five real benchmarks
+  (DTU, ETH3D, 7Scenes, ScanNet++, NuScenes) at higher resolution (img 504+)
+  with many views; nothing here contradicts those numbers — upstream's own
+  reference table reports e.g. DTU AUC@30 0.988. This run shows the dial's
+  *shape* on small CPU-sized inputs, where the pose head saturates early.
+- 252² CPU inputs are half the resolution the model card quickstart uses; the
+  low-res breakpoint shows resolution interacts strongly with K.
+- Latency intercept (1.10 s) is 10 loop-steps' worth of fixed cost, so halving
+  K from 16 to 8 saves only ~30% wall clock at this scale.
+- `Auc_5` is near 0 everywhere: absolute pose errors (R err ≥ 8°) are large
+  compared to upstream's real-benchmark numbers; the synthetic domain gap and
+  low resolution both plausibly contribute.
 
 ## Data
 

@@ -1,0 +1,40 @@
+{
+  "status": "PARTIAL",
+  "config_sha256_at_run": "7672a6c345b8162395ac6db6cc0f644c0fea8861b00f42fee81363e5a73eedc1",
+  "config_sha256_now": "7672a6c345b8162395ac6db6cc0f644c0fea8861b00f42fee81363e5a73eedc1",
+  "checks": {
+    "floor_auc30_at_k16": {
+      "bar": 0.4,
+      "value": 0.6106,
+      "ok": true
+    },
+    "h1a_auc30_gain_8_to_16": {
+      "bar": 0.01,
+      "value": -0.0821,
+      "ok": false
+    },
+    "h1b_monotone_main_grid": {
+      "tolerance": 0.005,
+      "ok": false,
+      "series": {
+        "8": 0.6927,
+        "10": 0.6699,
+        "12": 0.6486,
+        "14": 0.6168,
+        "16": 0.6106
+      }
+    },
+    "h1c_absrel_no_worse": {
+      "k8": 0.0615,
+      "k16": 0.0454,
+      "ok": true
+    },
+    "h2_latency_linear": {
+      "bar_r2": 0.98,
+      "r2": 0.9998,
+      "slope_s_per_step": 0.1056,
+      "intercept_s": 1.1008,
+      "ok": true
+    }
+  }
+}

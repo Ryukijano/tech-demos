@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Déjà View loop knob — K as a CPU compute/quality dial</title>
+<style>
+  :root {
+    --bg: #0e1116; --panel: #161b24; --panel2: #1d2430; --text: #e8edf4;
+    --muted: #93a1b5; --accent: #4da3ff; --green: #3ddc84; --amber: #ffc24d; --red: #ff6b6b;
+    --mono: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 15px/1.55 -apple-system, "Segoe UI", Inter, Roboto, sans-serif; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 28px 20px 60px; }
+  h1 { font-size: 26px; margin: 0 0 4px; }
+  h1 .k { color: var(--accent); }
+  .sub { color: var(--muted); margin-bottom: 18px; max-width: 72em; }
+  .badge { display: inline-block; padding: 3px 12px; border-radius: 999px; font-weight: 700;
+           font-size: 14px; vertical-align: middle; margin-left: 10px; }
+  .badge.PASS { background: #12351f; color: var(--green); border: 1px solid var(--green); }
+  .badge.PARTIAL { background: #3a2d10; color: var(--amber); border: 1px solid var(--amber); }
+  .badge.FAIL { background: #3a1515; color: var(--red); border: 1px solid var(--red); }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .panel { background: var(--panel); border: 1px solid #242d3c; border-radius: 12px; padding: 18px; }
+  .panel h2 { margin: 0 0 10px; font-size: 17px; }
+  .knob-row { display: flex; align-items: center; gap: 18px; margin: 8px 0 14px; }
+  .kval { font: 700 42px var(--mono); color: var(--accent); min-width: 72px; text-align: center; }
+  input[type=range] { flex: 1; accent-color: var(--accent); height: 34px; }
+  .range-note { font-size: 12.5px; color: var(--muted); }
+  .inrange { color: var(--green); font-weight: 600; }
+  .outrange { color: var(--amber); font-weight: 600; }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 10px; }
+  .stat { background: var(--panel2); border-radius: 9px; padding: 10px 12px; }
+  .stat .l { font-size: 11.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+  .stat .v { font: 700 20px var(--mono); }
+  canvas { width: 100%; border-radius: 9px; background: var(--panel2); }
+  .cap { font-size: 12.5px; color: var(--muted); margin-top: 6px; }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+  th, td { padding: 6px 10px; text-align: right; border-bottom: 1px solid #242d3c; font-variant-numeric: tabular-nums; }
+  th:first-child, td:first-child { text-align: left; }
+  th { color: var(--muted); font-weight: 600; }
+  tr.main td { color: var(--text); }
+  tr.break td { color: var(--muted); }
+  tr.cur td { background: #10263d; }
+  img.plot { width: 100%; border-radius: 9px; background: white; }
+  .checks td:last-child { font-weight: 700; }
+  .ok { color: var(--green); } .bad { color: var(--red); }
+  .foot { margin-top: 22px; color: var(--muted); font-size: 13px; max-width: 76em; }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Déjà View loop knob <span class="k">K</span><span id="status" class="badge">…</span></h1>
+  <div class="sub">
+    DVLT (<a href="https://arxiv.org/abs/2605.30215">arXiv:2605.30215</a>) applies <b>one</b> shared
+    transformer block K times. One 117M-parameter checkpoint, no retraining — K is an inference-time
+    compute/quality dial. Measured here fully on CPU (fp32, 4 threads) on synthetic multi-view scenes with
+    exact ground-truth cameras and depth. Checkpoint-valid range K ∈ [8,16]; everything outside is a breakpoint probe.
+  </div>
+
+  <div class="panel" style="margin-bottom:18px">
+    <h2>Turn the knob</h2>
+    <div class="knob-row">
+      <div class="kval" id="kval">8</div>
+      <input type="range" id="knob" min="0" max="11" value="4" step="1">
+      <div class="range-note" id="rangeNote"></div>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="l">pose AUC@30 ↑</div><div class="v" id="s_auc">–</div></div>
+      <div class="stat"><div class="l">rotation err ↓</div><div class="v" id="s_rot">–</div></div>
+      <div class="stat"><div class="l">depth AbsRel ↓</div><div class="v" id="s_absrel">–</div></div>
+      <div class="stat"><div class="l">CPU latency ↓</div><div class="v" id="s_lat">–</div></div>
+    </div>
+    <div class="cap">Mean over 4 scenes × seeds {0,1,2} (6 views each). Latency per 6-view scene, 252².</div>
+  </div>
+
+  <div class="grid">
+    <div class="panel">
+      <h2>Cameras — scene 0, seed 0 (top-down)</h2>
+      <canvas id="camCanvas" width="640" height="480"></canvas>
+      <div class="cap">● ground truth &nbsp;&nbsp;✕ prediction (similarity-aligned, display only). Ticks show view direction.</div>
+    </div>
+    <div class="panel">
+      <h2>Predicted depth — scene 0, view 0</h2>
+      <canvas id="depthCanvas" width="640" height="480"></canvas>
+      <div class="cap">Left: prediction at current K. Right: ground truth (z-buffer). Shared colour scale, sky masked.</div>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top:18px">
+    <h2>Quality and latency vs K</h2>
+    <img class="plot" src="plot.png" alt="quality and latency vs K">
+  </div>
+
+  <div class="grid" style="margin-top:18px">
+    <div class="panel">
+      <h2>Pre-registered bars</h2>
+      <table class="checks" id="checksTable"></table>
+      <div class="cap">Bars frozen in <code>config.yaml</code> before the measured run; SHA-256 recorded in <code>raw.json</code>.</div>
+    </div>
+    <div class="panel">
+      <h2>Results by K</h2>
+      <table id="resultsTable"></table>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top:18px">
+    <h2>Breakpoints (report-only)</h2>
+    <table id="bpTable"></table>
+  </div>
+
+  <div class="foot">
+    Official code <a href="https://github.com/nv-tlabs/dvlt">nv-tlabs/dvlt</a> (Apache-2.0, portions VGGT License v1).
+    Weights <a href="https://huggingface.co/nvidia/dvlt">nvidia/dvlt</a> — NVIDIA License, non-commercial research/evaluation
+    only, downloaded at run time, never committed. Scenes are procedural (this repo), licence-clean.
+  </div>
+</div>
+
+<script>
+const fmt = (x, d=3) => x == null ? "–" : (+x).toFixed(d);
+let VD = null, SUM = null, KS = [];
+
+function viridis(t) {
+  const c = [[68,1,84],[72,40,120],[62,74,137],[49,104,142],[38,130,142],[31,158,137],[53,183,121],[109,205,89],[180,222,44],[253,231,37]];
+  t = Math.max(0, Math.min(1, t)) * (c.length - 1);
+  const i = Math.floor(t), f = t - i, a = c[i], b = c[Math.min(i+1, c.length-1)];
+  return [a[0]+(b[0]-a[0])*f, a[1]+(b[1]-a[1])*f, a[2]+(b[2]-a[2])*f];
+}
+
+function drawCams(k) {
+  const e = VD[k]; if (!e) return;
+  const cv = document.getElementById("camCanvas"), ctx = cv.getContext("2d");
+  ctx.clearRect(0, 0, cv.width, cv.height);
+  const pts = e.gt_centers.concat(e.pred_centers_aligned);
+  const xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
+  const cx = (Math.min(...xs)+Math.max(...xs))/2, cy = (Math.min(...ys)+Math.max(...ys))/2;
+  const span = Math.max(Math.max(...xs)-Math.min(...xs), Math.max(...ys)-Math.min(...ys)) * 1.25 + 1e-6;
+  const S = Math.min(cv.width, cv.height) / span;
+  const px = p => [cv.width/2 + (p[0]-cx)*S, cv.height/2 - (p[1]-cy)*S];
+  // scene footprint
+  ctx.strokeStyle = "#2b3444"; ctx.lineWidth = 1;
+  ctx.strokeRect(...px([-2.6, 2.6]), 5.2*S, 5.2*S);
+  for (let i = 0; i < e.gt_centers.length; i++) {
+    const g = e.gt_centers[i], p = e.pred_centers_aligned[i];
+    const [gx, gy] = px(g), [qx, qy] = px(p);
+    ctx.strokeStyle = "#5c6a80"; ctx.beginPath(); ctx.moveTo(gx, gy); ctx.lineTo(qx, qy); ctx.stroke();
+    const gf = e.gt_forward[i], pf = e.pred_forward_aligned[i];
+    ctx.strokeStyle = "#3ddc84"; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(gx, gy); ctx.lineTo(gx + gf[0]*0.9*S, gy - gf[1]*0.9*S); ctx.stroke();
+    ctx.fillStyle = "#3ddc84"; ctx.beginPath(); ctx.arc(gx, gy, 6, 0, 7); ctx.fill();
+    ctx.strokeStyle = "#4da3ff";
+    ctx.beginPath(); ctx.moveTo(qx, qy); ctx.lineTo(qx + pf[0]*0.9*S, qy - pf[1]*0.9*S); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(qx-6, qy-6); ctx.lineTo(qx+6, qy+6); ctx.moveTo(qx+6, qy-6); ctx.lineTo(qx-6, qy+6); ctx.stroke();
+  }
+}
+
+function drawDepth(k) {
+  const e = VD[k]; if (!e) return;
+  const gt = VD.gt_depth_scene0_view0, pr = e.depth_view0;
+  const H = pr.length, W = pr[0].length;
+  const vals = [];
+  for (const row of gt) for (const v of row) if (v > 0) vals.push(v);
+  const lo = Math.min(...vals), hi = Math.max(...vals);
+  // median-align prediction for display
+  const prv = [], gtv = [];
+  for (let i = 0; i < H; i++) for (let j = 0; j < W; j++) if (gt[i][j] > 0) { prv.push(pr[i][j]); gtv.push(gt[i][j]); }
+  const med = a => { const b = [...a].sort((x,y)=>x-y); return b[Math.floor(b.length/2)]; };
+  const s = med(gtv) / med(prv);
+  const cv = document.getElementById("depthCanvas"), ctx = cv.getContext("2d");
+  const cell = Math.floor(Math.min(cv.width/2/W, cv.height/H));
+  const img = ctx.createImageData(W*2*cell, H*cell);
+  const put = (x, y, rgb) => {
+    const idx = 4*(y*W*2*cell + x);
+    img.data[idx] = rgb[0]; img.data[idx+1] = rgb[1]; img.data[idx+2] = rgb[2]; img.data[idx+3] = 255;
+  };
+  for (let i = 0; i < H*cell; i++) for (let j = 0; j < W*cell; j++) {
+    const gi = Math.floor(i/cell), gj = Math.floor(j/cell);
+    const pv = pr[gi][gj]*s, gv = gt[gi][gj];
+    put(j, i, viridis((pv-lo)/(hi-lo)));
+    put(j+W*cell, i, gv > 0 ? viridis((gv-lo)/(hi-lo)) : [20,24,32]);
+  }
+  ctx.clearRect(0, 0, cv.width, cv.height);
+  ctx.putImageData(img, Math.floor((cv.width-2*W*cell)/2), Math.floor((cv.height-H*cell)/2));
+}
+
+function setK(idx) {
+  const k = KS[idx], a = SUM.agg[k];
+  document.getElementById("kval").textContent = k;
+  const inr = +k >= 8 && +k <= 16;
+  document.getElementById("rangeNote").innerHTML = inr
+    ? '<span class="inrange">inside checkpoint-valid range [8,16]</span>'
+    : '<span class="outrange">breakpoint: outside trained range</span>';
+  document.getElementById("s_auc").textContent = fmt(a.Auc_30);
+  document.getElementById("s_rot").textContent = fmt(a.R_error, 1) + "°";
+  document.getElementById("s_absrel").textContent = fmt(a.AbsRel, 4);
+  document.getElementById("s_lat").textContent = fmt(a.latency_s, 2) + " s";
+  drawCams(k); drawDepth(k);
+  for (const tr of document.querySelectorAll("#resultsTable tr")) tr.classList.toggle("cur", tr.dataset.k === k);
+}
+
+async function main() {
+  [VD, SUM] = await Promise.all([
+    fetch("viewer_data.json").then(r => r.json()),
+    fetch("summary.json").then(r => r.json()),
+  ]);
+  KS = Object.keys(SUM.agg).sort((a, b) => a - b);
+  const badge = document.getElementById("status");
+  badge.textContent = SUM.status; badge.className = "badge " + SUM.status;
+  const knob = document.getElementById("knob");
+  knob.max = KS.length - 1; knob.value = KS.indexOf("8");
+  knob.addEventListener("input", () => setK(+knob.value));
+
+  const rt = document.getElementById("resultsTable");
+  rt.innerHTML = "<tr><th>K</th><th>grid</th><th>AUC@30 ↑</th><th>R err °</th><th>AbsRel ↓</th><th>latency s</th></tr>" +
+    KS.map(k => { const a = SUM.agg[k]; const main = SUM.k_main.includes(+k);
+      return `<tr class="${main?'main':'break'}" data-k="${k}"><td>${k}</td><td>${main?'main':'break'}</td>`+
+             `<td>${fmt(a.Auc_30)} ± ${fmt(a.Auc_30_seedstd)}</td><td>${fmt(a.R_error,1)}</td>`+
+             `<td>${fmt(a.AbsRel,4)}</td><td>${fmt(a.latency_s,2)}</td></tr>`; }).join("");
+
+  const ct = document.getElementById("checksTable"), C = SUM.checks;
+  const row = (n, b, v, ok) => `<tr><td>${n}</td><td>${b}</td><td>${v}</td><td class="${ok?'ok':'bad'}">${ok?'PASS':'fail'}</td></tr>`;
+  ct.innerHTML = "<tr><th>check</th><th>bar</th><th>value</th><th></th></tr>"
+    + row("floor: AUC@30 @ K=16", "≥ " + C.floor_auc30_at_k16.bar, fmt(C.floor_auc30_at_k16.value), C.floor_auc30_at_k16.ok)
+    + row("H1a: ΔAUC@30, 8→16", "≥ +" + C.h1a_auc30_gain_8_to_16.bar, fmt(C.h1a_auc30_gain_8_to_16.value), C.h1a_auc30_gain_8_to_16.ok)
+    + row("H1b: monotone on {8..16}", "tol " + C.h1b_monotone_main_grid.tolerance, Object.values(C.h1b_monotone_main_grid.series).map(x=>fmt(x,2)).join(" → "), C.h1b_monotone_main_grid.ok)
+    + row("H1c: AbsRel 16 ≤ 8", "≤", fmt(C.h1c_absrel_no_worse.k16,4) + " vs " + fmt(C.h1c_absrel_no_worse.k8,4), C.h1c_absrel_no_worse.ok)
+    + row("H2: latency linear", "R² ≥ " + C.h2_latency_linear.bar_r2, `R²=${fmt(C.h2_latency_linear.r2)}, ${fmt(C.h2_latency_linear.slope_s_per_step,3)} s/step`, C.h2_latency_linear.ok);
+
+  const bt = document.getElementById("bpTable");
+  bt.innerHTML = "<tr><th>probe</th><th>K</th><th>img</th><th>views</th><th>AUC@30</th><th>R err °</th><th>AbsRel</th><th>latency s</th></tr>" +
+    SUM.breakpoints.map(r => r.error
+      ? `<tr><td>${r.label}</td><td>${r.k}</td><td>${r.img_size}</td><td>${r.n_views}</td><td colspan="4">CRASH: ${r.error}</td></tr>`
+      : `<tr><td>${r.label}</td><td>${r.k}</td><td>${r.img_size}</td><td>${r.n_views}</td><td>${fmt(r.Auc_30)}</td>`+
+        `<td>${fmt(r.R_error,1)}</td><td>${fmt(r.AbsRel,4)}</td><td>${fmt(r.latency_s,2)}</td></tr>`).join("");
+
+  setK(+knob.value);
+}
+main();
+</script>
+</body>
+</html>

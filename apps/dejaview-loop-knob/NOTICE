@@ -1,0 +1,30 @@
+dejaview-loop-knob — third-party notices
+========================================
+
+This app evaluates the official DVLT ("Déjà View") implementation and released
+checkpoint. Nothing from upstream is vendored into this repository.
+
+1. DVLT code — https://github.com/nv-tlabs/dvlt
+   Pinned commit f59bb18259ab446a7585c4f47731a77cfdefa426, cloned at setup time
+   by setup.sh and installed into a local virtualenv. The code is primarily
+   Apache License 2.0 (LICENSES/DVLT-APACHE-2.0.txt). Portions of upstream are
+   derived from VGGT (Meta Platforms) and are distributed by upstream under the
+   VGGT License v1 (LICENSES/VGGT-LICENSE.txt). Upstream's full attribution map
+   is THIRD_PARTY_LICENSES.md in the dvlt repository.
+
+2. DVLT model weights — https://huggingface.co/nvidia/dvlt
+   NVIDIA License, NON-COMMERCIAL RESEARCH AND EVALUATION USE ONLY
+   (LICENSES/NVIDIA-MODEL-LICENSE.txt). The weights are NOT committed to this
+   repository; they are downloaded from Hugging Face at run time. The model
+   card states the released checkpoint is valid for K in [8, 16].
+
+3. DINOv2 backbone weights (dinov2_vitb14_reg) are fetched at run time by the
+   upstream code from dl.fbaipublicfiles.com and are not committed. DINOv2 is
+   Apache License 2.0.
+
+The synthetic evaluation scenes under data/ are generated procedurally by
+src/make_scenes.py in this app (no third-party assets) and carry no upstream
+licence terms.
+
+The experiment and viewer code in this app (src/, viewer/) is
+Apache License 2.0.

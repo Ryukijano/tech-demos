@@ -1,0 +1,71 @@
+# Fixed on 2026-11-13 BEFORE the official measured run.
+# Do not edit `thresholds`, the K grids, the scene/seed/view protocol, or the
+# metric definitions after seeing official scores.
+# Two disclosed smokes ran before this file was frozen (see smoke.json):
+#   1. latency-only at K in {8,16} on scene0 (to size the grid),
+#   2. one metric check at the single mid-grid K=12 on scene0 (to verify pose/depth
+#      conventions line up; it cannot inform the K-trend).
+# Neither smoke may change any number under `thresholds` after this commit.
+exp_id: exp1_cpu_loop_knob
+hypothesis: >
+  On small synthetic multi-view scenes with known cameras, raising the loop
+  count K of the released DVLT checkpoint from 8 to 16 monotonically improves
+  camera-pose accuracy (pose AUC@30 over all view pairs) and does not worsen
+  scale-aligned depth error (AbsRel, median alignment), while CPU latency per
+  scene grows roughly linearly in K. K is the inference-time compute/quality
+  dial the paper claims: a single checkpoint, no retraining.
+upstream:
+  paper: https://arxiv.org/abs/2605.30215
+  project: https://research.nvidia.com/labs/dvl/projects/dvlt/
+  code: https://github.com/nv-tlabs/dvlt
+  code_commit: f59bb18259ab446a7585c4f47731a77cfdefa426
+  code_license: Apache-2.0 (portions VGGT License v1)
+  weights: https://huggingface.co/nvidia/dvlt
+  weights_license: NVIDIA License (non-commercial research/evaluation only)
+  checkpoint_valid_k: [8, 16]  # from the model card
+  params_M: 117
+model:
+  img_size: 252            # 18x18 patches of 14 per view; CPU budget
+  patch_size: 14
+  precision: fp32          # CPU; no bf16 autocast
+  torch_num_threads: 4
+data:
+  generator: src/make_scenes.py   # procedural, licence-clean, exact GT
+  n_scenes: 4
+  n_candidate_views: 20
+  views_per_scene: 6
+  scene_rng: "default_rng(1000 + scene_index)"
+  note: >
+    Synthetic Kubric-style tabletop scenes (textured ground + 5-7 textured
+    primitives) rendered by a pure-numpy perspective-correct z-buffer
+    rasterizer at 504^2 downsampled to 252^2. GT cameras exact by
+    construction (OpenCV c2w), GT depth from the z-buffer, sky masked out.
+seeds: [0, 1, 2]           # seed s draws 6 of the 20 candidate views per scene
+                           # via numpy default_rng(seed).choice(20, 6, replace=False)
+k_grid_main: [8, 10, 12, 14, 16]     # inside the checkpoint-valid range
+k_grid_breakpoints: [1, 2, 4, 6, 20, 24, 32]  # outside/edge of trained range, report-only
+metrics:
+  pose: upstream dvlt.metric.pose.compute_pose_metrics, thresholds (5, 15, 30); primary Auc_30
+  depth: upstream dvlt.metric.depth.compute_depth_metrics, align=median, mask gt>0; primary AbsRel
+  latency: wall-clock seconds of one model.predict per (scene, seed, K), 1 warmup predict
+    after model load, torch.set_num_threads(4); per-K mean over the 12 (scene, seed) cells
+aggregation: >
+  "mean Auc_30(K)" = mean over the 12 (scene, seed) cells at that K.
+  Spread = sample std (ddof=1) over the 3 seeds of per-seed means.
+thresholds:
+  floor_auc30_at_k16: 0.40        # mean Auc_30(K=16) >= 0.40, else the data cannot speak
+  h1a_auc30_gain_8_to_16: 0.01    # mean Auc_30(16) - mean Auc_30(8) >= +0.01
+  h1b_monotone_tolerance: 0.005   # mean Auc_30 non-decreasing on {8,10,12,14,16}
+                                  # up to -0.005 per adjacent step
+  h1c_absrel_no_worse: true       # mean AbsRel(16) <= mean AbsRel(8)
+  h2_latency_r2_min: 0.98         # linear fit of per-K mean latency over the FULL grid
+                                  # {1,2,4,6,8,10,12,14,16,20,24,32}; R^2 >= 0.98 and slope > 0
+status_rule: >
+  PASS    = floor AND h1a AND h1b AND h1c AND h2.
+  FAIL    = NOT floor, OR (NOT h1a AND NOT h1c)  (quality does not improve at all 8->16).
+  PARTIAL = anything else.
+breakpoints_protocol:  # report-only, never part of the PASS rule
+  k_outside_trained_range: full scene/seed grid at k_grid_breakpoints
+  two_views: views_per_scene=2 at K in [8, 16], seed 0, all scenes
+  low_resolution: img_size=140 at K in [8, 16], seed 0, all scenes
+  many_views: views_per_scene=12 at K in [8, 16], seed 0, all scenes

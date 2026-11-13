@@ -1,0 +1,5 @@
+.venv/
+vendor/
+data/scenes/
+__pycache__/
+*.pyc

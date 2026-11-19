@@ -1,0 +1,8 @@
+# CPU experiment against stable-envs 0.1.0.
+# Install torch from the CPU index first (see run_all.sh); a bare
+# `pip install torch` may pull a CUDA wheel.
+stable-envs[navigation,classic]==0.1.0
+pyyaml==6.0.3
+pillow==13.0.0
+matplotlib==3.11.2
+numpy==2.5.5

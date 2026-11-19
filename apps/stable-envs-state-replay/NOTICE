@@ -1,0 +1,14 @@
+stable-envs-state-replay experiment scripts in this folder are original to
+this repository.
+
+The library under test is stable-envs 0.1.0 (PyPI), source
+https://github.com/galilai-group/stable-envs at commit
+e2715139fd5e581f57f20cd0d2393b539351d37d.
+It is not vendored. Install it with pip; do not copy it into this tree.
+
+LICENSE is the upstream MIT license (Copyright (c) 2026 GalilAI-group),
+copied verbatim from the 0.1.0 wheel. The distribution is declared
+"MIT AND LGPL-2.1-or-later" on PyPI: pygame drawing ports are LGPL-2.1.
+THIRD_PARTY_NOTICES.md and LICENSES/ are copied from that same wheel
+(Apache-2.0, Gymnasium MIT, Munk2D MIT, NumPy BSD, OGBench MIT, PyFlyt MIT,
+Bullet zlib, LGPL-2.1).

@@ -86,7 +86,7 @@ def plot(env_rows: list[dict], path_png: Path, path_pdf: Path) -> None:
     low = min([0.0, *png, *npz]) - 5
     ax.set_ylim(low, 100)
     ax.set_title("State file vs stored frames", fontweight="bold")
-    bold_legend(ax, loc="lower right")
+    bold_legend(ax, loc="upper center", bbox_to_anchor=(0.5, -0.18), ncol=3)
 
     ax = axes[1]
     replay = [row["replay_fps_mean"] for row in env_rows]
@@ -116,9 +116,10 @@ def plot(env_rows: list[dict], path_png: Path, path_pdf: Path) -> None:
     ax.set_ylabel("Throughput (frames/s)", fontweight="bold")
     ax.set_xticks(x, names)
     ax.set_title("Warm-cache replay vs load", fontweight="bold")
-    bold_legend(ax, loc="best")
+    bold_legend(ax, loc="upper center", bbox_to_anchor=(0.5, -0.18), ncol=2)
 
     fig.tight_layout()
+    fig.subplots_adjust(bottom=0.22)
     fig.savefig(path_png, bbox_inches="tight")
     fig.savefig(path_pdf, bbox_inches="tight")
     plt.close(fig)
@@ -216,8 +217,9 @@ def breakpoints_md(raw: dict) -> str:
             f"lossless {cell['lossless_fraction']:.3f}, replay {cell['state_replay_fps']:.1f} fps, "
             f"load {cell['frame_load_fps']:.1f} fps, max abs {cell['max_abs']}."
         )
-        if "repeated_position_fraction" in cell:
-            lines.append(f"- Repeated-position fraction: {cell['repeated_position_fraction']}.")
+        stuck = cell.get("repeated_position_fraction")
+        if isinstance(stuck, float):
+            lines.append(f"- Fraction of steps whose agent position did not change: {stuck:.3f}.")
         lines.append("")
     var = bp["variation_omitted"]
     lines.append("## Variation omitted")

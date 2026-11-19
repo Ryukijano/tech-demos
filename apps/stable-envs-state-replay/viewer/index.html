@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>stable-envs state replay</title>
+  <style>
+    body { margin: 0; background: #0b0f14; color: #ece8dc; font: 16px/1.45 Georgia, "Liberation Serif", serif; }
+    main { max-width: 980px; margin: 0 auto; padding: 28px 20px 48px; }
+    h1 { font-size: 28px; margin: 0 0 8px; }
+    .status { display: inline-block; padding: 2px 8px; border: 1px solid #f2c46d; color: #f2c46d; }
+    video, img { width: 100%; background: #000; }
+    table { border-collapse: collapse; width: 100%; margin: 16px 0; }
+    th, td { border-bottom: 1px solid #243040; text-align: right; padding: 6px 8px; }
+    th:first-child, td:first-child { text-align: left; }
+    a { color: #8ab4ff; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>stable-envs state replay</h1>
+  <p><span class="status">PASS</span> CPU experiment. Store simulator states, draw the frames again.</p>
+  <video src="../artifacts/stable-envs-state-replay.mp4" poster="../artifacts/stable-envs-state-replay.png" controls muted playsinline></video>
+  <table>
+    <thead><tr><th>Env</th><th>vs PNG</th><th>vs npz</th><th>Lossless</th><th>Replay fps</th><th>Load fps</th></tr></thead>
+    <tbody>
+    <tr><td>TwoRoom</td><td>99.10%</td><td>99.98%</td><td>1.000</td><td>43297.9</td><td>23177.8</td></tr><tr><td>CartPole</td><td>91.68%</td><td>99.97%</td><td>1.000</td><td>8686.5</td><td>3503.0</td></tr>
+    </tbody>
+  </table>
+  <img src="../experiments/exp1_cpu_state_replay/plot.png" alt="Disk saving and throughput">
+  <p>Library: <a href="https://github.com/galilai-group/stable-envs">galilai-group/stable-envs</a></p>
+</main>
+</body>
+</html>

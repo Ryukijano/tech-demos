@@ -43,28 +43,40 @@ def rollout(n_steps: int = 48):
     return replay.numpy(), stats
 
 
-def caption_frame(frame: np.ndarray, text: str, scale: int = 3) -> Image.Image:
-    big = np.repeat(np.repeat(frame, scale, axis=0), scale, axis=1)
+def board(frame: np.ndarray, status: str, step: int, n_steps: int, stats: dict) -> Image.Image:
+    """960×600 (16:10) so the pages card shows the whole frame."""
+    canvas = Image.new("RGB", (960, 600), (11, 15, 20))
+    big = np.repeat(np.repeat(frame, 2, axis=0), 2, axis=1)
     image = Image.fromarray(big, mode="RGB")
-    bar_h = 36
-    canvas = Image.new("RGB", (image.width, image.height + bar_h), (12, 16, 20))
-    canvas.paste(image, (0, 0))
+    canvas.paste(image, (36, 76))
     draw = ImageDraw.Draw(canvas)
-    draw.text((12, image.height + 8), text, fill=(236, 232, 220), font=font(16))
+    draw.text((36, 24), "stable-envs · state replay", fill=(236, 232, 220), font=font(28))
+    draw.text((520, 90), status, fill=(242, 196, 109), font=font(36))
+    lines = [
+        "TwoRoom, re-rendered from",
+        "a stored simulator state.",
+        f"step {step + 1} / {n_steps}   seed 0",
+        f"max abs diff {stats['max_abs']}",
+        "lossless on this rollout",
+        "",
+        "CPU only. Native 224².",
+        "Non-native sizes are refused.",
+    ]
+    y = 160
+    for line in lines:
+        draw.text((520, y), line, fill=(220, 214, 200), font=font(22))
+        y += 36
     return canvas
 
 
-def write_video(frames: np.ndarray, stats: dict, dest: Path) -> None:
+def write_video(frames: np.ndarray, stats: dict, status: str, dest: Path) -> None:
     tmp = dest.parent / "_frames"
     if tmp.exists():
         shutil.rmtree(tmp)
     tmp.mkdir(parents=True)
-    text = (
-        f"TwoRoom re-rendered from stored state  ·  seed 0  ·  "
-        f"max abs diff {stats['max_abs']}  ·  lossless {stats['lossless_fraction']:.0%}"
-    )
+    n_steps = int(frames.shape[0])
     for index, frame in enumerate(frames):
-        caption_frame(frame, text).save(tmp / f"{index:04d}.png")
+        board(frame, status, index, n_steps, stats).save(tmp / f"{index:04d}.png")
     dest.parent.mkdir(parents=True, exist_ok=True)
     subprocess.run(
         [
@@ -89,28 +101,8 @@ def write_video(frames: np.ndarray, stats: dict, dest: Path) -> None:
 
 
 def write_still(frames: np.ndarray, stats: dict, status: str, dest: Path) -> None:
-    picks = np.linspace(0, frames.shape[0] - 1, 8).astype(int)
-    scaled = [np.repeat(np.repeat(frames[int(i)], 2, axis=0), 2, axis=1) for i in picks]
-    strip = np.concatenate(scaled, axis=1)
-    image = Image.fromarray(strip, mode="RGB")
-    footer_h = 64
-    canvas = Image.new("RGB", (image.width, image.height + footer_h), (12, 16, 20))
-    canvas.paste(image, (0, 0))
-    draw = ImageDraw.Draw(canvas)
-    draw.text(
-        (12, image.height + 8),
-        "stable-envs TwoRoom · frames re-rendered from a stored simulator state (seed 0)",
-        fill=(236, 232, 220),
-        font=font(18),
-    )
-    draw.text(
-        (12, image.height + 34),
-        f"status {status}  ·  this rollout max abs diff {stats['max_abs']}  ·  CPU only",
-        fill=(196, 188, 168),
-        font=font(16),
-    )
-    dest.parent.mkdir(parents=True, exist_ok=True)
-    canvas.save(dest)
+    mid = int(frames.shape[0] // 2)
+    board(frames[mid], status, mid, int(frames.shape[0]), stats).save(dest)
 
 
 def write_viewer(status: str) -> None:
@@ -171,7 +163,7 @@ def main() -> None:
     frames, stats = rollout()
     if frames.shape[1] % 2 or frames.shape[2] % 2:
         raise RuntimeError(f"odd native frame {frames.shape}")
-    write_video(frames, stats, ART / "stable-envs-state-replay.mp4")
+    write_video(frames, stats, status, ART / "stable-envs-state-replay.mp4")
     write_still(frames, stats, status, ART / "stable-envs-state-replay.png")
     write_viewer(status)
     note = ART / "media_backend.txt"

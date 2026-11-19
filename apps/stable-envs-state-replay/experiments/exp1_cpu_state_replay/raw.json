@@ -1,0 +1,645 @@
+{
+  "exp_id": "exp1_cpu_state_replay",
+  "config_sha256": "8332d484bed43d70d9c9ed9fed569d56f2670d74345691f3e66d6c95b4eccefb",
+  "hypothesis": "Storing only stable-envs simulator states at the default appearance and re-rendering on the fly gives at least 90% disk saving versus lossless PNG and versus uncompressed uint8 npz of the same episodes, the re-rendered frames are bit-identical to the frames drawn at collection, and state-replay throughput (torch.load of the states plus env.render) is at least the faster of the two frame-loading baselines.",
+  "machine": {
+    "python": "3.12.3",
+    "platform": "Linux-6.12.113+-x86_64-with-glibc2.39",
+    "cpu_count": 4,
+    "torch": "2.15.0+cpu",
+    "torch_threads": 4,
+    "numpy": "2.5.5",
+    "stable_envs": "0.1.0",
+    "stable_envs_file": "/agent/repos/tech-demos/apps/stable-envs-state-replay/.venv/lib/python3.12/site-packages/stable_envs/__init__.py"
+  },
+  "wall_seconds": 18.34620367699995,
+  "cells": [
+    {
+      "env": "TwoRoom",
+      "seed": 0,
+      "num_envs": 4,
+      "steps": 32,
+      "n_frames": 128,
+      "info": {
+        "simulation_backend": "numba",
+        "render_backend_arg": "auto",
+        "size": 224,
+        "native_size": 224,
+        "frame_shape": null
+      },
+      "state_bytes": 4061,
+      "png_bytes": 454365,
+      "npz_bytes": 19267850,
+      "disk_saving_vs_png_pct": 99.10622517139305,
+      "disk_saving_vs_npz_pct": 99.97892343982333,
+      "png_roundtrip_ok": true,
+      "replay_seconds": [
+        0.0031533649998891633,
+        0.0029880729998694733,
+        0.002803173000074821
+      ],
+      "npz_seconds": [
+        0.007187479000094754,
+        0.0052914030000010825,
+        0.005301275999954669
+      ],
+      "png_seconds": [
+        0.04473561100007828,
+        0.04496008899991466,
+        0.046538044000044465
+      ],
+      "state_replay_fps": 42836.97219097103,
+      "npz_load_fps": 24145.13034241087,
+      "png_load_fps": 2846.969453290961,
+      "frame_load_fps": 24145.13034241087,
+      "frame_sha256": "cfe0dbfb0f6fd9bf5cee6e8b8c1a2dff433cf00bc3227428eb732dddd5315e30",
+      "lossless_fraction": 1.0,
+      "n_frames_mismatch": 0,
+      "n_pixels_mismatch": 0,
+      "max_abs": 0,
+      "shape_reference": [
+        128,
+        224,
+        224,
+        3
+      ],
+      "shape_replay": [
+        128,
+        224,
+        224,
+        3
+      ]
+    },
+    {
+      "env": "TwoRoom",
+      "seed": 1,
+      "num_envs": 4,
+      "steps": 32,
+      "n_frames": 128,
+      "info": {
+        "simulation_backend": "numba",
+        "render_backend_arg": "auto",
+        "size": 224,
+        "native_size": 224,
+        "frame_shape": null
+      },
+      "state_bytes": 4061,
+      "png_bytes": 449556,
+      "npz_bytes": 19267850,
+      "disk_saving_vs_png_pct": 99.09666426429634,
+      "disk_saving_vs_npz_pct": 99.97892343982333,
+      "png_roundtrip_ok": true,
+      "replay_seconds": [
+        0.0031994549999581068,
+        0.0029628589998083044,
+        0.002860368000028757
+      ],
+      "npz_seconds": [
+        0.007132904999934908,
+        0.005567168999959904,
+        0.0054537920000257145
+      ],
+      "png_seconds": [
+        0.045005653000089296,
+        0.04445642900009261,
+        0.04533472200000688
+      ],
+      "state_replay_fps": 43201.51583598192,
+      "npz_load_fps": 22991.937194815153,
+      "png_load_fps": 2844.0871638890794,
+      "frame_load_fps": 22991.937194815153,
+      "frame_sha256": "619776cb4f405a6e0fbc4b25931d10772625e63e5f7935233458d4a5e2fb5083",
+      "lossless_fraction": 1.0,
+      "n_frames_mismatch": 0,
+      "n_pixels_mismatch": 0,
+      "max_abs": 0,
+      "shape_reference": [
+        128,
+        224,
+        224,
+        3
+      ],
+      "shape_replay": [
+        128,
+        224,
+        224,
+        3
+      ]
+    },
+    {
+      "env": "TwoRoom",
+      "seed": 2,
+      "num_envs": 4,
+      "steps": 32,
+      "n_frames": 128,
+      "info": {
+        "simulation_backend": "numba",
+        "render_backend_arg": "auto",
+        "size": 224,
+        "native_size": 224,
+        "frame_shape": null
+      },
+      "state_bytes": 4061,
+      "png_bytes": 449752,
+      "npz_bytes": 19267850,
+      "disk_saving_vs_png_pct": 99.09705793415038,
+      "disk_saving_vs_npz_pct": 99.97892343982333,
+      "png_roundtrip_ok": true,
+      "replay_seconds": [
+        0.003004279999913706,
+        0.0029187009999986913,
+        0.00278046100015672
+      ],
+      "npz_seconds": [
+        0.006995168999992529,
+        0.00571523899998283,
+        0.005222463000109201
+      ],
+      "png_seconds": [
+        0.04679331200009074,
+        0.04945564500008004,
+        0.04935751600010008
+      ],
+      "state_replay_fps": 43855.125961877355,
+      "npz_load_fps": 22396.26374336831,
+      "png_load_fps": 2593.323375506589,
+      "frame_load_fps": 22396.26374336831,
+      "frame_sha256": "45b258d8747f484b2d844bad03ea61aac10f4a7873aa16354e7d5b7ba5fde852",
+      "lossless_fraction": 1.0,
+      "n_frames_mismatch": 0,
+      "n_pixels_mismatch": 0,
+      "max_abs": 0,
+      "shape_reference": [
+        128,
+        224,
+        224,
+        3
+      ],
+      "shape_replay": [
+        128,
+        224,
+        224,
+        3
+      ]
+    },
+    {
+      "env": "CartPole",
+      "seed": 0,
+      "num_envs": 4,
+      "steps": 32,
+      "n_frames": 128,
+      "info": {
+        "simulation_backend": "numpy",
+        "render_backend_arg": "auto",
+        "size": 600,
+        "native_size": 600,
+        "frame_shape": [
+          400,
+          600
+        ]
+      },
+      "state_bytes": 27801,
+      "png_bytes": 350438,
+      "npz_bytes": 92160266,
+      "disk_saving_vs_png_pct": 92.06678499477796,
+      "disk_saving_vs_npz_pct": 99.96983407144245,
+      "png_roundtrip_ok": true,
+      "replay_seconds": [
+        0.014422530999809169,
+        0.013705105000099138,
+        0.014008036999939577
+      ],
+      "npz_seconds": [
+        0.041249199000048975,
+        0.036269336000032126,
+        0.0337385190000532
+      ],
+      "png_seconds": [
+        0.1514567149999948,
+        0.15065042299988818,
+        0.14986402500016993
+      ],
+      "state_replay_fps": 9137.61150120835,
+      "npz_load_fps": 3529.1520087350546,
+      "png_load_fps": 849.6491244508155,
+      "frame_load_fps": 3529.1520087350546,
+      "frame_sha256": "4cb733c8aba0b10081d172b5a3c35bd9040db08e598fe5b982d89776a9700fe6",
+      "lossless_fraction": 1.0,
+      "n_frames_mismatch": 0,
+      "n_pixels_mismatch": 0,
+      "max_abs": 0,
+      "shape_reference": [
+        128,
+        400,
+        600,
+        3
+      ],
+      "shape_replay": [
+        128,
+        400,
+        600,
+        3
+      ]
+    },
+    {
+      "env": "CartPole",
+      "seed": 1,
+      "num_envs": 4,
+      "steps": 32,
+      "n_frames": 128,
+      "info": {
+        "simulation_backend": "numpy",
+        "render_backend_arg": "auto",
+        "size": 600,
+        "native_size": 600,
+        "frame_shape": [
+          400,
+          600
+        ]
+      },
+      "state_bytes": 27801,
+      "png_bytes": 318014,
+      "npz_bytes": 92160266,
+      "disk_saving_vs_png_pct": 91.25793204072777,
+      "disk_saving_vs_npz_pct": 99.96983407144245,
+      "png_roundtrip_ok": true,
+      "replay_seconds": [
+        0.016068660999962958,
+        0.01437388500016823,
+        0.014675487999966208
+      ],
+      "npz_seconds": [
+        0.041609898999922734,
+        0.0367388199999823,
+        0.03552552500013917
+      ],
+      "png_seconds": [
+        0.14572298200005207,
+        0.14415246800012937,
+        0.14455763399996613
+      ],
+      "state_replay_fps": 8722.026824613582,
+      "npz_load_fps": 3484.0531078587087,
+      "png_load_fps": 885.4599820029566,
+      "frame_load_fps": 3484.0531078587087,
+      "frame_sha256": "7477fd7569d4b792d24cf402fb8b56595578af324bb6d962b90622c9318e010c",
+      "lossless_fraction": 1.0,
+      "n_frames_mismatch": 0,
+      "n_pixels_mismatch": 0,
+      "max_abs": 0,
+      "shape_reference": [
+        128,
+        400,
+        600,
+        3
+      ],
+      "shape_replay": [
+        128,
+        400,
+        600,
+        3
+      ]
+    },
+    {
+      "env": "CartPole",
+      "seed": 2,
+      "num_envs": 4,
+      "steps": 32,
+      "n_frames": 128,
+      "info": {
+        "simulation_backend": "numpy",
+        "render_backend_arg": "auto",
+        "size": 600,
+        "native_size": 600,
+        "frame_shape": [
+          400,
+          600
+        ]
+      },
+      "state_bytes": 27801,
+      "png_bytes": 335914,
+      "npz_bytes": 92160266,
+      "disk_saving_vs_png_pct": 91.72377453753045,
+      "disk_saving_vs_npz_pct": 99.96983407144245,
+      "png_roundtrip_ok": true,
+      "replay_seconds": [
+        0.0156101289999242,
+        0.014308971999980713,
+        0.01643330199999582
+      ],
+      "npz_seconds": [
+        0.04188627999997152,
+        0.03661590399997294,
+        0.03468783800008168
+      ],
+      "png_seconds": [
+        0.1480840570000055,
+        0.1495505679999951,
+        0.147673382999983
+      ],
+      "state_replay_fps": 8199.804114406841,
+      "npz_load_fps": 3495.748732575183,
+      "png_load_fps": 864.373941348698,
+      "frame_load_fps": 3495.748732575183,
+      "frame_sha256": "8fcfb1c0664867a9aed0d15f1e09b12f29141a3e9d7a35e73edf1e523105b68f",
+      "lossless_fraction": 1.0,
+      "n_frames_mismatch": 0,
+      "n_pixels_mismatch": 0,
+      "max_abs": 0,
+      "shape_reference": [
+        128,
+        400,
+        600,
+        3
+      ],
+      "shape_replay": [
+        128,
+        400,
+        600,
+        3
+      ]
+    }
+  ],
+  "breakpoints": {
+    "non_native_resolution": [
+      {
+        "env": "TwoRoom",
+        "size": 112,
+        "accepted": false,
+        "error": "TwoRoom renders at 224px only (got 112); every length in the reference is in output pixels. Resize the frames afterwards instead."
+      },
+      {
+        "env": "TwoRoom",
+        "size": 448,
+        "accepted": false,
+        "error": "TwoRoom renders at 224px only (got 448); every length in the reference is in output pixels. Resize the frames afterwards instead."
+      },
+      {
+        "env": "CartPole",
+        "size": 300,
+        "accepted": false,
+        "error": "CartPole renders only at its reference's native 400x600 (got size=300); the reference draws every primitive in fixed pixels. Resample the output instead."
+      },
+      {
+        "env": "CartPole",
+        "size": 1200,
+        "accepted": false,
+        "error": "CartPole renders only at its reference's native 400x600 (got size=1200); the reference draws every primitive in fixed pixels. Resample the output instead."
+      }
+    ],
+    "upsample_tworoom_seed0": {
+      "native_shape": [
+        128,
+        224,
+        224,
+        3
+      ],
+      "up_shape": [
+        128,
+        448,
+        448,
+        3
+      ],
+      "native_npz_bytes": 19267850,
+      "up_npz_bytes": 77070602,
+      "note": "Nearest-neighbour upsample of native frames, not a stable-envs render."
+    },
+    "long_episode": {
+      "env": "TwoRoom",
+      "seed": 0,
+      "num_envs": 1,
+      "steps": 512,
+      "n_frames": 512,
+      "info": {
+        "simulation_backend": "numba",
+        "render_backend_arg": "auto",
+        "size": 224,
+        "native_size": 224,
+        "frame_shape": null
+      },
+      "state_bytes": 10205,
+      "png_bytes": 1793758,
+      "npz_bytes": 77070602,
+      "disk_saving_vs_png_pct": 99.43108267670443,
+      "disk_saving_vs_npz_pct": 99.9867588941371,
+      "png_roundtrip_ok": true,
+      "replay_seconds": [
+        0.016426271999989694,
+        0.019433814999956667,
+        0.018686949000084496
+      ],
+      "npz_seconds": [
+        0.03542771799993716,
+        0.03097234999995635,
+        0.028278227000100742
+      ],
+      "png_seconds": [
+        0.17937596799993116,
+        0.1796317480000198,
+        0.1782453749999604
+      ],
+      "state_replay_fps": 27398.80116319068,
+      "npz_load_fps": 16530.87350493978,
+      "png_load_fps": 2854.3399972074103,
+      "frame_load_fps": 16530.87350493978,
+      "frame_sha256": "e9087e8d02e48dbf75b2acf68592ef55dc8032c312e0a374db9685b349f58805",
+      "lossless_fraction": 1.0,
+      "n_frames_mismatch": 0,
+      "n_pixels_mismatch": 0,
+      "max_abs": 0,
+      "shape_reference": [
+        512,
+        224,
+        224,
+        3
+      ],
+      "shape_replay": [
+        512,
+        224,
+        224,
+        3
+      ],
+      "repeated_position_fraction": 0.0,
+      "label": "long_episode"
+    },
+    "many_envs": {
+      "env": "TwoRoom",
+      "seed": 0,
+      "num_envs": 64,
+      "steps": 8,
+      "n_frames": 512,
+      "info": {
+        "simulation_backend": "numba",
+        "render_backend_arg": "auto",
+        "size": 224,
+        "native_size": 224,
+        "frame_shape": null
+      },
+      "state_bytes": 10205,
+      "png_bytes": 1812538,
+      "npz_bytes": 77070602,
+      "disk_saving_vs_png_pct": 99.43697732130306,
+      "disk_saving_vs_npz_pct": 99.9867588941371,
+      "png_roundtrip_ok": true,
+      "replay_seconds": [
+        0.01665432899994812,
+        0.016266975000007733,
+        0.015989491000027556
+      ],
+      "npz_seconds": [
+        0.03541438500019467,
+        0.033768043999998554,
+        0.02937093199989249
+      ],
+      "png_seconds": [
+        0.17989376900004572,
+        0.18733304499983205,
+        0.1794402790001186
+      ],
+      "state_replay_fps": 31474.813233545672,
+      "npz_load_fps": 15162.264062437906,
+      "png_load_fps": 2846.1241478567827,
+      "frame_load_fps": 15162.264062437906,
+      "frame_sha256": "f9edd5d755e1eedb64c15693875f97da041a87cd3694fc3483b76d2a5d694f40",
+      "lossless_fraction": 1.0,
+      "n_frames_mismatch": 0,
+      "n_pixels_mismatch": 0,
+      "max_abs": 0,
+      "shape_reference": [
+        512,
+        224,
+        224,
+        3
+      ],
+      "shape_replay": [
+        512,
+        224,
+        224,
+        3
+      ],
+      "repeated_position_fraction": null,
+      "label": "many_envs"
+    },
+    "variation_omitted": {
+      "env": "TwoRoom",
+      "agent_color": [
+        0,
+        80,
+        255
+      ],
+      "n_frames": 16,
+      "default_replay": {
+        "lossless_fraction": 0.0,
+        "n_frames": 16,
+        "n_frames_mismatch": 16,
+        "n_pixels_mismatch": 178609,
+        "max_abs": 255,
+        "shape_reference": [
+          16,
+          224,
+          224,
+          3
+        ],
+        "shape_replay": [
+          16,
+          224,
+          224,
+          3
+        ]
+      },
+      "variation_restored": {
+        "lossless_fraction": 1.0,
+        "n_frames": 16,
+        "n_frames_mismatch": 0,
+        "n_pixels_mismatch": 0,
+        "max_abs": 0,
+        "shape_reference": [
+          16,
+          224,
+          224,
+          3
+        ],
+        "shape_replay": [
+          16,
+          224,
+          224,
+          3
+        ]
+      },
+      "state_bytes": 2269,
+      "state_plus_variation_bytes": 2966,
+      "reference_sha256": "9d52ac7b7f0f7963f38cd2dffc781d74830fd40af492704909de2977db916989"
+    },
+    "third_family": {
+      "env": "Acrobot",
+      "seed": 0,
+      "num_envs": 2,
+      "steps": 16,
+      "n_frames": 32,
+      "info": {
+        "simulation_backend": "numpy",
+        "render_backend_arg": "auto",
+        "size": 500,
+        "native_size": 500,
+        "frame_shape": [
+          500,
+          500
+        ]
+      },
+      "state_bytes": 10461,
+      "png_bytes": 121613,
+      "npz_bytes": 24000266,
+      "disk_saving_vs_png_pct": 91.39812355586984,
+      "disk_saving_vs_npz_pct": 99.95641298308944,
+      "png_roundtrip_ok": true,
+      "replay_seconds": [
+        0.0038161639999998442,
+        0.0030272199999217264,
+        0.0030315050000808696
+      ],
+      "npz_seconds": [
+        0.009954141999969579,
+        0.00763229299991508,
+        0.007247073999906206
+      ],
+      "png_seconds": [
+        0.03798017700000855,
+        0.03983335599991733,
+        0.04077532099995551
+      ],
+      "state_replay_fps": 10555.813036477379,
+      "npz_load_fps": 4192.7111551346425,
+      "png_load_fps": 803.3468232018014,
+      "frame_load_fps": 4192.7111551346425,
+      "frame_sha256": "d241d2829de19c0e2d674db04b5173b370e11b8ee7e27ade0b17a920d49be2e6",
+      "lossless_fraction": 1.0,
+      "n_frames_mismatch": 0,
+      "n_pixels_mismatch": 0,
+      "max_abs": 0,
+      "shape_reference": [
+        32,
+        500,
+        500,
+        3
+      ],
+      "shape_replay": [
+        32,
+        500,
+        500,
+        3
+      ]
+    },
+    "fresh_process": {
+      "parent_sha256": "cfe0dbfb0f6fd9bf5cee6e8b8c1a2dff433cf00bc3227428eb732dddd5315e30",
+      "child_sha256": "cfe0dbfb0f6fd9bf5cee6e8b8c1a2dff433cf00bc3227428eb732dddd5315e30",
+      "match": true
+    },
+    "png_compress_level_extreme": {
+      "compress_level": 9,
+      "png_bytes": 413926,
+      "state_bytes": 4061,
+      "disk_saving_vs_png_pct": 99.0189067611119,
+      "n_frames": 128
+    }
+  }
+}

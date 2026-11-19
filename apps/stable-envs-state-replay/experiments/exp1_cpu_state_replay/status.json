@@ -1,0 +1,49 @@
+{
+  "status": "PASS",
+  "config_sha256": "8332d484bed43d70d9c9ed9fed569d56f2670d74345691f3e66d6c95b4eccefb",
+  "checks": {
+    "h3": true,
+    "per_env": [
+      {
+        "env": "TwoRoom",
+        "h1": true,
+        "h2": true,
+        "h4": true
+      },
+      {
+        "env": "CartPole",
+        "h1": true,
+        "h2": true,
+        "h4": true
+      }
+    ],
+    "disk_both_missed": false
+  },
+  "envs": [
+    {
+      "env": "TwoRoom",
+      "saving_png_mean": 99.09998245661325,
+      "saving_png_std": 0.005409931594287999,
+      "saving_npz_mean": 99.97892343982333,
+      "saving_npz_std": 0.0,
+      "replay_fps_mean": 43297.8713296101,
+      "replay_fps_std": 515.8706826007283,
+      "load_fps_mean": 23177.777093531444,
+      "load_fps_std": 889.1208839510153,
+      "lossless_min": 1.0
+    },
+    {
+      "env": "CartPole",
+      "saving_png_mean": 91.68283052434539,
+      "saving_png_std": 0.405977935953058,
+      "saving_npz_mean": 99.96983407144245,
+      "saving_npz_std": 0.0,
+      "replay_fps_mean": 8686.480813409591,
+      "replay_fps_std": 469.9130907617434,
+      "load_fps_mean": 3502.9846163896486,
+      "load_fps_std": 23.40397884967323,
+      "lossless_min": 1.0
+    }
+  ],
+  "wall_seconds": 18.34620367699995
+}

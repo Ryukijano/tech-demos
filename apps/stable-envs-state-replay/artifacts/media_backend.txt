@@ -1,0 +1,1 @@
+TwoRoom CPU rollout, seed 0, 48 steps, re-rendered from torch.save states in a new env. lossless_fraction=1.0 max_abs=0. Video via ffmpeg libx264. No GPU.

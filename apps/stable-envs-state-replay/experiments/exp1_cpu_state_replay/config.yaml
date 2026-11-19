@@ -1,0 +1,106 @@
+# Frozen BEFORE the official measured run.
+# Do not edit `thresholds`, the env/seed/step protocol, or the metric
+# definitions after seeing official scores.
+#
+# Disclosed API probe before this freeze (not a measured run):
+#   TwoRoom(num_envs=2) for 4 steps and CartPole(num_envs=2) for 2 steps
+#   were constructed on CPU. Two renders of the same states matched, and
+#   TwoRoom.render(..., size=448) raised ValueError (native 224 only).
+#   A 4-state torch.save was 2045 bytes. None of that was used to choose
+#   the bars below; they stay at the pre-stated 90% / bit-identical /
+#   replay-fps >= load-fps rule.
+exp_id: exp1_cpu_state_replay
+hypothesis: >
+  Storing only stable-envs simulator states at the default appearance and
+  re-rendering on the fly gives at least 90% disk saving versus lossless PNG
+  and versus uncompressed uint8 npz of the same episodes, the re-rendered
+  frames are bit-identical to the frames drawn at collection, and state-replay
+  throughput (torch.load of the states plus env.render) is at least the faster
+  of the two frame-loading baselines.
+upstream:
+  paper: https://arxiv.org/abs/2611.23151
+  project: https://galilai-group.github.io/stable-envs/
+  code: https://github.com/galilai-group/stable-envs
+  code_commit: e2715139fd5e581f57f20cd0d2393b539351d37d
+  pypi: stable-envs==0.1.0
+  license: MIT AND LGPL-2.1-or-later
+  documented_env_classes: 80
+device: cpu
+seeds: [0, 1, 2]
+main:
+  num_envs: 4
+  steps: 32
+  # CartPole's auto renderer uses Gymnasium below 8 rows. 4*32 = 128 rows,
+  # so the timed path is the Numba port, not that small-batch fallback.
+  min_render_rows: 8
+envs:
+  TwoRoom:
+    expected_hw: [224, 224]
+    discrete: false
+    action_shape: [2]
+    low: -1.0
+    high: 1.0
+  CartPole:
+    expected_hw: [400, 600]
+    discrete: true
+    action_shape: [1]
+    n_actions: 2
+appearance: >
+  Default variation on the collector and on a freshly constructed replay env.
+  Variation rows are not stored in the main dataset. Actions are drawn from
+  numpy Generator(seed) independently per env and are not part of the byte count.
+storage:
+  state: torch.save of the step() states TensorDict only
+  png_compress_level: 6
+  npz: uncompressed np.savez of uint8 frames (not savez_compressed)
+timing:
+  reps: 3
+  warmup: 1
+  cache: warm
+  torch_num_threads: 4
+  replay_includes: [torch.load, render]
+  load_baseline: max(sequential np.load of the npz, sequential PIL PNG decode)
+  png_write_threads: 4
+aggregation: >
+  For each env, H1, H2 and H4 use the arithmetic mean over seeds 0/1/2.
+  H3 requires lossless_fraction == 1 on every (env, seed) cell.
+  Spread in the table is the sample standard deviation (ddof=1) over the 3 seeds.
+metrics:
+  disk_saving_vs_png_pct: 100 * (1 - state_bytes / png_bytes)
+  disk_saving_vs_npz_pct: 100 * (1 - state_bytes / npz_bytes)
+  lossless_fraction: fraction of frames whose uint8 pixels all match the collection render
+  state_replay_fps: n_frames / median wall time of (torch.load + render) after one warmup
+  frame_load_fps: max(npz_load_fps, png_load_fps) on the same warm-cache protocol
+thresholds:
+  h1_disk_saving_vs_png_pct_min: 90
+  h2_disk_saving_vs_npz_pct_min: 90
+  h3_lossless_fraction: 1.0
+  h4_replay_fps_over_load_fps_min: 1.0
+status_rule: >
+  An env meets H1 when its seed-mean disk_saving_vs_png_pct >= 90,
+  H2 when its seed-mean disk_saving_vs_npz_pct >= 90,
+  and H4 when its seed-mean state_replay_fps >= its seed-mean frame_load_fps.
+  H3 holds when every (env, seed) cell has lossless_fraction == 1.
+  PASS = every main env meets H1, H2 and H4, and H3 holds.
+  FAIL = H3 does not hold, OR any main env misses both H1 and H2.
+  PARTIAL = anything else.
+  Breakpoints are report-only and never enter the PASS rule.
+breakpoints_protocol:
+  seed: 0
+  non_native_resolution:
+    TwoRoom: [112, 448]
+    CartPole: [300, 1200]
+  long_episode: {env: TwoRoom, num_envs: 1, steps: 512}
+  many_envs: {env: TwoRoom, num_envs: 64, steps: 8}
+  variation_omitted:
+    env: TwoRoom
+    num_envs: 2
+    steps: 8
+    agent_color: [0, 80, 255]
+  third_family: {env: Acrobot, num_envs: 2, steps: 16, expected_hw: [500, 500], n_actions: 3}
+  png_compress_level_extreme: 9
+  fresh_process: true
+not_gated:
+  - "Paper Table 3 render speedup versus stable-worldmodel (TwoRoom GPU 24.1x at B=128; CPU 21.3x). Needs an L40S and stable-worldmodel. Not run."
+  - "Paper Table 4 LeWM training speedup up to 1.33x. Not run."
+  - "Tweet figures of 99% disk, 20x render and 30% faster training are not the pass bars. 99% is not a number in the paper."

@@ -1,0 +1,35 @@
+willow-stability-timelike demo — NOTICE
+
+This directory (apps/willow-stability-timelike/) is a CPU-only stim toy of the
+surface-code stability experiment. It is not a reproduction of the Willow
+processor and it does not include Google's device data or circuit compiler.
+
+Papers (attribution):
+  Craig Gidney, "Stability Experiments: The Overlooked Dual of Memory
+  Experiments", Quantum 6, 786 (2022), https://doi.org/10.22331/q-2022-08-24-786
+  arXiv:2204.13834
+
+  Google Quantum AI and Collaborators, "Resolving and Suppressing Temporally
+  Correlated Noise in Quantum Error Correction", arXiv:2611.21578
+  https://arxiv.org/abs/2611.21578
+  Found via a bookmarked X post by @AEickbusch (the post was not fetched;
+  the bookmark text was supplied with the task and checked against the paper):
+  https://x.com/AEickbusch/status/2122798788431716360
+
+Hardware numbers quoted from the paper (mu_T = 1.47 ± 0.25, walking floor
+≤ 3.20×10^{-8} at 60 cycles, adaptive 38% / 34%) are marked QUOTED. They are
+not outputs of this simulation. The bookmark's "four orders of magnitude
+versus the literature" and the paper's "two orders of magnitude below the
+standard construction" are different comparisons and are both recorded.
+
+Dependencies (not vendored):
+  stim        — Apache-2.0, https://github.com/quantumlib/Stim
+                Craig Gidney, Quantum 5, 497 (2021)
+  PyMatching  — Apache-2.0, https://github.com/oscarhiggott/PyMatching
+                Oscar Higgott and Craig Gidney, Quantum 9, 1600 (2025)
+  NumPy       — BSD-3-Clause
+  Matplotlib  — PSF-based licence
+  PyYAML      — MIT
+
+This demo's code is MIT (see LICENSE). No model weights, no credentials, no
+network access at runtime. Research / demo use; no warranty.

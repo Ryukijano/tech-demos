@@ -1,0 +1,96 @@
+# Pre-registered before the official seeds 0/1/2 run.
+# Shot budget and the c = d schedule were chosen from a single-seed rate map
+# so each patch still produces countable failures at p = 1e-3. The pass bars
+# below were not edited after that official run.
+#
+# This is a circuit-level stim toy. It does not re-run Willow. The hardware
+# numbers mu_T = 1.47 ± 0.25 and the walking floor ≤ 3.20e-8 are QUOTED only.
+
+experiment: exp1_cpu_stability
+hypothesis: >
+  In a circuit-level-noise stim simulation of the surface-code stability
+  experiment (Gidney 2022; circuit built here, stim has no generator), at
+  p = 1e-3 the timelike suppression factor Lambda_T is greater than 1 for
+  patch widths 3, 5 and 7. Lambda_T(d → d+2) is the ratio of per-cycle
+  logical error rates eps(d) / eps(d+2), with the timelike distance set
+  equal to the patch width (cycles = d). eps = 1 - (1 - P_shot)^(1/cycles).
+  A toy temporally correlated leakage channel (one Z stabilizer flipped for
+  an exponentially long burst; arXiv:2611.21578 SM S2) produces a two-slope
+  logical-error-vs-cycles curve on the d = 3 patch, and a walking analogue
+  that cuts each burst at the next 2-cycle boundary flattens that curve.
+
+physical_error_rate: 0.001
+distances: [3, 5, 7]
+# Timelike distance used for Lambda_T. Keyed by patch width.
+lambda_cycles:
+  3: 3
+  5: 5
+  7: 7
+# Same-cycle comparison, reported, not part of the pass bar.
+fixed_cycles: 4
+curve_distance: 3
+curve_cycles: [2, 4, 6, 8, 12, 16, 24, 32]
+seeds: [0, 1, 2]
+
+leakage:
+  # Per Z-stabilizer, per cycle, probability of starting a burst.
+  p_start: 0.0003
+  # Exponential lifetime. CDF(K) = 1 - exp(-K/tau), mean near tau.
+  tau: 8.0
+  # Walking analogue: bursts cannot cross a multiple of this many cycles.
+  clear_every: 2
+
+shots:
+  lambda:
+    3: 200000
+    5: 600000
+    7: 1500000
+  fixed_cycle: 150000
+  curve_pauli: 40000
+  curve_leakage: 12000
+  breakpoint_lambda: 60000
+  breakpoint_walk: 6000
+  adaptive: 4000
+  adaptive_memory: 80000
+
+# Pass bars. Applied to the seed-mean of Lambda_T and to pooled curve counts.
+thresholds:
+  lambda_t_mean_min: 1.2
+  lambda_t_step_min: 1.0
+  early_drop_min: 2.0
+  late_over_reference_min: 0.5
+  floor_over_pauli_min: 10.0
+  walking_gain_min: 3.0
+
+knee:
+  early_cycles: [2, 4]
+  reference_cycle: 8
+  late_cycles: [12, 32]
+  longest_cycle: 32
+
+# If the larger patch has zero failures, Lambda_T uses P < 3/N as eps in the
+# denominator, so the reported ratio is a lower bound. The pass bar is applied
+# to that lower bound.
+zero_failure_rule: rule_of_three
+
+adaptive:
+  # Report-only. Not part of PASS/PARTIAL/FAIL.
+  distance: 3
+  cycles: [4, 6, 8, 10, 12, 16]
+  # Complementary-gap threshold in decoder log-likelihood weight (nats).
+  gap_threshold: 4.0
+  gap_sweep: [1.0, 2.0, 4.0, 8.0, 12.0]
+
+breakpoints:
+  p: [0.001, 0.003, 0.006, 0.008, 0.01, 0.012, 0.015, 0.02, 0.03, 0.05]
+  p_start: [0.0003, 0.003, 0.01, 0.03, 0.08, 0.12, 0.2]
+  tau: [1.0, 2.0, 4.0, 8.0, 20.0]
+
+status_rule: >
+  PASS if the mean over seeds of Lambda_T_mean exceeds 1.2, every seed has
+  both Lambda_T steps above 1, the pooled leakage curve has early drop
+  P(2)/P(4) >= 2, late floor P(32)/P(8) >= 0.5, leakage floor at 32 cycles
+  at least 10x the Pauli upper bound, and the pooled walking gain at 32
+  cycles is at least 3. PARTIAL if Lambda_T_mean > 1 and at least one of
+  the knee group or the walking gain passes, but not every bar. FAIL
+  otherwise. Adaptive stopping is report-only and cannot change the status.

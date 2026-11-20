@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Tech Demos · Gyanateet Dutta (@Ryukijano)</title>
-  <meta name="description" content="A monorepo of small, honest kits and UIs for new AI models and runtimes: a stable-envs state-replay disk and lossless-render experiment, a Déjà View loop-count compute/quality-dial experiment, a RaCo vs ALIKED rotation-repeatability experiment, an e-means vs FAISS k-means CPU experiment, a QMapAnything token-quantization toy, a MuJoCo 4.0 speculative-contacts tunneling experiment, a Value Forcing return-distribution toy, a FlexGlue covisibility-vs-doppelganger CPU experiment, a world2vec continuous-time latent dynamics toy, a Platonic JEPA alignment toy, a MoRE reused-experts char-LM toy, a looped-transformer addition toy, a NanoDreamer MinAtar world-model toy, an auditable SAE text detector, a binary discrete diffusion Sudoku toy, a syndrome-mitigation QEC experiment, a correction-training 2D toy, LoMa matching, chest X-ray bone suppression, active borylation, EmbeddingGemma 2, PixelUMM, JEPA-Anything, and llama.cpp Decision Models.">
+  <meta name="description" content="A monorepo of small, honest kits and UIs for new AI models and runtimes: a Willow stability timelike-error toy, a stable-envs state-replay disk and lossless-render experiment, a Déjà View loop-count compute/quality-dial experiment, a RaCo vs ALIKED rotation-repeatability experiment, an e-means vs FAISS k-means CPU experiment, a QMapAnything token-quantization toy, a MuJoCo 4.0 speculative-contacts tunneling experiment, a Value Forcing return-distribution toy, a FlexGlue covisibility-vs-doppelganger CPU experiment, a world2vec continuous-time latent dynamics toy, a Platonic JEPA alignment toy, a MoRE reused-experts char-LM toy, a looped-transformer addition toy, a NanoDreamer MinAtar world-model toy, an auditable SAE text detector, a binary discrete diffusion Sudoku toy, a syndrome-mitigation QEC experiment, a correction-training 2D toy, LoMa matching, chest X-ray bone suppression, active borylation, EmbeddingGemma 2, PixelUMM, JEPA-Anything, and llama.cpp Decision Models.">
   <meta property="og:title" content="Tech Demos">
   <meta property="og:description" content="Small, honest kits and UIs for new AI models and runtimes, by Gyanateet Dutta (@Ryukijano).">
   <meta property="og:image" content="https://ryukijano.github.io/tech-demos/assets/decision-models-ui.png">
@@ -21,7 +21,7 @@
       <p class="subtitle">Small, honest kits and UIs for new AI models and runtimes, kept in one monorepo with one folder per demo.</p>
       <div class="hero-actions">
         <a class="btn primary" href="https://github.com/Ryukijano/tech-demos">View the repo on GitHub</a>
-        <a class="btn" href="#demos">Browse the 24 demos</a>
+        <a class="btn" href="#demos">Browse the 25 demos</a>
       </div>
       <p class="byline">By <a href="https://github.com/Ryukijano">Gyanateet Dutta</a> · <a href="https://github.com/Ryukijano">@Ryukijano</a></p>
     </div>
@@ -31,6 +31,35 @@
     <p class="note">These demos run on your own machine. This page shows recordings and status; follow each README to run them.</p>
 
     <section class="grid">
+
+      <!-- 0. Willow stability timelike toy (CPU clear-experiment, stim + PyMatching) -->
+      <article class="card">
+        <div class="media">
+          <video src="assets/willow-stability-timelike.mp4" poster="assets/willow-stability-timelike.png" muted controls playsinline preload="metadata" aria-label="Logical error versus cycles for Pauli noise, a leakage burst, and a walking analogue"></video>
+        </div>
+        <div class="body">
+          <div class="badges">
+            <span class="badge green">CPU · stim + PyMatching</span>
+            <span class="badge green">Hypothesis: PASS</span>
+            <span class="badge muted">surface code · stability · leakage</span>
+          </div>
+          <h2>Willow stability timelike</h2>
+          <p>CPU toy of the surface-code stability experiment (Gidney, <a href="https://arxiv.org/abs/2204.13834">arXiv:2204.13834</a>) aimed at Google Quantum AI's Willow leakage paper (<a href="https://arxiv.org/abs/2611.21578">arXiv:2611.21578</a>, found via <a href="https://x.com/AEickbusch/status/2122798788431716360">@AEickbusch</a>; the post was not fetched). Stim has no stability generator, so the circuit is built here. Seeds 0/1/2. Not a hardware run.</p>
+          <ul class="facts">
+            <li>PASS: at p = 10⁻³ and cycles = patch width, timelike Λ_T is 10.87 ± 0.27 (3→5 is 13.2, 5→7 is 8.6; bar &gt; 1.2). At a fixed 4 cycles the same ratio is 0.33: a wider patch has more timelike paths</li>
+            <li>A toy |3⟩-style burst (exponential lifetime, one stabilizer flipped) puts a floor under the logical-error curve. Cutting each burst every 2 cycles, a stand-in for the walking circuit, lowers the 32-cycle error by at least 59×</li>
+            <li>Λ_T drops below 1 at p = 0.015, then climbs back once every distance is in the high-error regime. Walking stops beating 3× once bursts start on 20% of stabilizer-cycles. The hardware floor ≤ 3.2×10⁻⁸ and μ_T = 1.47 are quoted, not re-run</li>
+          </ul>
+          <pre><code>cd apps/willow-stability-timelike
+python3 -m venv .venv &amp;&amp; source .venv/bin/activate
+pip install -r requirements.txt
+./run_all.sh</code></pre>
+          <div class="links">
+            <a href="https://github.com/Ryukijano/tech-demos/tree/main/apps/willow-stability-timelike">App folder</a>
+            <a href="https://github.com/Ryukijano/tech-demos/blob/main/apps/willow-stability-timelike/README.md">README</a>
+          </div>
+        </div>
+      </article>
 
       <!-- 0. stable-envs state replay (CPU clear-experiment, galilai-group/stable-envs 0.1.0) -->
       <article class="card">

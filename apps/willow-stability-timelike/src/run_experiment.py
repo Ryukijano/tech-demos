@@ -81,18 +81,19 @@ def run_one(task: dict) -> dict:
     p = float(task["p"])
     p_start = float(task.get("p_start") or 0.0)
     tau = float(task.get("tau") or 0.0)
-    clear = task.get("clear_every")
-    clear_every = None if clear in (None, 0) else int(clear)
+    # Walking cuts bursts on the pre-registered 2-cycle boundary. A missing
+    # field must not silently disable that cut.
+    if variant == "walking":
+        clear_every = int(task.get("clear_every") or 2)
+    else:
+        clear_every = None
     decoder = build_decoder(distance, cycles, p, close_data=True)
     stim_seed = _stim_seed(seed, distance, cycles, variant)
     if variant == "pauli":
         fails, used = sample_pauli(decoder, shots, stim_seed)
     else:
         fails, used = sample_correlated(
-            decoder,
-            shots,
-            stim_seed,
-            Leakage(p_start, tau, clear_every if variant == "walking" else None),
+            decoder, shots, stim_seed, Leakage(p_start, tau, clear_every)
         )
     return _record(
         task["study"], variant, distance, cycles, seed, used, fails, p, p_start, tau,
@@ -141,6 +142,7 @@ def _tasks_official(cfg: dict) -> list[dict]:
                     "p": p,
                     "p_start": p_start,
                     "tau": tau,
+                    "clear_every": int(leak["clear_every"]) if variant == "walking" else None,
                 })
     return tasks
 
@@ -173,6 +175,7 @@ def _tasks_breakpoints(cfg: dict) -> list[dict]:
                 "p": float(cfg["physical_error_rate"]),
                 "p_start": float(p_start),
                 "tau": float(leak["tau"]),
+                "clear_every": int(leak["clear_every"]) if variant == "walking" else None,
             })
     for tau in cfg["breakpoints"]["tau"]:
         for variant in ("leakage", "walking"):
@@ -186,6 +189,7 @@ def _tasks_breakpoints(cfg: dict) -> list[dict]:
                 "p": float(cfg["physical_error_rate"]),
                 "p_start": float(leak["p_start"]),
                 "tau": float(tau),
+                "clear_every": int(leak["clear_every"]) if variant == "walking" else None,
             })
     return tasks
 

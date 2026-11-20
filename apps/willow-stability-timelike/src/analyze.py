@@ -348,7 +348,7 @@ def write_plot(raw: dict, bp: dict | None, verdict: dict) -> None:
     for variant, color, label in (
         ("pauli", PAULI, "Pauli only"),
         ("leakage", LEAK, r"Leakage bursts ($\tau=8$)"),
-        ("walking", WALK, "Walking analogue (clear / 2)"),
+        ("walking", WALK, "Walking analogue (clear every 2)"),
     ):
         cycles, mean, std = _curve_stats(raw, variant)
         # Log axis cannot show exact zeros. Plot a 3/N stand-in only when the mean is 0.
@@ -373,7 +373,7 @@ def write_plot(raw: dict, bp: dict | None, verdict: dict) -> None:
     ax.set_xlabel("Cycles")
     ax.set_ylabel(r"Logical error per shot $P_L$")
     ax.set_title(r"$d=3$, $p=10^{-3}$, seeds 0/1/2")
-    ax.legend(prop={"weight": "bold", "size": 8})
+    ax.legend(prop={"weight": "bold", "size": 8}, loc="upper right")
 
     ax = axes[0, 1]
     # Per-seed eps at c = d.
@@ -480,6 +480,21 @@ def write_breakpoints(bp: dict | None) -> None:
         lines.append("Lambda_T mean stayed at or above 1 on every grid point.")
     else:
         lines.append(f"Lambda_T mean first drops below 1 at p = {cross:.4g} on this grid.")
+        later = [p for p in ps if p > cross]
+        # Recomputed below from the table we just wrote: scan records again.
+        rebound = []
+        for p in later:
+            rows = [r for r in records if r["study"] == "breakpoint_p" and float(r["p"]) == p]
+            fake = {"records": [{**r, "study": "lambda"} for r in rows]}
+            if lambda_by_seed(fake)[0]["Lambda_T_mean"] >= 1.0:
+                rebound.append(p)
+        if rebound:
+            lines.append(
+                "At higher p the ratio climbs back through 1 "
+                f"(p = {', '.join(f'{p:.4g}' for p in rebound)}). "
+                "All three distances are then in the high-error regime, so the ratio "
+                "is no longer a clean threshold diagnostic."
+            )
     lines += [
         "",
         "## Walking gain versus burst rate (d=3, 32 cycles, tau=8)",
@@ -517,7 +532,7 @@ def write_breakpoints(bp: dict | None) -> None:
         "|---|---|---|---|",
     ]
     taus = sorted({float(r["tau"]) for r in records if r["study"] == "breakpoint_tau"})
-    tau_cross = None
+    below_three = []
     for tau in taus:
         leak = next(
             r for r in records
@@ -527,18 +542,24 @@ def write_breakpoints(bp: dict | None) -> None:
             r for r in records
             if r["study"] == "breakpoint_tau" and r["variant"] == "walking" and float(r["tau"]) == tau
         )
-        p_w = walk["p_L"] if walk["fails"] else rule_of_three_upper(walk["shots"])
-        gain = leak["p_L"] / p_w if p_w else math.inf
+        if leak["fails"] == 0 and walk["fails"] == 0:
+            gain = 0.0
+            below_three.append((tau, "both zero"))
+        else:
+            p_w = walk["p_L"] if walk["fails"] else rule_of_three_upper(walk["shots"])
+            gain = leak["p_L"] / p_w if p_w else math.inf
+            if gain < 3.0:
+                below_three.append((tau, _fmt(gain)))
         lines.append(f"| {tau:.3g} | {leak['p_L']:.3e} | {walk['p_L']:.3e} | {_fmt(gain)} |")
-        if tau_cross is None and gain < 3.0:
-            tau_cross = tau
     lines.append("")
-    if tau_cross is None:
+    if not below_three:
         lines.append("Walking gain stayed at or above 3x on every tau grid point.")
     else:
+        listed = ", ".join(f"tau={tau:.3g} ({why})" for tau, why in below_three)
         lines.append(
-            f"Walking gain is below 3x for tau ≤ {tau_cross:.3g}: bursts shorter than the "
-            "2-cycle clear leave little for the walking analogue to remove."
+            f"Walking gain is below 3x at {listed}. "
+            "Short lifetimes produce too few logical failures for the 2-cycle clear to matter; "
+            "from tau = 8 upward the clear removes a visible floor."
         )
     lines.append("")
     (EXP / "breakpoints.md").write_text("\n".join(lines))

@@ -1,0 +1,56 @@
+{
+  "status": "PASS",
+  "verdict": {
+    "status": "PASS",
+    "Lambda_T_mean": 10.868894414917293,
+    "Lambda_T_std": 0.27327005158914275,
+    "lambda_steps_all_seeds_gt_1": true,
+    "lambda_ok": true,
+    "knee_ok": true,
+    "walking_ok": true
+  },
+  "knee": {
+    "early_drop": 4.790055248618785,
+    "late_over_reference": 0.7972972972972973,
+    "floor_over_pauli": 196.66666666666666,
+    "walking_gain": 59.0,
+    "walking_gain_is_lower_bound": true,
+    "pauli_floor_is_upper_bound": true,
+    "p": {
+      "early_a": 0.024083333333333335,
+      "early_b": 0.005027777777777778,
+      "reference": 0.006166666666666667,
+      "late_a": 0.006166666666666667,
+      "long": 0.004916666666666666,
+      "walk_long": 0.0,
+      "pauli_long": 0.0
+    }
+  },
+  "lambda_seeds": [
+    {
+      "seed": 0,
+      "steps": {
+        "3->5": 14.364484614625983,
+        "5->7": 7.833531787626123
+      },
+      "mean": 11.099008201126054
+    },
+    {
+      "seed": 1,
+      "steps": {
+        "3->5": 11.001815657108795,
+        "5->7": 10.131895457010273
+      },
+      "mean": 10.566855557059533
+    },
+    {
+      "seed": 2,
+      "steps": {
+        "3->5": 14.12055652668516,
+        "5->7": 7.761082446447427
+      },
+      "mean": 10.940819486566294
+    }
+  ],
+  "seconds": 9.855184366999993
+}

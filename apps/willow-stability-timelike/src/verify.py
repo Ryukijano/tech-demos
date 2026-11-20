@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from src.circuit import Noise, boundary_degree, build_stability_circuit  # noqa: E402
+from src.leakage import Leakage, burst_mask  # noqa: E402
 
 
 def _noiseless_sample(distance: int, rounds: int, shots: int = 200) -> None:
@@ -77,6 +78,11 @@ def main() -> None:
     if int(np.sum(dets_p)) or int(np.sum(obs_p)):
         raise SystemExit("ancilla prefix is not a shorter open stability experiment")
     print("ok open-circuit prefix")
+    full = burst_mask(30, 4, 32, Leakage(0.05, 8.0, None), np.random.default_rng(0))
+    walked = burst_mask(30, 4, 32, Leakage(0.05, 8.0, 2), np.random.default_rng(0))
+    if int(walked.sum()) >= int(full.sum()) or np.any(walked & ~full):
+        raise SystemExit("walking clear is not a strict shortening of the same bursts")
+    print("ok walking clear")
     # DEM must reject a deliberately broken observable-less check by building.
     _ = stim.Circuit.generated("surface_code:rotated_memory_z", distance=3, rounds=3)
     print("verify passed")

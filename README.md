@@ -29,6 +29,7 @@ One monorepo for sticky / bookmark-worthy tech demos. Prefer adding a new `apps/
 | `apps/raco-rotation-keypoints/` | VisMatch 1.4.0 RaCo vs ALIKED-N16 repeatability under in-plane rotation (arXiv:2602.15755; CPU, PASS) |
 | `apps/dejaview-loop-knob/` | Déjà View (DVLT) loop-count K as a CPU compute/quality dial (arXiv:2605.30215; official code not vendored; NVIDIA weights non-commercial; PARTIAL) |
 | `apps/stable-envs-state-replay/` | stable-envs 0.1.0 state storage vs PNG/npz frames on CPU (arXiv:2611.23151; library not vendored; PASS) |
+| `apps/willow-stability-timelike/` | Surface-code stability toy on CPU: timelike Λ_T, leakage knee, walking analogue (arXiv:2611.21578; stim/PyMatching not vendored; PASS) |
 | `tracking/seen-bookmarks.json` | X bookmarks already turned into demos (`url`, `slug`, `date`) |
 | `docs/` | GitHub Pages showcase site (static HTML/CSS) |
 | `AGENTS.md` | Rules for future cloud agents |

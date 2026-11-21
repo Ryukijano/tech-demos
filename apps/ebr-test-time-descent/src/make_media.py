@@ -40,6 +40,9 @@ def write_still() -> None:
         raise SystemExit("missing plot; run analyze.py first")
     ART.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(src, ART / "ebr-test-time-descent.png")
+    viewer = ROOT / "viewer"
+    viewer.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(src, viewer / "plot.png")
     if DOCS.is_dir():
         shutil.copyfile(src, DOCS / "ebr-test-time-descent.png")
 

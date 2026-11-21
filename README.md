@@ -30,6 +30,7 @@ One monorepo for sticky / bookmark-worthy tech demos. Prefer adding a new `apps/
 | `apps/dejaview-loop-knob/` | Déjà View (DVLT) loop-count K as a CPU compute/quality dial (arXiv:2605.30215; official code not vendored; NVIDIA weights non-commercial; PARTIAL) |
 | `apps/stable-envs-state-replay/` | stable-envs 0.1.0 state storage vs PNG/npz frames on CPU (arXiv:2611.23151; library not vendored; PASS) |
 | `apps/willow-stability-timelike/` | Surface-code stability toy on CPU: timelike Λ_T, leakage knee, walking analogue (arXiv:2611.21578; stim/PyMatching not vendored; PASS) |
+| `apps/ebr-test-time-descent/` | Official EBR Sudoku-Extreme checkpoint on CPU: accuracy past the 4-segment halt, energy AUROC (arXiv:2611.08977; upstream MIT cloned at run time; PASS) |
 | `tracking/seen-bookmarks.json` | X bookmarks already turned into demos (`url`, `slug`, `date`) |
 | `docs/` | GitHub Pages showcase site (static HTML/CSS) |
 | `AGENTS.md` | Rules for future cloud agents |

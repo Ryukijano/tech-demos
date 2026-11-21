@@ -25,7 +25,8 @@
     main { width: min(1080px, 94vw); margin: 32px auto 64px; }
     h1 { font-size: 1.8rem; letter-spacing: -0.03em; margin: 0 0 8px; }
     p { color: var(--muted); }
-    .layout { display: grid; grid-template-columns: 320px 1fr; gap: 28px; align-items: start; }
+    .layout { display: grid; grid-template-columns: minmax(300px, 380px) 1fr; gap: 28px; align-items: start; }
+    #step { color: var(--muted); }
     @media (max-width: 800px) { .layout { grid-template-columns: 1fr; } }
     canvas { width: 100%; background: #070b10; border: 1px solid var(--line); border-radius: 12px; }
     .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px; }
@@ -56,7 +57,7 @@
       <div class="card">
         <p><span id="status" class="badge">…</span></p>
         <p id="facts"></p>
-        <img src="../experiments/exp1_cpu_sudoku_extreme/plot.png" alt="Accuracy, energy, and breakpoints">
+        <img src="plot.png" alt="Accuracy, energy, and breakpoints">
       </div>
     </div>
   </main>
@@ -147,7 +148,7 @@
           "Official 1.8M Sudoku-Extreme checkpoint. 96 highest-rated test boards, seeds 0/1/2, CPU.";
         document.getElementById("facts").innerHTML =
           `Exact accuracy ${acc4}% at the training halt (segment 4) and ${acc16}% at segment 16 ` +
-          `(gain ${gain} points; bar +2). Energy AUROC ${auroc} (bar 0.70). ` +
+          `(gain ${gain} points; bar +2). Energy AUROC ${auroc} at the eligible depth (bar 0.70). ` +
           `Ratings ${data.ratings.min}–${data.ratings.max}. ` +
           `Given clues are white; descent fills green when right and red when wrong.`;
         draw();

@@ -1,0 +1,32 @@
+ebr-test-time-descent — NOTICE
+
+This directory runs a CPU subset of the official Energy-Based Reasoners
+checkpoint. It is not a reimplementation of the model.
+
+  Chen, Gladstone, Li, Ji, Du,
+  "Energy-Based Reasoners: Your Recurrent Reasoner Should Be an Energy-Based Model",
+  arXiv:2611.08977 (2026)
+  https://arxiv.org/abs/2611.08977
+  https://energy-based-reasoners.github.io/
+  https://github.com/wwillchen/ebr
+
+Upstream code: MIT, Copyright (c) 2026 The EBR Authors.
+Pinned git commit: 5036bda850a3db12f0db381935d1a4cbbfda9c30
+Checkpoint: Hugging Face wxingxu/ebr @ da0172a51409281079094bb5f6d19b5bdc1c44bb
+  file sudoku-extreme/sudoku.pth
+  sha256 541e57489d8239e36f4124ab63e6ce1ca73322d352e64e8b507f35a83016bd7a
+Sudoku-Extreme test CSV: Hugging Face sapientinc/sudoku-extreme
+  revision 58942f96baeb572ca3127e2a9e9c70f330783d6b
+
+The upstream README requires CUDA 12.x for training and recommends an H200.
+Evaluation falls back to CPU eager float32 (their evaluators/common.py).
+Fused Triton kernels are CUDA-only; on CPU the repo's dense reference
+attention is used. This app does not vendor upstream source. run_all.sh
+clones the pinned commit into work/ebr (gitignored).
+
+No paper figures are copied. Full-test numbers quoted from the paper
+(99.4% / 99.9% on Sudoku-Extreme, 345× FLOPs) were not re-run.
+
+Found via a bookmarked X post by @askalphaxiv. The post was not fetched.
+The bookmark text supplied with the task was checked against the paper,
+the project page, and the GitHub README.

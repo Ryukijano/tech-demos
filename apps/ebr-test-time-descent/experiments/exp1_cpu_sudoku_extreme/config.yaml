@@ -1,0 +1,72 @@
+# Pre-registered before the official seeds 0/1/2 run.
+# Do not edit the thresholds after that run.
+#
+# A design probe (24 highest-rated boards, the checkpoint's stored config
+# seed, depth 12) was used only to confirm that CPU eager eval finishes in
+# seconds and that -energy is the score direction. It is not this run.
+# The bars below were taken from the paper's claims (a gain past the training
+# halt; energy and tangent-gradient separation), not from the probe's curve.
+
+experiment: exp1_cpu_sudoku_extreme
+
+hypothesis: >
+  On the released Sudoku-Extreme EBR checkpoint, exact-board accuracy is
+  higher after test-time energy descent continues past the training halt of
+  4 segments, the curve from 4 to 8 to 16 segments does not fall, final
+  energy ranks correct boards above incorrect ones (AUROC of -energy), and
+  incorrect boards keep a larger tangent gradient. This is section 4.1 of
+  arXiv:2611.08977 ("trained with only four iterations" — table A.2 sets
+  training segments to 4 and evaluation segments to 64, 21 microsteps each)
+  and section 4.2 / figure 6 (solved trajectories end at lower energy with
+  smaller tangent gradients).
+
+paper: https://arxiv.org/abs/2611.08977
+project: https://energy-based-reasoners.github.io/
+upstream: https://github.com/wwillchen/ebr
+upstream_commit: 5036bda850a3db12f0db381935d1a4cbbfda9c30
+checkpoint_repo: wxingxu/ebr
+checkpoint_revision: da0172a51409281079094bb5f6d19b5bdc1c44bb
+checkpoint_file: sudoku-extreme/sudoku.pth
+checkpoint_sha256: 541e57489d8239e36f4124ab63e6ce1ca73322d352e64e8b507f35a83016bd7a
+data_repo: sapientinc/sudoku-extreme
+data_revision: 58942f96baeb572ca3127e2a9e9c70f330783d6b
+
+# Highest-rated Sudoku-Extreme test puzzles (stable argsort, ties keep
+# file order). One trajectory per puzzle. The full test is 422,786 boards;
+# the paper's 99.4% / 99.9% figures are quoted and not re-run.
+n_boards: 96
+seeds: [0, 1, 2]
+# Seed 0 continues to extreme_segments so the long-horizon breakpoint is the
+# same trajectory as the main curve, not a second init.
+eval_segments: 16
+extreme_segments: 32
+train_segments: 4
+batch_size: 16
+threads: 4
+min_class: 5
+blank_token: 1
+
+thresholds:
+  gain_16_minus_4_min: 0.02
+  regression_boards_max: 1
+  energy_auroc_min: 0.70
+  gtan_ratio_min: 2.0
+
+# Breakpoints are seed 0 only. They do not change PASS / PARTIAL / FAIL.
+breakpoints:
+  init_std: [0.01, 1.0, 8.0]
+  noise_scale: [0.0, 0.05, 0.4, 1.0, 2.0]
+  breakpoint_boards: 32
+  breakpoint_segments: 8
+  band_segments: 16
+
+status_rule: >
+  PASS if all four bars hold. PARTIAL if at least two hold. FAIL otherwise.
+  (1) Seed-mean exact accuracy at segment 16 minus segment 4 is at least
+  0.02. (2) Seed-mean accuracy does not fall by more than 1 board from
+  segment 4 to 8, or from 8 to 16. (3) Every seed has AUROC(-energy) at
+  least 0.70. The depth for a seed is the deepest segment in
+  {16, 8, 4, 2, 1} with at least 5 correct and 5 incorrect boards. A seed
+  with no such segment fails the bar. (4) At that same depth, every seed
+  has mean tangent-gradient norm on incorrect boards at least 2 times the
+  mean on correct boards. Breakpoints are report-only.

@@ -1,0 +1,11 @@
+{
+  "seed": 99,
+  "depth": 2,
+  "n": 2,
+  "exact": [
+    0.0,
+    0.5
+  ],
+  "energy_finite": true,
+  "official": false
+}

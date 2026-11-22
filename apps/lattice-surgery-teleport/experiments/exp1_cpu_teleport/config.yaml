@@ -1,0 +1,81 @@
+# Pre-registered before the official seeds 0/1/2 run.
+# The pass bar below is the factor of 2 named in the task, chosen after
+# reading arXiv:2611.23165 and before any official shots. Do not edit it
+# to fit the outcome. Shot counts are sized so a d=7 rate near 1e-4 still
+# yields countable failures on this CPU. A noiseless correctness check
+# (verify.py) is not the experiment.
+
+experiment: exp1_cpu_teleport
+hypothesis: >
+  Under uniform circuit-level depolarizing noise at p = 1e-3, decoded
+  logical teleportation failure of an XX lattice-surgery protocol between
+  two rotated surface-code patches falls by a factor Lambda >= 2 at each
+  distance step d = 3 to 5 and d = 5 to 7. Rounds of initialization and of
+  the merge both equal d. Lambda is the ratio of seed-means of p_bar(d) =
+  (p_fail_Z(d) + p_fail_X(d)) / 2 over seeds 0, 1 and 2. p_fail_b is the
+  fraction of shots on which PyMatching disagrees with the sampled
+  observable in basis b. This is a stim simulation of the protocol, not a
+  re-run of the 41-qubit device in arXiv:2611.23165.
+
+physical_error_rate: 0.001
+distances: [3, 5, 7]
+bases: [Z, X]
+seeds: [0, 1, 2]
+# init_rounds and merge_rounds equal the distance for the scaling study.
+round_schedule: match_distance
+
+noise:
+  name: uniform_circuit_depolarizing
+  # Every channel below uses the same probability p.
+  two_qubit_depolarize: p
+  single_qubit_depolarize_after_h: p
+  data_idle_depolarize_each_round: p
+  reset_x_error: p
+  measurement_x_error: p
+  # |+> preparation is reset, X error, then H, so the reset error becomes a Z.
+
+shots:
+  3: 100000
+  5: 200000
+  7: 400000
+chunk_size: 20000
+workers: 4
+
+thresholds:
+  lambda_step_min: 2.0
+
+# If the larger distance has zero failures on a seed and basis, that rate
+# is replaced by 3/shots before it enters the denominator of Lambda. The
+# ratio is then a lower bound, and the pass bar applies to the lower bound.
+# The strict-decrease check uses the raw rate, so a zero is a real zero.
+zero_failure_rule: rule_of_three
+
+seed_formula: "100000 * seed + 1000 * distance + 10 * basis_bit + chunk"
+
+breakpoints:
+  p: [0.001, 0.002, 0.003, 0.005, 0.008, 0.01, 0.012, 0.015, 0.02, 0.03, 0.05]
+  seed: 0
+  shots:
+    3: 20000
+    5: 30000
+    7: 40000
+  # Missing merge rounds, both bases, distances 3 and 5.
+  merge_rounds: [1, 2]
+  merge_p: [0.001, 0.01, 0.02]
+  # init_rounds = merge_rounds = 1.
+  few_rounds_p: [0.001, 0.01, 0.02]
+  # Hardware modular circuit at d=3 uses 2 init rounds and 3 merge rounds
+  # (App. E). Report-only, same noise model, not their device.
+  paper_d3:
+    init_rounds: 2
+    merge_rounds: 3
+    p: [0.001, 0.01]
+
+status_rule: >
+  PASS if Lambda(3 to 5) >= 2 and Lambda(5 to 7) >= 2 and, on every seed,
+  both the Z-basis and the X-basis raw failure rates are strictly decreasing
+  in d. A zero-failure denominator uses 3/shots and Lambda is a lower bound;
+  the bar applies to that lower bound. PARTIAL if both Lambda steps are
+  strictly greater than 1 but the PASS conjunction fails. FAIL if either
+  Lambda step is <= 1. Breakpoints, the d=3 paper round counts, and the
+  per-basis Lambdas are report-only and cannot change the status.

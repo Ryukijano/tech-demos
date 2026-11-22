@@ -1,0 +1,35 @@
+{
+  "note": "code-path smoke, not the official seeds",
+  "records": [
+    {
+      "basis": "X",
+      "chunk_size": 400,
+      "detectors": 108,
+      "distance": 3,
+      "fails": 0,
+      "init_rounds": 3,
+      "merge_rounds": 3,
+      "p": 0.001,
+      "qubits": 41,
+      "seconds": 0.0282,
+      "seed": 0,
+      "shots": 400,
+      "study": "smoke"
+    },
+    {
+      "basis": "Z",
+      "chunk_size": 400,
+      "detectors": 104,
+      "distance": 3,
+      "fails": 0,
+      "init_rounds": 3,
+      "merge_rounds": 3,
+      "p": 0.001,
+      "qubits": 41,
+      "seconds": 0.0295,
+      "seed": 0,
+      "shots": 400,
+      "study": "smoke"
+    }
+  ]
+}

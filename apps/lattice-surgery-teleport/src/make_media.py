@@ -18,7 +18,7 @@ from matplotlib.patches import Circle, FancyBboxPatch
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from src.analyze import DIST_COLOR, EXP, _style  # noqa: E402
+from src.analyze import DIST_COLOR, EXP, _log_axis, _style  # noqa: E402
 from src.circuit import patch_layout  # noqa: E402
 
 ART = ROOT / "artifacts"
@@ -148,6 +148,7 @@ def write_video() -> None:
         ax.plot([], [], "o-", color=DIST_COLOR[distance], lw=2.0, ms=4.5, label=f"d = {distance}")
     ax.set_xscale("log")
     ax.set_yscale("log")
+    _log_axis(ax)
     ax.set_xlim(ps[0] * 0.8, ps[-1] * 1.2)
     ymax = max(float(series[d][1].max()) for d in (3, 5, 7))
     ymin = min(float(series[d][1].min()) for d in (3, 5, 7))
@@ -166,13 +167,13 @@ def write_video() -> None:
         for line, distance in zip(lines, (3, 5, 7)):
             xs, ys = series[distance]
             line.set_data(xs[:shown], ys[:shown])
-        note.set_text(f"p ≤ {ps[shown - 1]:g}")
+        note.set_text(f"p <= {ps[shown - 1]:g}")
         return lines
 
-    anim = animation.FuncAnimation(fig, frame, frames=len(ps) * 2 + 8, blit=False)
+    anim = animation.FuncAnimation(fig, frame, frames=len(ps) * 3 + 12, blit=False)
     ART.mkdir(parents=True, exist_ok=True)
     path = ART / "lattice-surgery-teleport.mp4"
-    anim.save(path, writer=animation.FFMpegWriter(fps=6, bitrate=1400))
+    anim.save(path, writer=animation.FFMpegWriter(fps=5, bitrate=1400))
     plt.close(fig)
     if DOCS.is_dir():
         shutil.copyfile(path, DOCS / "lattice-surgery-teleport.mp4")

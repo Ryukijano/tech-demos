@@ -14,6 +14,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 import yaml
+from matplotlib.ticker import FuncFormatter, NullFormatter
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
@@ -46,8 +47,29 @@ def _style() -> None:
             "legend.frameon": False,
             "pdf.fonttype": 42,
             "ps.fonttype": 42,
+            "axes.unicode_minus": False,
+            "mathtext.fontset": "dejavusans",
         }
     )
+
+
+def _decade_label(value: float, _pos: object = None) -> str:
+    if value <= 0:
+        return ""
+    exp = int(round(math.log10(value)))
+    if abs(math.log10(value) - exp) > 1e-6:
+        return ""
+    return f"$10^{{{exp}}}$"
+
+
+def _log_axis(ax, which: str = "both") -> None:
+    fmt = FuncFormatter(_decade_label)
+    if which in ("x", "both"):
+        ax.xaxis.set_major_formatter(fmt)
+        ax.xaxis.set_minor_formatter(NullFormatter())
+    if which in ("y", "both"):
+        ax.yaxis.set_major_formatter(fmt)
+        ax.yaxis.set_minor_formatter(NullFormatter())
 
 
 def _rows(records: list[dict], **match: object) -> list[dict]:
@@ -470,6 +492,7 @@ def write_plot(cfg: dict, raw: dict, status: dict, bp: dict | None) -> None:
             _mark_official(ax, status, basis)
             ax.set_xscale("log")
             ax.set_yscale("log")
+            _log_axis(ax)
             ax.set_xlabel("Physical error rate p")
             ax.set_ylabel("Logical teleportation failure")
             ax.set_title(f"{basis} basis", fontweight="bold")
@@ -497,6 +520,7 @@ def write_plot(cfg: dict, raw: dict, status: dict, bp: dict | None) -> None:
         ax_l.axhline(1.0, color="#666666", lw=0.7, ls=":")
         ax_l.set_xscale("log")
         ax_l.set_yscale("log")
+        _log_axis(ax_l)
         ax_l.set_xlabel("Physical error rate p")
         ax_l.set_ylabel("Suppression factor Lambda")
         ax_l.set_title("Seed 0, rounds = d", fontweight="bold")
@@ -526,6 +550,7 @@ def write_plot(cfg: dict, raw: dict, status: dict, bp: dict | None) -> None:
     ax_b.set_xticks(np.arange(len(distances)))
     ax_b.set_xticklabels([f"d = {d}" for d in distances])
     ax_b.set_yscale("log")
+    _log_axis(ax_b, "y")
     ax_b.set_ylabel("Failure at p = 0.001")
     ax_b.set_title(f"Seeds 0/1/2 · {status['status']}", fontweight="bold")
     ax_b.legend(prop={"weight": "bold", "size": 8})

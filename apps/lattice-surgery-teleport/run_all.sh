@@ -5,10 +5,10 @@
 #   pip install -r requirements.txt
 set -euo pipefail
 cd "$(dirname "$0")"
-python src/verify.py
-python src/run_experiment.py --smoke --workers 4
-python src/run_experiment.py --workers 4
-python src/run_experiment.py --breakpoints --workers 4
-python src/analyze.py
-python src/make_media.py
+python3 src/verify.py
+python3 src/run_experiment.py --smoke --workers 4
+python3 src/run_experiment.py --workers 4
+python3 src/run_experiment.py --breakpoints --workers 4
+python3 src/analyze.py
+python3 src/make_media.py
 echo "done"

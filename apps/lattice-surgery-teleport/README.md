@@ -6,9 +6,41 @@ Stim has no lattice-surgery generator. This app builds a rotated-surface-code XX
 
 **This is a simulation of the protocol, not a reproduction of the 41-qubit device.**
 
-## Status
+![results](artifacts/lattice-surgery-teleport.png)
 
-Official seeds have **not** been run yet. The pass bar in `experiments/exp1_cpu_teleport/config.yaml` is fixed in the commit that adds this file. It will not be edited to fit the outcome.
+*Decoded failure versus physical error rate, the suppression factor, and the pre-registered point.* Video: [`artifacts/lattice-surgery-teleport.mp4`](artifacts/lattice-surgery-teleport.mp4) draws the distance-3 merge and the seed-0 sweep.
+
+## Status (honest): **PASS**
+
+The pass bar was fixed in `config.yaml` before the official seeds and was not edited afterward. A 400-shot smoke (`smoke.json`, seed 0, both bases, zero failures) only checked the code path.
+
+| Check | Bar | Result |
+|---|---|---|
+| Λ(3→5) and Λ(5→7) on seed-mean p_bar | both ≥ 2 | **met** (5.90 and 7.40; neither is a zero-failure bound) |
+| Raw Z and X failure strictly decreasing in d, every seed | all 6 series | **met** |
+
+p_bar(d) = (p_fail_Z + p_fail_X) / 2. Λ is the ratio of the means of p_bar over seeds 0, 1 and 2, not the mean of the ratios.
+
+### Failure at p = 10⁻³, rounds = d (mean ± sample std)
+
+| d | basis | mean ± std | pooled |
+|---|---|---|---|
+| 3 | Z | 4.02×10⁻³ ± 1.4×10⁻⁴ | 1205/300 000 |
+| 3 | X | 1.44×10⁻³ ± 2.6×10⁻⁴ | 432/300 000 |
+| 5 | Z | 6.98×10⁻⁴ ± 2.9×10⁻⁶ | 419/600 000 |
+| 5 | X | 2.27×10⁻⁴ ± 2.3×10⁻⁵ | 136/600 000 |
+| 7 | Z | 9.33×10⁻⁵ ± 7.6×10⁻⁶ | 112/1 200 000 |
+| 7 | X | 3.17×10⁻⁵ ± 1.0×10⁻⁵ | 38/1 200 000 |
+
+Seed-mean p_bar: **2.73×10⁻³**, **4.63×10⁻⁴**, **6.25×10⁻⁵**. Per-basis Λ (report-only): Z is 5.75 then 7.48; X is 6.35 then 7.16.
+
+Per-seed p_bar, which is what the strict-decrease check uses inside each basis, not as this average:
+
+| seed | p_bar(3) | p_bar(5) | p_bar(7) |
+|---|---|---|---|
+| 0 | 2.80×10⁻³ | 4.73×10⁻⁴ | 5.38×10⁻⁵ |
+| 1 | 2.73×10⁻³ | 4.53×10⁻⁴ | 6.88×10⁻⁵ |
+| 2 | 2.66×10⁻³ | 4.63×10⁻⁴ | 6.50×10⁻⁵ |
 
 ## Hypothesis (locked)
 
@@ -25,6 +57,15 @@ falls by a factor **Λ ≥ 2** at each step d = 3→5 and d = 5→7. Λ is the r
 | FAIL | either Λ step ≤ 1 |
 
 A larger-distance basis with zero failures contributes `3/shots` to the denominator, and that Λ is a lower bound. The bar applies to the lower bound. Breakpoints do not change the status.
+
+## Breakpoints (seed 0)
+
+Rounds = d unless noted. p_bar is the mean of the two bases. Full table: `experiments/exp1_cpu_teleport/breakpoints.md`.
+
+- **p sweep.** Λ(3→5) is 9.3 at p = 10⁻³, 2.8 at p = 0.002, and **first falls below 2 at p = 0.003** (1.93). Λ(5→7) falls below 2 at **p = 0.005** (1.41). **Both fall below 1 at p = 0.008** (0.83 and 0.91): the wider patch fails more often. At p = 0.02 the ratios are 0.79 and 0.95. At p = 0.05 every distance is within a percent of 1/2, so the ratio is no longer a threshold diagnostic.
+- **Missing merge rounds.** At p = 10⁻³, 0.01 and 0.02, and at d = 3 and d = 5, **fewer merge rounds have a lower failure rate** in both bases. Example, d = 3, Z basis, p = 10⁻³: 2.1×10⁻³ (1 round), 2.4×10⁻³ (2), 3.6×10⁻³ (3 rounds). The same ordering holds at p = 0.02. Graphlike distance stays equal to d even at one merge round, because the final data measurement closes the last syndrome layer. This run does not show a p where dropping merge rounds makes teleportation worse.
+- **Very few rounds** (init = 1, merge = 1) are lower still. At d = 5, p = 10⁻³, the X basis has 0 failures in 30 000 shots.
+- **Paper round counts at d = 3** (init = 2, merge = 3, Appendix E) at p = 10⁻³: Z failure 4.3×10⁻³, X failure 1.4×10⁻³, against 3.6×10⁻³ and 2.0×10⁻³ for init = merge = 3 on the same shot budget. Not a device comparison.
 
 ## What the paper reports (QUOTED)
 

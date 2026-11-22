@@ -1,0 +1,245 @@
+{
+  "status": "PASS",
+  "bar": 2.0,
+  "p": 0.001,
+  "lambda_3_to_5": {
+    "from": 3,
+    "to": 5,
+    "lambda": 5.8990990990991,
+    "numerator_mean": 0.002728333333333334,
+    "numerator_std": 7.005949852327897e-05,
+    "denominator_mean": 0.0004625,
+    "denominator_std": 9.999999999999999e-06,
+    "lower_bound": false,
+    "per_seed_numerator": [
+      0.0028,
+      0.002725,
+      0.00266
+    ],
+    "per_seed_denominator": [
+      0.0004725,
+      0.0004525,
+      0.0004625
+    ]
+  },
+  "lambda_5_to_7": {
+    "from": 5,
+    "to": 7,
+    "lambda": 7.4,
+    "numerator_mean": 0.0004625,
+    "numerator_std": 9.999999999999999e-06,
+    "denominator_mean": 6.25e-05,
+    "denominator_std": 7.806247497997997e-06,
+    "lower_bound": false,
+    "per_seed_numerator": [
+      0.0004725,
+      0.0004525,
+      0.0004625
+    ],
+    "per_seed_denominator": [
+      5.3750000000000005e-05,
+      6.875e-05,
+      6.500000000000001e-05
+    ]
+  },
+  "strictly_decreasing_every_seed": true,
+  "per_seed": [
+    {
+      "seed": 0,
+      "bases": {
+        "Z": {
+          "rates": [
+            0.00386,
+            0.000695,
+            8.5e-05
+          ],
+          "strictly_decreasing": true,
+          "fails": [
+            386,
+            139,
+            34
+          ],
+          "shots": [
+            100000,
+            200000,
+            400000
+          ]
+        },
+        "X": {
+          "rates": [
+            0.00174,
+            0.00025,
+            2.25e-05
+          ],
+          "strictly_decreasing": true,
+          "fails": [
+            174,
+            50,
+            9
+          ],
+          "shots": [
+            100000,
+            200000,
+            400000
+          ]
+        }
+      }
+    },
+    {
+      "seed": 1,
+      "bases": {
+        "Z": {
+          "rates": [
+            0.00412,
+            0.0007,
+            9.5e-05
+          ],
+          "strictly_decreasing": true,
+          "fails": [
+            412,
+            140,
+            38
+          ],
+          "shots": [
+            100000,
+            200000,
+            400000
+          ]
+        },
+        "X": {
+          "rates": [
+            0.00133,
+            0.000205,
+            4.25e-05
+          ],
+          "strictly_decreasing": true,
+          "fails": [
+            133,
+            41,
+            17
+          ],
+          "shots": [
+            100000,
+            200000,
+            400000
+          ]
+        }
+      }
+    },
+    {
+      "seed": 2,
+      "bases": {
+        "Z": {
+          "rates": [
+            0.00407,
+            0.0007,
+            0.0001
+          ],
+          "strictly_decreasing": true,
+          "fails": [
+            407,
+            140,
+            40
+          ],
+          "shots": [
+            100000,
+            200000,
+            400000
+          ]
+        },
+        "X": {
+          "rates": [
+            0.00125,
+            0.000225,
+            3e-05
+          ],
+          "strictly_decreasing": true,
+          "fails": [
+            125,
+            45,
+            12
+          ],
+          "shots": [
+            100000,
+            200000,
+            400000
+          ]
+        }
+      }
+    }
+  ],
+  "per_basis_lambda": {
+    "Z_3_5": {
+      "lambda": 5.751789976133653,
+      "lower_bound": false
+    },
+    "Z_5_7": {
+      "lambda": 7.482142857142857,
+      "lower_bound": false
+    },
+    "X_3_5": {
+      "lambda": 6.352941176470588,
+      "lower_bound": false
+    },
+    "X_5_7": {
+      "lambda": 7.157894736842106,
+      "lower_bound": false
+    }
+  },
+  "summary": [
+    {
+      "distance": 3,
+      "basis": "Z",
+      "mean": 0.0040166666666666675,
+      "std": 0.00013796134724383254,
+      "pooled_fails": 1205,
+      "pooled_shots": 300000,
+      "pooled": 0.004016666666666667
+    },
+    {
+      "distance": 3,
+      "basis": "X",
+      "mean": 0.00144,
+      "std": 0.0002628687885618983,
+      "pooled_fails": 432,
+      "pooled_shots": 300000,
+      "pooled": 0.00144
+    },
+    {
+      "distance": 5,
+      "basis": "Z",
+      "mean": 0.0006983333333333334,
+      "std": 2.8867513459481365e-06,
+      "pooled_fails": 419,
+      "pooled_shots": 600000,
+      "pooled": 0.0006983333333333334
+    },
+    {
+      "distance": 5,
+      "basis": "X",
+      "mean": 0.00022666666666666668,
+      "std": 2.254624876411448e-05,
+      "pooled_fails": 136,
+      "pooled_shots": 600000,
+      "pooled": 0.00022666666666666666
+    },
+    {
+      "distance": 7,
+      "basis": "Z",
+      "mean": 9.333333333333334e-05,
+      "std": 7.637626158259733e-06,
+      "pooled_fails": 112,
+      "pooled_shots": 1200000,
+      "pooled": 9.333333333333333e-05
+    },
+    {
+      "distance": 7,
+      "basis": "X",
+      "mean": 3.1666666666666666e-05,
+      "std": 1.0103629710818452e-05,
+      "pooled_fails": 38,
+      "pooled_shots": 1200000,
+      "pooled": 3.1666666666666666e-05
+    }
+  ]
+}

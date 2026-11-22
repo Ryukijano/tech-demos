@@ -1,0 +1,38 @@
+lattice-surgery-teleport demo — NOTICE
+
+This directory (apps/lattice-surgery-teleport/) is a CPU-only stim and
+PyMatching simulation of logical teleportation by lattice surgery. It is not
+a reproduction of the ETH Zurich superconducting device and it does not
+include that device's noise table or gate schedule.
+
+Paper (attribution, figures not copied):
+  Luca Hofele, Yongxin Song, Áron Márton, Ian Hesner, Ilya Besedin, Jakob
+  Ekert, Jonathan Trebst, François Swiadek, Felix Henrich, Dante Colao Zanuz,
+  Mohsen Bahrami Panah, Lukas Bödeker, Nicholas Gialouris, Chrysander D. Hagen,
+  Marek Pechal, Jean-Claude Besse, Markus Müller, Christoph Hellings, and
+  Andreas Wallraff, "Teleportation of Logical Qubits using Lattice Surgery
+  with Superconducting Circuits", arXiv:2611.23165
+  https://arxiv.org/abs/2611.23165
+  Preprint date on the arXiv HTML: 17 November 2026.
+
+  Found via a bookmarked X post by @AndreasAtETH. The post was not fetched.
+  The URL below was supplied with the task and the scientific claims were
+  checked against the arXiv HTML, not against the post:
+  https://x.com/AndreasAtETH/status/2123013303689515201
+
+Hardware numbers quoted from the paper (41 qubits, distance 3, gate and
+readout errors, memory logical error rates, teleportation success
+probabilities 0.57 / 0.65 modular and 0.65 / 0.73 optimized) are marked
+QUOTED. They are not outputs of this simulation.
+
+Dependencies (not vendored):
+  stim        — Apache-2.0, https://github.com/quantumlib/Stim
+                Craig Gidney, Quantum 5, 497 (2021)
+  PyMatching  — Apache-2.0, https://github.com/oscarhiggott/PyMatching
+                Oscar Higgott and Craig Gidney, Quantum 9, 1600 (2025)
+  NumPy       — BSD-3-Clause
+  Matplotlib  — PSF-based licence
+  PyYAML      — MIT
+
+This demo's code is MIT (see LICENSE). No model weights, no credentials, no
+network access at runtime. Research / demo use; no warranty.

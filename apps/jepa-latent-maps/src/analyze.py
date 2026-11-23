@@ -365,7 +365,8 @@ def _plot(means, raw) -> None:
     ax_bar.set_xticks(x, [PRIMARY_LABEL[key] for key in PRIMARY_KEYS])
     ax_bar.set_ylabel("Score")
     ax_bar.set_title("A  Held-out scores (mean ± s.d.)")
-    ax_bar.set_ylim(-0.05, 1.05)
+    # Include the negative free-object R². A floor at −0.05 would clip it.
+    ax_bar.set_ylim(-0.40, 1.05)
     ax_bar.axhline(0.0, color="0.5", linewidth=0.4)
     _bold_legend(ax_bar, loc="upper right", frameon=True)
 
@@ -379,6 +380,7 @@ def _plot(means, raw) -> None:
     ax_dim_obj.set_ylabel("Free-object R²")
     ax_dim_obj.set_title("B  Capacity sweep, content")
     ax_dim_obj.set_xticks([2, 3, 8, 16])
+    ax_dim_obj.set_ylim(-0.45, 0.60)
     _bold_legend(ax_dim_obj, loc="best", frameon=True)
 
     for method in METHODS:
@@ -391,6 +393,7 @@ def _plot(means, raw) -> None:
     ax_dim_geo.set_ylabel("Geodesic Spearman ρ")
     ax_dim_geo.set_title("C  Capacity sweep, geometry")
     ax_dim_geo.set_xticks([2, 3, 8, 16])
+    ax_dim_geo.set_ylim(0.0, 0.55)
     _bold_legend(ax_dim_geo, loc="best", frameon=True)
 
     for method in METHODS:
@@ -402,6 +405,8 @@ def _plot(means, raw) -> None:
     ax_lam.set_xlabel("Regularizer weight λ")
     ax_lam.set_ylabel("Free-object R²")
     ax_lam.set_title("D  Weight sweep, content")
+    ax_lam.set_ylim(-0.45, 0.60)
+    ax_lam.axhline(0.45, color="0.35", linestyle=":", linewidth=0.9, label="Floor 0.45")
     _bold_legend(ax_lam, loc="best", frameon=True)
 
     for ax in axes.ravel():

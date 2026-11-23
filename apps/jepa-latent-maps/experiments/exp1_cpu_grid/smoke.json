@@ -1,0 +1,33 @@
+{
+  "note": "Smoke trains VICReg only, seed 0, 40 steps, and writes smoke.json. It does not write raw.json and it does not change any threshold.\n",
+  "metrics": {
+    "agent_r2": -0.004970737090624233,
+    "free_object_r2": -0.26738805362714535,
+    "object_r2_all": -0.25836936788581566,
+    "geodesic_spearman": 0.017791113050551564,
+    "jaggedness": 2.8548809718081247,
+    "participation_ratio": 2.4233888584631087,
+    "n_free_fit": 1977.0,
+    "n_free_score": 1974.0,
+    "pred_loss": 0.07644879072904587,
+    "reg_loss": 7.24525260925293,
+    "train_wall_s": 0.04915367799981141,
+    "n_params": 7302.0,
+    "latent_dim": 3.0,
+    "steps": 40.0,
+    "svreg_weight": 10.0,
+    "vicreg_weight": 0.4,
+    "slow_weight": 0.1,
+    "method": "vicreg",
+    "seed": 0,
+    "kind": "smoke"
+  },
+  "history": [
+    {
+      "step": 40.0,
+      "pred": 0.07644879072904587,
+      "reg": 7.24525260925293,
+      "total": 7.3217013999819756
+    }
+  ]
+}

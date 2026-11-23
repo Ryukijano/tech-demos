@@ -32,6 +32,7 @@ One monorepo for sticky / bookmark-worthy tech demos. Prefer adding a new `apps/
 | `apps/willow-stability-timelike/` | Surface-code stability toy on CPU: timelike Λ_T, leakage knee, walking analogue (arXiv:2611.21578; stim/PyMatching not vendored; PASS) |
 | `apps/lattice-surgery-teleport/` | Logical teleportation by lattice surgery on CPU: failure vs distance under uniform circuit noise (arXiv:2611.23165; stim/PyMatching not vendored; PASS) |
 | `apps/ebr-test-time-descent/` | Official EBR Sudoku-Extreme checkpoint on CPU: accuracy past the 4-segment halt, energy AUROC (arXiv:2611.08977; upstream MIT cloned at run time; PASS) |
+| `apps/jepa-latent-maps/` | Clean-room JEPA content–geometry toy on a 7×7 grid: VICReg vs SVReg vs Slow SVReg (AGL-TR-2026-04, doi:10.5281/zenodo.24356797; no official code; CPU, FAIL) |
 | `tracking/seen-bookmarks.json` | X bookmarks already turned into demos (`url`, `slug`, `date`) |
 | `docs/` | GitHub Pages showcase site (static HTML/CSS) |
 | `AGENTS.md` | Rules for future cloud agents |

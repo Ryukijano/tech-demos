@@ -1,0 +1,163 @@
+# Frozen on 2026-11-23 BEFORE the official measured run. Do not edit thresholds
+# after seeing results. One disclosed smoke (tiny step count, seed 0, VICReg
+# only) may verify the code path; it tunes no threshold and is recorded in
+# smoke.json.
+exp_id: exp1_cpu_grid
+hypothesis: >
+  On a 7×7 two-room grid, a point agent and a block that jumps to a random
+  free cell only when the agent enters its contact radius, a tiny
+  action-conditioned JEPA with no stop-gradient shows the content–geometry
+  tradeoff of Ren, Wang, Hoang, Kuang & LeCun (AGL-TR-2026-04). VICReg
+  (variance hinge + covariance, the distributional anti-collapse regularizer
+  the report criticises for temporally correlated trajectories) learns a
+  worse latent map of the agent than sliced variance regularization (SVReg).
+  SVReg keeps that map but drops the resting block. Slow SVReg — SVReg plus
+  slow channels and a gated residual predictor — keeps both: agent geometry
+  at least as good as VICReg by the margins below, and a higher held-out
+  ridge R² of the free block than SVReg. This is not a reproduction of the
+  report's visual planning tables.
+upstream:
+  paper: >
+    Mengye Ren, Ying Wang, Christopher Hoang, Yilun Kuang, Yann LeCun,
+    "The Content–Geometry Tradeoff in World Models: When JEPA Learns Latent
+    Maps", NYU / AMI Labs, technical report AGL-TR-2026-04, 2026-11-18.
+  paper_url: https://doi.org/10.5281/zenodo.24356797
+  project_url: https://agenticlearning.ai/content-geometry-tradeoff/
+  pdf_url: https://cdn.agenticlearning.ai/25c41dcbc4b7a11e/content-geometry-tradeoff-2026.pdf
+  zenodo_record: https://zenodo.org/records/24356797
+  code_repo: null
+  code_note: >
+    No official code repository is linked from the project page or the Zenodo
+    record (checked 2026-11-23). This app is an independent clean-room toy.
+    A third-party toy (aicumene/BOID-JEPA) is not the authors' code and is
+    not vendored.
+  bookmarks:
+    - https://x.com/askalphaxiv/status/2124121398268559382
+    - https://x.com/TheTuringPost/status/2124303722671153346
+  note: >
+    There is no arXiv id. The alphaXiv slug
+    2611.jepa-latent-maps-content-geometry is not an arXiv identifier and is
+    not used as the source of record. Claims below are taken from the Zenodo
+    PDF and the project page.
+data:
+  grid_size: 7                   # odd, >= 7; two rooms and one door
+  traj_len: 2000                 # one exploration trajectory, sampled as windows
+  noise_std: 0.30                # matches the report's linear-world observation noise
+  contact_radius: 1              # Chebyshev; block jumps on entry (Section B)
+  train_seed: 20261123
+  fit_seed: 20261124             # ridge fit trajectory (separate from train)
+  score_seed: 20261125           # ridge score trajectory
+  route_noise_seed: 20261126     # scripted smooth route, for jaggedness
+model:
+  latent_dim: 3                  # Section B: latent size 3 is below the 4-D state
+  hidden: 64
+  gate_init: 0.1                 # Equation 3, c_0 = 0.1
+training:
+  steps: 800
+  batch_size: 128
+  lr: 0.001
+  weight_decay: 0.0
+  grad_clip: 1.0
+  log_every: 100
+  std_target: 1.0
+  # Collapse penalty is matched a priori, not fit on our metrics.
+  # At a fully collapsed latent, SVReg's penalty is λ * (1 - 1e-2)^2 because
+  # std uses sqrt(var + 1e-4), and VICReg's variance hinge is about 0.99.
+  # Setting vicreg_weight = λ/25 matches the Bardes coefficient 25 to λ,
+  # up to that 1e-4 floor. Covariance keeps Bardes' coefficient 1 and is
+  # not the anti-collapse floor.
+  # Slow-channel weight is 1/λ, as in the report's visual models (Table 6).
+  svreg_weight: 10.0
+  svreg_n_projections: 64
+  vicreg_std_coef: 25.0
+  vicreg_cov_coef: 1.0
+  vicreg_weight: 0.4             # 0.4 * 25 = 10 at total collapse
+  slow_weight: 0.1               # 1 / svreg_weight
+seeds: [0, 1, 2]
+evaluation:
+  ridge_alpha: 1.0               # report: ridge λ = 1; latents standardized on the fit split
+  min_chebyshev: 2               # free block: resting, agent not in the contact neighborhood
+  jag_window: 3                  # Equation 4 uses 9 on long routes; this route is 9 cells
+  n_pairs: 4000
+  pair_seed: 91023
+metrics:
+  primary:
+    - agent_r2              # held-out ridge R² of agent (row, col); geometry decodability
+    - geodesic_spearman     # Spearman of latent L2 vs maze shortest-path distance
+    - free_object_r2        # held-out ridge R² of the resting block; content
+  report_only:
+    - object_r2_all
+    - jaggedness            # Equation 4, lower is smoother, ~1 is smooth
+    - participation_ratio   # Equation 5
+    - pred_loss
+    - reg_loss
+    - train_wall_s
+    - n_params
+    - pixel_agent_r2        # linear readout of the noisy pixels (ceiling, not a bar)
+    - pixel_free_object_r2
+thresholds:
+  # Toy margins. The report's own U-maze geodesic gap (SVReg − VICReg) is
+  # about 0.22 and its Medium gap is about 0.03; 0.05 is a pre-registered
+  # toy margin, not a number copied from a table. The free-block gap 0.10
+  # is likewise a toy margin. The report calls an object "kept" at R² ≥ 0.70
+  # in the linear experiment; the absolute floors below are lower because
+  # this encoder is a 3-D bottleneck on noisy 7×7 pixels, and they were
+  # chosen before any training run.
+  slow_agent_r2_min_each: 0.60
+  slow_geodesic_min_each: 0.45
+  slow_object_r2_min_each: 0.45
+  slow_agent_r2_mean_min: 0.70
+  geodesic_gap_svreg_vs_vicreg_min: 0.05
+  geodesic_gap_slow_vs_vicreg_min: 0.05
+  object_gap_slow_vs_svreg_min: 0.10
+  slow_geodesic_drop_vs_svreg_max: 0.05
+  pass_condition: >
+    For EVERY seed in {0, 1, 2}:
+      slow.agent_r2 >= 0.60
+      AND slow.geodesic_spearman >= 0.45
+      AND slow.free_object_r2 >= 0.45
+      AND slow.geodesic_spearman > vicreg.geodesic_spearman
+      AND svreg.geodesic_spearman > vicreg.geodesic_spearman
+      AND slow.free_object_r2 > svreg.free_object_r2
+    AND mean(slow.agent_r2) >= 0.70
+    AND mean(svreg.geodesic_spearman) - mean(vicreg.geodesic_spearman) >= 0.05
+    AND mean(slow.geodesic_spearman) - mean(vicreg.geodesic_spearman) >= 0.05
+    AND mean(slow.free_object_r2) - mean(svreg.free_object_r2) >= 0.10
+    AND mean(svreg.geodesic_spearman) - mean(slow.geodesic_spearman) <= 0.05
+  status_rule: >
+    PASS if the pass_condition holds.
+    PARTIAL if mean(slow.geodesic_spearman) > mean(vicreg.geodesic_spearman)
+      AND mean(slow.free_object_r2) > mean(svreg.free_object_r2)
+      but any every-seed comparison or any mean bar fails.
+    FAIL otherwise.
+breakpoints:
+  seed: 0
+  latent_dim:
+    story: >
+      Section B: at latent size 3, below the 4-D agent+object state, SVReg
+      drops the object on a large fraction of runs; with more capacity the
+      object is kept. Dim 3 is the primary setting.
+    dims: [2, 3, 8, 16]
+    steps: 800
+  reg_weight:
+    story: >
+      SVReg weight λ, with slow weight kept at 1/λ and the VICReg variance
+      hinge matched to the same collapse penalty. The report's grids run
+      from 0.3 to 1000; these four values are inside that range.
+    weights: [0.3, 1.0, 10.0, 100.0]
+    steps: 800
+  short_training:
+    story: Under-trained versus the primary budget of 800 steps.
+    steps: [100, 400]
+runtime:
+  device: cpu-only
+  workers: 4
+disclosure_smoke:
+  steps: 40
+  note: >
+    Smoke trains VICReg only, seed 0, 40 steps, and writes smoke.json.
+    It does not write raw.json and it does not change any threshold.
+disclosure: >
+  Thresholds, grid, latent size, step budget, and the λ coupling were fixed
+  before the official run. No official code exists to vendor. This run does
+  not train the report's ResNet / ViT world models and does not plan.

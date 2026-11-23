@@ -1,0 +1,26 @@
+jepa-latent-maps demo — NOTICE
+
+This directory (apps/jepa-latent-maps/) is a CPU-only clear-experiment toy
+inspired by:
+
+  Mengye Ren, Ying Wang, Christopher Hoang, Yilun Kuang, Yann LeCun,
+  "The Content–Geometry Tradeoff in World Models: When JEPA Learns Latent
+  Maps", New York University / AMI Labs, technical report AGL-TR-2026-04
+  (18 November 2026).
+  https://doi.org/10.5281/zenodo.24356797
+  https://zenodo.org/records/24356797
+  https://agenticlearning.ai/content-geometry-tradeoff/
+  https://cdn.agenticlearning.ai/25c41dcbc4b7a11e/content-geometry-tradeoff-2026.pdf
+
+Found via bookmarked X posts (the posts were not fetched):
+  https://x.com/askalphaxiv/status/2124121398268559382
+  https://x.com/TheTuringPost/status/2124303722671153346
+
+Verified on Zenodo, the project page, and the lab PDF on 2026-11-23.
+There is no arXiv identifier. No official code repository is linked from
+the project page or the Zenodo record. This app is an independent
+clean-room toy of the content–geometry tradeoff on a 7×7 grid. It is not
+a reproduction of the report's visual planning tables.
+
+No warranty. Research / demo use. Trained weights stay out of git (work/
+is git-ignored).

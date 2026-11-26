@@ -1,0 +1,25 @@
+rl-rollout-replay — NOTICE
+
+This directory (apps/rl-rollout-replay/) is a CPU-only clear-experiment toy
+inspired by:
+
+  Sheng, Gu, Zeng, Zhou, Viel, Wang, Tajwar, Zanette,
+  "Reinforcement Learning Can Be Recovered From Its Own Rollouts",
+  arXiv:2611.33102 (2026)
+  https://arxiv.org/abs/2611.33102
+  https://arxiv.org/html/2611.33102v2
+
+Found via a bookmarked X post by @rosinality. The post was not fetched.
+Claims used here were checked on the arXiv HTML (v2), not on the post.
+
+The HTML does not link an official code repository. The paper says the
+language-model runs were implemented in verl. verl is not vendored and was
+not run. This directory is a clean-room reimplementation of the two replay
+protocols on a tiny GRU: maximum-likelihood replay (token NLL on every
+archived rollout) and naive replay of the REINFORCE update on the same
+archive (paper Eq. 2). It is not a reproduction of the Qwen, SmolLM, maze,
+or ImageNet experiments. Those numbers, when quoted in the README, are the
+paper's.
+
+No warranty. Research / demo use. Checkpoints and rollout archives stay in
+work/ and are git-ignored.

@@ -1,0 +1,103 @@
+# Pre-registered before seeds 0/1/2.
+# Do not edit the thresholds after that run.
+#
+# Bars are the paper's qualitative claims (arXiv:2611.33102v2), widened for a
+# tiny CPU policy whose eval standard error is about one percentage point.
+# They were not fit to seeds 0/1/2. A design probe may choose the step budget
+# so the base model is only partly trained; it does not set these numbers.
+#
+# Quoted paper scale, not a target to hit: Table 5 endpoint errors for
+# chronological ML replay are 0.003–0.013. Uncorrected MaxRL replay on
+# MATH-500 falls to nearly zero by step 100. Last-batch ML replay on Knights
+# and Knaves leaves a 0.9 point gap, against 71.9 for the base model.
+
+experiment: exp1_cpu_addition
+
+paper: https://arxiv.org/abs/2611.33102
+paper_html: https://arxiv.org/html/2611.33102v2
+
+hypothesis: >
+  Starting from one partially trained GRU checkpoint, one maximum-likelihood
+  update per archived on-policy REINFORCE batch, in generation order, with no
+  correct/incorrect split, recovers the final exact-match reward of online
+  REINFORCE within a fixed gap and tracks the learning curve. Replaying the
+  REINFORCE objective on that archive (paper Eq. 2, one update per batch)
+  finishes at least 0.15 below online. Cycling maximum likelihood on only
+  the last 4 batches, for the same number of updates, recovers the final
+  reward within 0.10. The task is held-out two-digit addition, answer digits
+  least-significant first.
+
+task:
+  low: 0
+  high: 100
+  answer_len: 3
+
+model:
+  emb: 32
+  hidden: 64
+
+# Online-only design probe (not seeds 0/1/2, not replay): SFT at lr 0.02
+# reaches a partial sampled exact reward near 0.15 by step 120. REINFORCE
+# at lr 0.003 then gains about 0.16 by step 280 on that one probe stream.
+# lr 0.008 and above dropped the reward. The thresholds below were not
+# changed to match that probe.
+sft:
+  steps: 120
+  batch_prompts: 256
+  lr: 0.02
+  weight_decay: 0.0
+  grad_clip: 1.0
+  data_seed: 7
+  init_seed: 123
+
+rl:
+  steps: 280
+  batch_prompts: 64
+  group_size: 32
+  lr: 0.003
+  weight_decay: 0.01
+  grad_clip: 1.0
+  advantage: reinforce
+  reward: exact
+  sample_temperature: 1.0
+
+eval:
+  n_problems: 256
+  n_samples: 8
+  temperature: 1.0
+  seed: 12345
+
+last_k: 4
+seeds: [0, 1, 2]
+
+runtime:
+  torch_threads_per_worker: 1
+  workers: 3
+
+thresholds:
+  online_gain_min: 0.15
+  ml_end_gap_max: 0.08
+  ml_traj_mae_max: 0.10
+  naive_collapse_min: 0.15
+  lastk_end_gap_max: 0.10
+
+breakpoints:
+  seed: 0
+  shuffle_seed: 20261126
+  repeats: 8
+  last_k_tiny: 1
+  perturbation_std: [0.001, 0.01]
+  perturbation_seed: 9000
+  foreign_init_seed: 99
+  cross_seed: 1
+
+status_rule: >
+  Metrics are means over seeds 0, 1 and 2 of the sampled exact-match reward
+  on the held-out addition set. online_gain = mean(online final - base).
+  ml_end_gap = |mean ML final - mean online final|. ml_traj_mae = mean over
+  seeds of the mean absolute gap on steps 1..T (step 0 is the shared base).
+  naive_collapse = mean online final - mean naive final. lastk_end_gap =
+  |mean last-4 ML final - mean online final|. PASS if all five bars hold.
+  PARTIAL if online_gain and ml_end_gap hold but some other bar does not.
+  FAIL if online_gain fails or ml_end_gap fails. Breakpoints, the subtraction
+  specialist, and the parameter gap are report-only.

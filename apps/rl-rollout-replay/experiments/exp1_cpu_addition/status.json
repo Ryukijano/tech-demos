@@ -1,0 +1,79 @@
+{
+  "status": "FAIL",
+  "bars": {
+    "online_gain": false,
+    "ml_end_gap": true,
+    "ml_traj_mae": true,
+    "naive_collapse": false,
+    "lastk_end_gap": true
+  },
+  "metrics": {
+    "online_gain": 0.09456380208333333,
+    "online_gain_std": 0.006144070992245076,
+    "base_mean": 0.08935546875,
+    "base_std": 0.0,
+    "online_mean": 0.18391927083333334,
+    "online_std": 0.006144070992245076,
+    "ml_mean": 0.11442057291666667,
+    "ml_std": 0.005886439231779011,
+    "naive_mean": 0.18391927083333334,
+    "naive_std": 0.006144070992245076,
+    "lastk_mean": 0.12744140625,
+    "lastk_std": 0.01118792894276328,
+    "ml_end_gap": 0.06949869791666667,
+    "ml_traj_mae": 0.03889334542410714,
+    "ml_traj_std": 0.002440772772366983,
+    "naive_collapse": 0.0,
+    "naive_traj_mae": 0.0,
+    "lastk_end_gap": 0.05647786458333334
+  },
+  "per_seed": [
+    {
+      "seed": 0,
+      "base": 0.08935546875,
+      "online": 0.18310546875,
+      "ml": 0.12060546875,
+      "naive": 0.18310546875,
+      "lastk": 0.13720703125,
+      "gain": 0.09375,
+      "ml_gap": 0.0625,
+      "ml_traj_mae": 0.039177594866071426,
+      "naive_param_gap": 0.0,
+      "seconds": 55.54147307500011
+    },
+    {
+      "seed": 1,
+      "base": 0.08935546875,
+      "online": 0.17822265625,
+      "ml": 0.11376953125,
+      "naive": 0.17822265625,
+      "lastk": 0.115234375,
+      "gain": 0.0888671875,
+      "ml_gap": 0.064453125,
+      "ml_traj_mae": 0.036322893415178574,
+      "naive_param_gap": 0.0,
+      "seconds": 54.71435822399985
+    },
+    {
+      "seed": 2,
+      "base": 0.08935546875,
+      "online": 0.1904296875,
+      "ml": 0.10888671875,
+      "naive": 0.1904296875,
+      "lastk": 0.1298828125,
+      "gain": 0.10107421875,
+      "ml_gap": 0.08154296875,
+      "ml_traj_mae": 0.04117954799107143,
+      "naive_param_gap": 0.0,
+      "seconds": 55.64732133200005
+    }
+  ],
+  "threshold_commit": "bd3afc3f98151c85e3da838e1baf580fa30f1e81",
+  "thresholds": {
+    "online_gain_min": 0.15,
+    "ml_end_gap_max": 0.08,
+    "ml_traj_mae_max": 0.1,
+    "naive_collapse_min": 0.15,
+    "lastk_end_gap_max": 0.1
+  }
+}

@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RL rollout replay</title>
+  <style>
+    :root {
+      --bg: #0b0f14;
+      --card: #121a23;
+      --line: #243140;
+      --text: #e6edf3;
+      --muted: #93a1b0;
+      --ok: #7ee0b0;
+      --bad: #ff8a8a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 16px/1.5 ui-sans-serif, system-ui, sans-serif;
+    }
+    main { width: min(1100px, 94vw); margin: 28px auto 64px; }
+    h1 { font-size: 1.7rem; letter-spacing: -0.03em; margin: 0 0 8px; }
+    p { color: var(--muted); }
+    .layout { display: grid; grid-template-columns: minmax(280px, 1.2fr) minmax(280px, 0.8fr); gap: 22px; }
+    @media (max-width: 860px) { .layout { grid-template-columns: 1fr; } }
+    canvas { width: 100%; background: #070b10; border: 1px solid var(--line); border-radius: 12px; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 16px; }
+    .badge { display: inline-block; padding: 2px 10px; border-radius: 999px; font-weight: 700; font-size: 0.85rem; }
+    .PASS { background: #143d2c; color: var(--ok); }
+    .PARTIAL { background: #3d3314; color: #f2c46d; }
+    .FAIL { background: #3d1414; color: var(--bad); }
+    button {
+      background: transparent; color: var(--text); border: 1px solid var(--line);
+      border-radius: 999px; padding: 6px 14px; cursor: pointer; font-weight: 600;
+    }
+    table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+    th, td { text-align: right; padding: 4px 6px; border-bottom: 1px solid var(--line); }
+    th:first-child, td:first-child { text-align: left; }
+    .ok { color: var(--ok); font-weight: 700; }
+    .bad { color: var(--bad); font-weight: 700; }
+    img { width: 100%; border-radius: 12px; border: 1px solid var(--line); margin-top: 12px; }
+    code { font-family: ui-monospace, monospace; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>RL recovered from its own rollouts</h1>
+    <p id="lead">Loading the pre-registered addition run…</p>
+    <div class="layout">
+      <div>
+        <canvas id="chart" width="900" height="560" aria-label="Learning curves of online REINFORCE, ML replay, naive replay, and last-4 replay"></canvas>
+        <p>
+          <button id="play" type="button">Pause</button>
+          <span id="step">Update —</span>
+        </p>
+      </div>
+      <div class="card">
+        <p><span id="status" class="badge">…</span></p>
+        <p id="facts"></p>
+        <table>
+          <thead>
+            <tr><th>Sum</th><th>True</th><th>Online</th><th>ML</th><th>Naive</th><th>Last-4</th></tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+        <img src="plot.png" alt="Exact-match reward curves, endpoints, order, and drift">
+      </div>
+    </div>
+  </main>
+  <script>
+    const canvas = document.getElementById("chart");
+    const ctx = canvas.getContext("2d");
+    const colors = { online: "#D55E00", ml: "#0072B2", naive: "#CC79A7", lastk: "#009E73" };
+    const names = { online: "Online", ml: "ML replay", naive: "Naive RL", lastk: "Last-4" };
+    let summary = null;
+    let frame = 0;
+    let timer = null;
+    let playing = true;
+
+    function drawChart() {
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+      const pad = { l: 64, r: 18, t: 18, b: 64 };
+      const n = summary.curves.online.length;
+      const step = Math.min(frame, n - 1);
+      ctx.strokeStyle = "#243140";
+      ctx.lineWidth = 1;
+      for (let tick = 0; tick <= 4; tick++) {
+        const y = pad.t + ((h - pad.t - pad.b) * tick) / 4;
+        ctx.beginPath();
+        ctx.moveTo(pad.l, y);
+        ctx.lineTo(w - pad.r, y);
+        ctx.stroke();
+        ctx.fillStyle = "#93a1b0";
+        ctx.font = "14px ui-sans-serif, system-ui";
+        ctx.textAlign = "right";
+        ctx.fillText((0.5 * (1 - tick / 4)).toFixed(2), pad.l - 8, y + 4);
+      }
+      const yMax = 0.5;
+      const keys = ["online", "ml", "naive", "lastk"];
+      keys.forEach((key) => {
+        const series = summary.curves[key];
+        ctx.beginPath();
+        ctx.lineWidth = 2.4;
+        ctx.strokeStyle = colors[key];
+        for (let i = 0; i <= step; i++) {
+          const x = pad.l + ((w - pad.l - pad.r) * i) / (n - 1);
+          const y = pad.t + (h - pad.t - pad.b) * (1 - series[i] / yMax);
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+      });
+      ctx.font = "bold 15px ui-sans-serif, system-ui";
+      ctx.textAlign = "left";
+      keys.forEach((key, i) => {
+        const x = pad.l + (i % 2) * 220;
+        const y = h - 36 + Math.floor(i / 2) * 18;
+        ctx.fillStyle = colors[key];
+        ctx.fillRect(x, y - 10, 16, 8);
+        ctx.fillText(names[key], x + 22, y);
+      });
+      document.getElementById("step").textContent = `Update ${step} / ${n - 1}`;
+      const body = document.getElementById("rows");
+      body.replaceChildren();
+      summary.demo_problems.forEach((problem, i) => {
+        const tr = document.createElement("tr");
+        const cells = [problem, String(summary.demo_truth[i])];
+        ["online", "ml", "naive", "lastk"].forEach((key) => {
+          cells.push(String(summary.demo[key][step][i]));
+        });
+        cells.forEach((text, j) => {
+          const td = document.createElement("td");
+          td.textContent = text;
+          if (j >= 2) td.className = Number(text) === summary.demo_truth[i] ? "ok" : "bad";
+          tr.appendChild(td);
+        });
+        body.appendChild(tr);
+      });
+    }
+
+    function tick() {
+      if (!summary || !playing) return;
+      frame = (frame + 1) % summary.curves.online.length;
+      drawChart();
+    }
+
+    async function start() {
+      const response = await fetch("summary.json");
+      summary = await response.json();
+      const badge = document.getElementById("status");
+      badge.textContent = summary.status;
+      badge.className = "badge " + summary.status;
+      const m = summary.metrics;
+      document.getElementById("lead").textContent =
+        "Clean-room GRU on held-out two-digit addition. One maximum-likelihood update per archived REINFORCE batch, versus replaying the REINFORCE update itself.";
+      document.getElementById("facts").textContent =
+        `Gain ${m.online_gain.toFixed(3)}. ML gap ${m.ml_end_gap.toFixed(3)}. ` +
+        `Trajectory MAE ${m.ml_traj_mae.toFixed(3)}. Naive gap ${m.naive_collapse.toFixed(3)}. ` +
+        `Last-4 gap ${m.lastk_end_gap.toFixed(3)}. ${summary.n_params} parameters.`;
+      drawChart();
+      timer = setInterval(tick, 80);
+    }
+
+    document.getElementById("play").addEventListener("click", () => {
+      playing = !playing;
+      document.getElementById("play").textContent = playing ? "Pause" : "Play";
+    });
+    start();
+  </script>
+</body>
+</html>

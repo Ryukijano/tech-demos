@@ -1,0 +1,17 @@
+{
+  "smoke": true,
+  "not_a_result": true,
+  "seed": 99,
+  "lengths": {
+    "online": 3,
+    "ml": 3,
+    "naive": 3,
+    "lastk": 3
+  },
+  "final": {
+    "online": 0.0,
+    "ml": 0.0,
+    "naive": 0.0,
+    "lastk": 0.0
+  }
+}

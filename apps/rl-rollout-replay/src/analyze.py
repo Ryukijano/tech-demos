@@ -177,7 +177,7 @@ def write_plot(raw: dict[str, Any], cfg: dict[str, Any], metrics: dict[str, Any]
     ax.set_title("(a) Learning curves")
     _bold_legend(ax, fontsize=7, loc="upper left", frameon=False)
     ax.grid(True, alpha=0.25)
-    ax.set_ylim(-0.02, 1.02)
+    ax.set_ylim(0.0, 0.50)
 
     ax = axes[0, 1]
     labels = ["Base", "Online", "ML", "Naive", "Last-4"]
@@ -189,7 +189,7 @@ def write_plot(raw: dict[str, Any], cfg: dict[str, Any], metrics: dict[str, Any]
     ax.set_xticks(xpos, labels, rotation=0)
     ax.set_ylabel("Final exact-match reward")
     ax.set_title("(b) Endpoint")
-    ax.set_ylim(0, 1.05)
+    ax.set_ylim(0.0, 0.50)
     ax.grid(True, axis="y", alpha=0.25)
 
     ax = axes[1, 0]
@@ -204,7 +204,7 @@ def write_plot(raw: dict[str, Any], cfg: dict[str, Any], metrics: dict[str, Any]
     ax.set_title("(c) Order, seed 0")
     _bold_legend(ax, fontsize=7, loc="best", frameon=False)
     ax.grid(True, alpha=0.25)
-    ax.set_ylim(-0.02, 1.02)
+    ax.set_ylim(0.0, 0.50)
 
     ax = axes[1, 1]
     sigmas = [0.0, *[float(s) for s in cfg["breakpoints"]["perturbation_std"]]]
@@ -220,16 +220,17 @@ def write_plot(raw: dict[str, Any], cfg: dict[str, Any], metrics: dict[str, Any]
     for sigma in sigmas[1:]:
         ml_pts.append(_perturb("ml", sigma))
         naive_pts.append(_perturb("naive", sigma))
-    ax.plot(sigmas, ml_pts, "o-", color=ML, lw=1.6, label="ML replay")
-    ax.plot(sigmas, naive_pts, "s-", color=NAIVE, lw=1.6, label="Naive RL")
+    xpos = np.arange(len(sigmas))
+    ax.plot(xpos, ml_pts, "o-", color=ML, lw=1.6, label="ML replay")
+    ax.plot(xpos, naive_pts, "s-", color=NAIVE, lw=1.6, label="Naive RL")
     ax.axhline(float(seed0["online"][-1]), color=ONLINE, ls="--", lw=1.0, label="Online final")
-    ax.set_xscale("symlog", linthresh=1e-4)
+    ax.set_xticks(xpos, ["0", "1e-3", "1e-2"])
     ax.set_xlabel("Init perturbation σ")
     ax.set_ylabel("Final exact-match reward")
     ax.set_title("(d) Drift, seed 0")
     _bold_legend(ax, fontsize=7, loc="best", frameon=False)
     ax.grid(True, alpha=0.25)
-    ax.set_ylim(-0.02, 1.02)
+    ax.set_ylim(0.0, 0.50)
 
     fig.tight_layout()
     path.parent.mkdir(parents=True, exist_ok=True)

@@ -52,13 +52,82 @@ python3 -m http.server 43133
 
 Then open `http://127.0.0.1:43133/viewer/`.
 
-## Status
+## Status (honest): **PARTIAL**
 
-Pending seeds 0/1/2. The bars above are fixed. This section is replaced with the measured table after the run. The bars are not edited in that replacement.
+Threshold commit, before seeds 0/1/2: `0492e582a51513dc7f9fb6fa5f101cbdc38afd01`. The bars were not edited after that commit. Wall time on 4 vCPUs, including the smoke and the breakpoints: 180 s.
 
-## Breakpoints (not in the status)
+| Check | Bar | Result |
+|---|---|---|
+| Every seed: ALF answer NLL below both others | strict | **miss** (seed 1: ALF 0.4248, vanilla 0.4237) |
+| Seed-mean vanilla − ALF | ≥ 0.10 nats | **miss** (0.0069 ± 0.0105) |
+| Seed-mean FBT − ALF | ≥ 0.04 nats | **met** (2.330 ± 0.538) |
 
-Seed 0, after the measured run: sequence length, Jacobi pass count, an inference-only nearest-4 and last-sublayer read, retrained depth 1 / 2 / 8, and retrained ALF rank 1 / 16. Written to `experiments/exp1_cpu_register/breakpoints.md`.
+PARTIAL because the seed-mean still ranks ALF first (0.4136 < 0.4205 and 0.4136 < 2.743). The FBT gap is the 3-pass collapse below, not a 0.04-nat language-model improvement.
+
+### Answer-token NLL (mean ± sample std, 512 traces × 12 checksums)
+
+| Model | Params | FFN width | Answer NLL | Answer accuracy |
+|---|---:|---:|---:|---:|
+| Vanilla | 54,368 | 141 | 0.4205 ± 0.0107 | 0.822 |
+| FBT, 3 passes | 54,368 | 133 | 2.743 ± 0.532 | 0.200 |
+| ALF, 3 passes | 54,376 | 128 | 0.4136 ± 0.0101 | 0.823 |
+
+Chance is \(\ln 5 = 1.609\). Full-sequence NLL, report only: vanilla 1.105, FBT 1.885, ALF 1.103. Two of every three tokens are an op or the literal `Q`, so the full-sequence gap is about one third of the answer gap.
+
+Per seed, answer NLL:
+
+| Seed | Vanilla | FBT | ALF | Vanilla − ALF |
+|---:|---:|---:|---:|---:|
+| 0 | 0.4085 | 3.3519 | 0.4055 | +0.0031 |
+| 1 | 0.4237 | 2.5118 | 0.4248 | −0.0011 |
+| 2 | 0.4292 | 2.3656 | 0.4104 | +0.0187 |
+
+![results](artifacts/alf-feedback-transformer.png)
+
+*Probe loss, held-out answer NLL, length breakpoint, and ALF’s depth weights minus a uniform read.* Video: [`artifacts/alf-feedback-transformer.mp4`](artifacts/alf-feedback-transformer.mp4). On the traced document, vanilla and ALF put their mass on the true checksum and 3-pass FBT does not.
+
+## Breakpoints (seed 0, not in the status)
+
+Jacobi passes on a fresh 12-round draw. Vanilla is always 1 pass.
+
+| Passes | Vanilla | FBT | ALF |
+|---:|---:|---:|---:|
+| 1 | 0.430 | 0.454 | 0.424 |
+| 2 | 0.430 | 0.511 | 0.424 |
+| 3 | 0.430 | 3.327 | 0.424 |
+| 8 | 0.430 | 3.920 | 0.424 |
+
+FBT’s own 1-pass score sits next to vanilla. The pre-registered 3-pass score is where it falls to chance. ALF does not move from 1 pass to 8. The paper reports the same direction at a much smaller size: extra Jacobi passes lower ALF’s loss and raise FBT’s (Section 6.3). Here the FBT rise is from 0.45 nats to above 3, after 175 two-pass steps.
+
+Length, fresh traces. Training length is 37 tokens.
+
+| Rounds | Length | Vanilla | FBT | ALF |
+|---:|---:|---:|---:|---:|
+| 4 | 13 | 0.175 | 3.398 | 0.167 |
+| 12 | 37 | 0.428 | 3.325 | 0.420 |
+| 24 | 73 | 2.055 | 3.331 | 1.716 |
+| 40 | 121 | 2.829 | 3.039 | 2.410 |
+
+Past the training length, ALF is 0.34 and 0.42 nats under vanilla. That gap is not the status. Both models are still far from the in-distribution 0.42.
+
+Depth, same 700 steps, seed 0. Widths are re-matched. Answer NLL:
+
+| Layers | Vanilla | FBT | ALF |
+|---:|---:|---:|---:|
+| 1 | 0.430 | 3.607 | 0.428 |
+| 2 | 0.416 | 2.548 | 0.417 |
+| 4 | 0.409 | 3.352 | 0.405 |
+| 8 | 0.415 | 2.207 | 0.415 |
+
+No depth reaches the 0.10 nat bar. At 2 layers ALF is slightly worse than vanilla.
+
+ALF rank 1 / 4 / 16: answer NLL 0.418 / 0.405 / 0.420. The low-rank maps are not the difference.
+
+Inference reads on the trained seed-0 ALF, same draw as the pass table: full 0.4239, uniform nearest-4 0.4236, deepest source only 0.4240. Seed-0 depth weights deviate from uniform by at most 0.013. The corner cell of a raw \(\beta\) map is 1 because the deepest sublayer has one eligible source; the figure shows the excess over uniform instead. Flexible routing is not what this checkpoint uses.
+
+## What this does not claim
+
+The MoE ladder was not trained. Table 2’s 0.022–0.024 nat drop, the 45.1% → 47.0% accuracy lift, the 1.38× token match, and the 89%–94% nearest-window retention are quoted above and were not re-run. This toy is a 54k-parameter dense transformer on a synthetic register trace, with fixed sinusoids instead of the paper’s positions, a GELU FFN instead of MoE, and no prefix mixin or jitter. FBT uses the reported gate product at unit RMS. ALF uses equations (3.1)–(3.8), with \(W_E\)’s learning rate divided by width. Official JAX code was read and not copied. `notebooks/alf_official_moe_colab.ipynb` only records that the GPU ladder was not started. A budget for that ladder needs Gyanateet’s approval.
 
 ## Licences
 

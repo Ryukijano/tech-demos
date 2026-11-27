@@ -268,12 +268,16 @@ def _plot(raw: dict[str, Any], status: dict[str, Any], cfg: dict[str, Any]) -> N
 
     ax = axes[1, 1]
     beta = np.asarray(raw["seeds"]["0"]["alf"]["beta"], dtype=np.float64)
-    masked = np.ma.masked_where(np.tri(beta.shape[0], beta.shape[1], k=-1, dtype=bool), beta)
-    image = ax.imshow(masked, cmap="viridis", vmin=0.0, vmax=max(0.2, float(np.nanmax(beta))))
+    excess = np.full_like(beta, np.nan)
+    for dest in range(beta.shape[0]):
+        width = beta.shape[0] - dest
+        excess[dest, dest:] = beta[dest, dest:] - (1.0 / width)
+    span = max(0.02, float(np.nanmax(np.abs(excess))))
+    image = ax.imshow(excess, cmap="coolwarm", vmin=-span, vmax=span)
     ax.set_xlabel("Source sublayer")
     ax.set_ylabel("Receiving sublayer")
-    ax.set_title("ALF depth weights, seed 0")
-    fig.colorbar(image, ax=ax, fraction=0.046, pad=0.04, label="Mean β")
+    ax.set_title("ALF β − uniform, seed 0")
+    fig.colorbar(image, ax=ax, fraction=0.046, pad=0.04, label="Excess weight")
     fig.suptitle(
         "Attention Latent Feedback toy — register checksum",
         fontweight="bold",

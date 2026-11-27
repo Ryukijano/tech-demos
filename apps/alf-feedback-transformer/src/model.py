@@ -305,18 +305,21 @@ class FeedbackTransformer(nn.Module):
     def forward(self, token_ids: torch.Tensor, n_passes: int) -> torch.Tensor:
         if n_passes < 1:
             raise ValueError("n_passes must be positive")
-        self.beta_last = None
+        collect = self.mode == "alf" and self.read_mode == "full" and n_passes >= 2
+        self.beta_last = torch.zeros(self.n_sub, self.n_sub, device=token_ids.device) if collect else None
         self._beta_hits = 0
-        if self.mode == "alf" and self.read_mode == "full" and n_passes >= 2:
-            self.beta_last = torch.zeros(self.n_sub, self.n_sub, device=token_ids.device)
         prev: tuple[torch.Tensor, torch.Tensor, torch.Tensor] | None = None
         logits = token_ids.new_zeros(token_ids.shape[0], token_ids.shape[1], self.head.out_features, dtype=torch.float32)
         for k in range(n_passes):
+            use_beta = collect and k + 1 == n_passes
+            if not use_beta:
+                saved = self.beta_last
+                self.beta_last = None
             logits, branches, stream = self._pass(token_ids, prev)
+            if not use_beta:
+                self.beta_last = saved
             head_in = self.final_norm(stream)
             prev = (branches, stream, head_in)
-            if k + 1 == n_passes:
-                break
         return logits
 
     def loss(

@@ -1,0 +1,21 @@
+alf-feedback-transformer — NOTICE
+
+This directory (apps/alf-feedback-transformer/) is a CPU-only toy of:
+
+  Xuyuan Xiong, Siyu Chen, Mengzhao Chen, Yue Su, Zhuoran Yang, Ping Luo,
+  Xihui Liu, "Attention Latent Feedback", arXiv:2611.31154.
+  https://arxiv.org/abs/2611.31154
+  https://arxiv.org/html/2611.31154
+
+Found via a bookmarked X post by @rosinality. The post was not fetched.
+The bookmark text was checked against the arXiv abstract and HTML.
+
+Official code (MIT, not vendored, no source files copied):
+  https://github.com/xjxyys/ALF
+  Project page: https://xjxyys.github.io/attention-latent-feedback/
+
+The toy reimplements the published standard-residual equations (3.1)–(3.8)
+and the FBT input fusion described with that code (gate product, unit RMS,
+no prefix mixin, no jitter). It does not use Marin, JAX, or the MoE ladder.
+No paper figures are copied. Trained weights stay out of git (work/ is
+git-ignored).

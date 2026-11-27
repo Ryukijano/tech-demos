@@ -1,0 +1,98 @@
+# Fixed BEFORE the official measured seeds. Do not edit thresholds, widths,
+# step counts, or the task after raw.json exists. The in-script smoke (seed 99)
+# checks that losses stay finite. It is not a result and it does not set bars.
+exp_id: exp1_cpu_register
+hypothesis: >
+  On a 3-register trace in Z/5Z, a tiny standard-residual transformer with
+  Attention Latent Feedback (every sublayer reads the previous position at
+  its own depth and deeper, plus a zero-init top-state injection) reaches a
+  lower held-out answer-token cross-entropy than a parameter-matched
+  Full-bandwidth Transformer (last-state gate only) and a parameter-matched
+  vanilla transformer. Every seed in {0, 1, 2} has ALF strictly best, the
+  seed-mean gap versus vanilla is at least 0.10 nats, and the seed-mean gap
+  versus FBT is at least 0.04 nats. This is a CPU toy of arXiv:2611.31154,
+  not a reproduction of the MoE ladder.
+upstream:
+  paper: >
+    Xuyuan Xiong, Siyu Chen, Mengzhao Chen, Yue Su, Zhuoran Yang, Ping Luo,
+    Xihui Liu, "Attention Latent Feedback", arXiv:2611.31154.
+  paper_url: https://arxiv.org/abs/2611.31154
+  paper_html: https://arxiv.org/html/2611.31154
+  code_url: https://github.com/xjxyys/ALF
+  project_url: https://xjxyys.github.io/attention-latent-feedback/
+  bookmark: https://x.com/rosinality/status/2125165189570167284
+  note: >
+    The X post was not fetched. Official JAX code is MIT and was not vendored.
+    Equations (3.1)–(3.8) and the reported FBT gate product were reimplemented.
+data:
+  n_rounds: 12
+  n_eval: 512
+  probe_size: 128
+  train_stream_seed: 20261127
+  eval_stream_seed: 261131154
+  probe_stream_seed: 311542616
+model:
+  d_model: 32
+  n_layers: 4
+  n_heads: 4
+  d_ff: 128
+  rank: 4
+  init_share: 0.01
+training:
+  steps: 700
+  batch_size: 64
+  lr: 0.002
+  grad_clip: 1.0
+  log_every: 100
+  branch_fraction: 0.75
+  eval_passes: 3
+seeds: [0, 1, 2]
+metrics:
+  primary: >
+    answer_nats = mean natural-log cross-entropy on tokens that follow Q
+    (the register checksum). Vanilla is scored with 1 pass. FBT and ALF are
+    scored with eval_passes (3) Jacobi passes, using the last pass only.
+    512 held-out traces, 12 rounds each. Lower is better.
+  report_only:
+    - answer_acc
+    - full_nats
+    - n_params
+    - depth_attention
+thresholds:
+  gap_vs_vanilla_nats: 0.10
+  gap_vs_fbt_nats: 0.04
+  pass_condition: >
+    For EVERY seed in {0, 1, 2}:
+      answer_nats(ALF) < answer_nats(FBT)
+      and answer_nats(ALF) < answer_nats(vanilla)
+    AND mean(answer_nats(vanilla) - answer_nats(ALF)) >= 0.10
+    AND mean(answer_nats(FBT) - answer_nats(ALF)) >= 0.04.
+  status_rule: >
+    PASS if the pass_condition holds.
+    PARTIAL if the seed-mean ALF answer_nats is strictly below both other
+    models but an every-seed win or a numeric gap misses.
+    FAIL otherwise.
+    Breakpoints are not part of the status.
+smoke:
+  seed: 99
+  steps: 20
+  n_seq: 32
+breakpoints:
+  seed: 0
+  n_seq: 256
+  steps: 700
+  n_rounds: [4, 8, 12, 24, 40]
+  eval_passes: [1, 2, 3, 4, 8]
+  depth_layers: [1, 2, 8]
+  ranks: [1, 16]
+  read_modes: [full, nearest, last]
+runtime:
+  device: cpu-only
+  torch_threads: 4
+disclosure: >
+  Thresholds and the training budget were fixed before seeds 0/1/2.
+  A 20-step smoke on seed 99 only checks that the loss stays finite.
+  Before this file was committed, a 40-step timing pass of all three modes
+  (still near chance) and longer vanilla-only runs chose 700 steps so the
+  job stays on CPU for a few minutes. Those passes did not set the gaps.
+  This is not an official reproduction of arXiv:2611.31154.

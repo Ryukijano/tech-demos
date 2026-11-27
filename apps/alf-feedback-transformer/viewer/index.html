@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ALF feedback transformer toy</title>
+  <style>
+    :root { color-scheme: light; }
+    body { margin: 0; font: 16px/1.45 Georgia, "Times New Roman", serif; background: #f7f4ef; color: #1c1915; }
+    main { max-width: 980px; margin: 0 auto; padding: 28px 18px 48px; }
+    h1 { font-size: 1.6rem; margin-bottom: 0.2rem; }
+    p { max-width: 68ch; }
+    img, video { width: 100%; height: auto; background: white; border: 1px solid #ddd; }
+    a { color: #0b4f6c; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Attention Latent Feedback, CPU toy</h1>
+    <p>Register-checksum traces. Vanilla, last-state feedback (FBT), and flexible-depth feedback (ALF), parameter-matched. The numbers are the pre-registered run in <a href="../experiments/exp1_cpu_register/results.md">results.md</a>.</p>
+    <video src="alf-feedback-transformer.mp4" poster="plot.png" controls muted playsinline></video>
+    <p><img src="plot.png" alt="Answer loss curves, held-out bars, length breakpoint, and ALF depth weights"></p>
+  </main>
+</body>
+</html>

@@ -1,5 +1,12 @@
 [
   {
+    "url": "https://x.com/rosinality/status/2125165189570167284",
+    "author": "@rosinality",
+    "slug": "alf-feedback-transformer",
+    "date": "2026-11-27",
+    "source": "https://arxiv.org/abs/2611.31154"
+  },
+  {
     "url": "https://x.com/rosinality/status/2125531243681038427",
     "author": "@rosinality",
     "slug": "rl-rollout-replay",

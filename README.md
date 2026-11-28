@@ -35,6 +35,7 @@ One monorepo for sticky / bookmark-worthy tech demos. Prefer adding a new `apps/
 | `apps/jepa-latent-maps/` | Clean-room JEPA content–geometry toy on a 7×7 grid: VICReg vs SVReg vs Slow SVReg (AGL-TR-2026-04, doi:10.5281/zenodo.24356797; no official code; CPU, FAIL) |
 | `apps/rl-rollout-replay/` | Clean-room GRU addition toy: ML replay vs naive REINFORCE replay of archived rollouts (arXiv:2611.33102; no official code; CPU, FAIL) |
 | `apps/alf-feedback-transformer/` | Attention Latent Feedback vs last-state FBT vs a vanilla transformer on a register-checksum trace (arXiv:2611.31154; official MIT code not vendored; CPU, PARTIAL) |
+| `apps/physcap-mass-stiffness/` | Clean-room PhysCaP lift-torque mass and squeeze-fit stiffness on a MuJoCo arm (arXiv:2608.21031; real-robot PhysX code not released; CPU, PASS) |
 | `tracking/seen-bookmarks.json` | X bookmarks already turned into demos (`url`, `slug`, `date`) |
 | `docs/` | GitHub Pages showcase site (static HTML/CSS) |
 | `AGENTS.md` | Rules for future cloud agents |

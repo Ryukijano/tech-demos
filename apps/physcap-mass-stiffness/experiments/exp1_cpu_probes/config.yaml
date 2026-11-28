@@ -1,0 +1,210 @@
+# Fixed BEFORE the official measured run. Do not edit thresholds after seeing
+# those results. A disclosed design probe (one unnoisy lift at each reference
+# mass, and one unnoisy squeeze at each stiffness center) checked that the
+# Jacobian sign is positive, that sliding friction 1.0 lifts 0.013–0.963 kg,
+# that friction ≤ 0.15 drops a 0.40 kg can, and that the force/displacement
+# slope matches the spring. It did not set a threshold. The official run is
+# seeds 0/1/2 with the trial counts below.
+exp_id: exp1_cpu_probes
+hypothesis: >
+  In a CPU MuJoCo model of a planar arm and a parallel-jaw gripper, clean-room
+  PhysCaP probes recover object mass and a five-level stiffness label well
+  enough to act on, and a deterministic stop-when-confident policy uses fewer
+  mass probes than measuring every object while still picking the empty can.
+  get_mass lifts 15 cm and estimates mass from the loaded-minus-empty joint
+  torques with the paper's Jacobian formula. get_stiffness closes the jaw in
+  small steps, confirms contact with a backoff, and maps an ordinary-least-squares
+  force/displacement slope through the paper's 420 N/m spring boundaries.
+  This is not the AgileX PiPER, not LIBERO, and not a VLM planner.
+upstream:
+  paper: https://arxiv.org/abs/2608.21031
+  html: https://arxiv.org/html/2608.21031
+  project: https://physcap.github.io/
+  repo: https://github.com/physcap/physcap
+  license: MIT
+  measurement_code: >
+    Not in the repository. The README says the real-robot PhysX modules are
+    "coming soon" and that dummy mode reads a table of true values. LIBERO
+    reveals ground-truth mass after a 3 cm lift. This app does not vendor
+    that repository. The probes below are a clean-room reading of Sections
+    3.1.1, 3.1.2, 5.2 and Appendix B.
+  bookmark: https://x.com/NVIDIARobotics/status/2125632693719167240
+  bookmark_note: The X post was not fetched. Claims were checked on the paper HTML and the project page.
+  g_m_s2: 9.8
+  lift_m: 0.15
+  mass_formula: "m_hat = (J_z · (tau_loaded - tau_empty)) / (g * ||J_z||^2)"
+  stiffness_formula: "k_hat = DeltaF / Deltad, ordinary least squares"
+  stiffness_bounds_n_per_m: [420, 840, 1260, 1680]
+  stiffness_levels:
+    1: Ultra-Soft
+    2: Soft
+    3: Semi-Rigid
+    4: Stiff
+    5: Rigid
+  api_mass_noise: "±30 g, Appendix B.3"
+  paper_mass_mae_g: 38.1
+  paper_mass_mae_std_g: 26.0
+  paper_mass_span_g: [13, 963]
+  paper_can_gap_g: 193
+  paper_empty_can_g: 15
+  paper_full_can_example_g: 208
+  paper_empty_can_oi: 2.00
+  paper_exhaustive_oi: 4.00
+  paper_sim_sr: 0.78
+  paper_sim_oi: 1.44
+  paper_real_empty_can_success: 1.0
+scene:
+  timestep_s: 0.002
+  integrator: implicitfast
+  gravity_m_s2: 9.8
+  l1_m: 0.25
+  l2_m: 0.22
+  shoulder_z_m: 0.10
+  object_x_m: 0.32
+  object_z_m: 0.02
+  pose_jitter_m: 0.008
+  finger_friction: 1.0
+  finger_close: 0.034
+  finger_kp: 1800
+  finger_forcerange_n: 30
+  arm_forcerange_nm: 12
+  min_lift_m: 0.08
+  grasp_failure_mass_kg: -1.0
+  torque_noise_std_nm: 0.03
+  n_torque_samples: 6
+  empty_move_s: 0.6
+  empty_settle_s: 0.35
+  descend_s: 0.6
+  close_s: 0.45
+  close_settle_s: 0.25
+  lift_s: 0.9
+  lift_settle_s: 0.4
+stiffness:
+  centers_n_per_m: [210, 630, 1050, 1470, 2100]
+  bounds_n_per_m: [420, 840, 1260, 1680]
+  target_force_n: 6.0
+  contact_force_n: 0.4
+  backoff_m: 0.0015
+  jaw_step_m: 0.0005
+  min_compression_m: 0.0004
+  min_points: 4
+  force_noise_std_n: 0.05
+  votes: 5
+  n_objects_per_level: 6
+mass:
+  # Endpoints are the paper's 13 g and 963 g reference span (Section 5.2).
+  # The three interior masses fill that span. They are not claimed to be the
+  # paper's five unnamed objects.
+  masses_kg: [0.013, 0.050, 0.150, 0.400, 0.963]
+  n_trials: 8
+explore:
+  n_episodes: 20
+  empty_kg: 0.015
+  full_open_kg: 0.208
+  sealed_kg: [0.350, 0.420]
+  # Sits between (0.015 + 0.040) and (0.208 - 0.040). The 0.040 kg half-width
+  # is the mass bar below. The paper's empty-vs-lightest-full gap is 193 g.
+  light_threshold_kg: 0.10
+seeds: [0, 1, 2]
+metrics:
+  primary:
+    - median_abs_mass_error_kg
+    - primary_grasp_success
+    - stiffness_accuracy
+    - ripe_separation
+    - unripe_separation
+    - selective_oi
+    - exhaustive_oi
+    - selective_success
+  reported_not_gated:
+    - median_rel_mass_error
+    - median_rel_mass_error_at_least_150g
+thresholds:
+  # Mass bar is the paper's Section 5.2 MAE, 38.1 g, rounded up to 40 g.
+  # A 10% relative bar is not used: 38 g on the 13 g endpoint is not 10%,
+  # and the paper reports a stable absolute error, plus an API note of ±30 g.
+  mass_median_abs_err_kg: 0.040
+  mass_partial_median_abs_err_kg: 0.080
+  grasp_success_min: 0.95
+  grasp_success_partial_min: 0.80
+  stiffness_accuracy_min: 0.80
+  stiffness_accuracy_partial_min: 0.60
+  ripe_recall_min: 0.90
+  unripe_recall_min: 0.90
+  separation_partial_min: 0.75
+  # Real Identify Empty Can: PhysCaP OI 2.00 vs CaP+PhysX OI 4.00 (Table 1).
+  # LIBERO: OI 1.44 vs 2.16, ratio 0.67 (Table 2). 2.5 and 0.70 sit just
+  # outside those reported operating points.
+  selective_oi_max: 2.5
+  selective_oi_ratio_max: 0.70
+  selective_success_min: 0.90
+  selective_success_partial_min: 0.70
+  pass_condition: >
+    Median |m_hat - m| <= 0.040 kg on the five primary masses (failed grasps
+    enter as -1 kg) AND primary grasp success >= 0.95 AND five-level
+    majority-vote accuracy >= 0.80 AND level-2 votes land in {1, 2} at least
+    90% of the time AND level-4/5 votes land in {4, 5} at least 90% of the
+    time AND selective mean probes <= 2.5 AND selective mean probes <= 0.70
+    times the exhaustive mean AND selective empty-can success >= 0.90.
+    Means are over seeds 0, 1 and 2 unless the metric is a pooled median.
+  status_rule: >
+    PASS if every clause in pass_condition holds.
+    PARTIAL if mass median <= 0.080 kg and grasp success >= 0.80 and
+    stiffness accuracy >= 0.60 and both separation recalls >= 0.75 and
+    selective probes are strictly fewer than exhaustive and selective
+    success >= 0.70, but some PASS clause fails.
+    FAIL otherwise.
+breakpoints:
+  seed: 0
+  n_reps: 4
+  very_light:
+    story: >
+      Masses below and at the paper's 13 g endpoint. A few grams of bias
+      plus the 0.03 N·m torque noise is a large fraction of the true mass.
+      The API notes that a slightly negative reading on a very light object
+      is noise, not a failed grasp.
+    masses_kg: [0.001, 0.005, 0.013]
+  very_heavy:
+    story: >
+      Above the 963 g reference. The finger force limit and the 12 N·m arm
+      limit stop holding the can. A lift that does not rise min_lift_m
+      returns -1 kg, the large-negative grasp-failure code in Appendix B.3.
+    masses_kg: [1.5, 3.0, 6.0]
+  torque_noise:
+    story: >
+      Same 0.208 kg can, torque noise far above the nominal 0.03 N·m.
+      The ±30 g API note stops being a small perturbation.
+    mass_kg: 0.208
+    stds_nm: [0.0, 0.03, 0.10, 0.30]
+  near_rigid:
+    story: >
+      Springs at and above the top 1680 N/m boundary. The jaw increment is
+      0.5 mm and a fit shorter than min_compression_m (0.4 mm) is rejected
+      as level 0, a failed measurement, which the API also returns as 0.
+    k_n_per_m: [1680, 5000, 20000, 100000]
+  friction_slip:
+    story: >
+      A 0.40 kg can. Nominal sliding friction is 1.0. The design probe saw
+      a drop once friction fell to 0.15. This sweep is the breakpoint, not
+      a retune of the nominal friction.
+    mass_kg: 0.40
+    mus: [1.0, 0.40, 0.15, 0.05]
+  jaw_friction:
+    story: >
+      Coulomb frictionloss on the jaw slide, in newtons, while squeezing the
+      level-3 center (1050 N/m). A constant offset should move the intercept
+      more than the slope, until the jaw cannot reach the target force.
+    k_n_per_m: 1050
+    frictionloss_n: [0.0, 1.0, 4.0, 12.0]
+runtime:
+  device: cpu-only
+  max_workers: 3
+disclosure: >
+  Thresholds, the 13 g–963 g mass list, the 420 N/m boundaries, the 0.10 kg
+  empty-can threshold, the 0.03 N·m torque noise, and the PASS rule were
+  written before the official seeds 0/1/2 run. A design probe checked the
+  formula sign, the nominal grasp, and the stiffness slope. It is not the
+  official result. PhysCaP's Planner and Prioritizer are VLM calls. This
+  experiment replaces them with the sufficiency rule in Appendix D: stop
+  once no remaining measurement would change the empty-can decision, and
+  do not measure a sealed can. No real-robot number was re-measured.

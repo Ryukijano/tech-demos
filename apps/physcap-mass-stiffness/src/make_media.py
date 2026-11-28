@@ -250,8 +250,13 @@ def _write(cfg: dict[str, Any], left: list[np.ndarray], right: list[np.ndarray],
                 fig.savefig(folder / f"frame_{index:03d}.png", dpi=100)
                 plt.close(fig)
                 index += 1
-        wrote_video = _ffmpeg(folder, ART / "physcap-mass-stiffness.mp4", fps=8)
+        video = ART / "physcap-mass-stiffness.mp4"
+        wrote_video = _ffmpeg(folder, video, fps=8)
     if not wrote_video:
+        # Drop a clip from an earlier run so it is not published with this still.
+        video = ART / "physcap-mass-stiffness.mp4"
+        if video.exists():
+            video.unlink()
         backend = f"{backend}; mp4 skipped, ffmpeg not found"
     atomic.write_text(ART / "media_backend.txt", backend + "\n")
 

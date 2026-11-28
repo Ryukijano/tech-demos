@@ -90,7 +90,7 @@ pip install -r requirements.txt
 # python src/run_experiment.py --smoke   # one lift, one squeeze, one decision
 ```
 
-The still and the MP4 use MuJoCo's OSMesa renderer (`MUJOCO_GL=osmesa`, set before import). If that renderer cannot start, `src/make_media.py` writes a matplotlib schematic and says so in `artifacts/media_backend.txt`. The MP4 needs `ffmpeg` on `PATH`. Without it the script keeps the still and the tables, records `mp4 skipped` in `media_backend.txt`, and exits 0. `./run_all.sh` holds a lock for the whole run and writes each result file by replace, so a reader does not see a half-written JSON. On Windows the pool uses `spawn` when the module is imported, which is what `run_all.sh` does. Running `python src/run_experiment.py` on Windows measures in process instead.
+The still and the MP4 use MuJoCo's OSMesa renderer (`MUJOCO_GL=osmesa`, set before import). If that renderer cannot start, `src/make_media.py` writes a matplotlib schematic and says so in `artifacts/media_backend.txt`. The MP4 needs `ffmpeg` on `PATH`. Without it the script keeps the still and the tables, records `mp4 skipped` in `media_backend.txt`, deletes any MP4 already in `artifacts/` and `docs/assets/`, and exits 0. That older clip is not published beside the new still. `./run_all.sh` holds a lock for the whole run and writes each result file by replace, so a reader does not see a half-written JSON. On Windows the pool uses `spawn` when the module is imported, which is what `run_all.sh` does. Running `python src/run_experiment.py` on Windows measures in process instead.
 
 ## Caveats
 

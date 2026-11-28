@@ -28,7 +28,12 @@ python3 -c 'from analyze import main; main()'
 python3 -c 'from make_media import main; main()'
 if [[ -d ../../docs/assets ]]; then
   cp -f artifacts/physcap-mass-stiffness.png ../../docs/assets/physcap-mass-stiffness.png
-  if [[ -f artifacts/physcap-mass-stiffness.mp4 ]]; then
+  # Copy the MP4 only when this run encoded it. A skipped encode deletes the
+  # clip, including one that was already in the checkout, so the pages folder
+  # does not keep the previous video next to the new still.
+  if grep -q 'mp4 skipped' artifacts/media_backend.txt; then
+    rm -f ../../docs/assets/physcap-mass-stiffness.mp4
+  elif [[ -f artifacts/physcap-mass-stiffness.mp4 ]]; then
     cp -f artifacts/physcap-mass-stiffness.mp4 ../../docs/assets/physcap-mass-stiffness.mp4
   fi
 fi

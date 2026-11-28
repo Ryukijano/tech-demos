@@ -1,0 +1,32 @@
+physcap-mass-stiffness — NOTICE
+
+This directory is a CPU-only clear experiment. The probes are a clean-room
+reading of PhysCaP (arXiv:2608.21031). No file from github.com/physcap/physcap
+is copied here. That repository is MIT, and as of the README checked for
+this demo the real-robot PhysX measurement modules are not included.
+
+  PhysCaP
+  Copyright (c) 2026 Max Fu
+  Copyright (c) 2026 The PhysCaP Authors
+  https://github.com/physcap/physcap
+  License: MIT
+  Paper: https://arxiv.org/abs/2608.21031
+  Project: https://physcap.github.io/
+
+MuJoCo is a PyPI dependency. Its source is not vendored.
+
+  MuJoCo
+  Copyright DeepMind Technologies Limited
+  https://github.com/google-deepmind/mujoco
+  PyPI: mujoco==4.0.0
+  License: Apache License, Version 2.0
+
+Found via a bookmarked X post by @NVIDIARobotics. That post was not fetched.
+The mass formula, the 15 cm lift, the stiffness fit, the five level names,
+and the reported errors were checked on the paper HTML and the project page:
+  https://x.com/NVIDIARobotics/status/2125632693719167240
+
+This experiment is not the AgileX PiPER, not the LIBERO empty-can task, and
+not a VLM planner. No real-robot number was re-measured.
+
+No warranty. Research / demo use.

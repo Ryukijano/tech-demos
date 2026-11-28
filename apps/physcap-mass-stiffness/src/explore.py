@@ -13,6 +13,9 @@ import numpy as np
 
 import physx
 
+# Stable per-can codes so both policies draw the same noise for a can.
+_CAN_CODE = {"open_a": 1, "open_b": 2, "sealed_a": 3, "sealed_b": 4}
+
 
 def _objects(explore: dict[str, Any], rng: np.random.Generator) -> list[dict[str, Any]]:
     empty_slot = int(rng.integers(0, 2))
@@ -28,13 +31,24 @@ def _objects(explore: dict[str, Any], rng: np.random.Generator) -> list[dict[str
     return opens + sealed_rows
 
 
-def _weigh(
-    scene_cfg: dict[str, Any],
-    obj: dict[str, Any],
-    rng: np.random.Generator,
-) -> float:
-    row = physx.get_mass(scene_cfg, float(obj["mass"]), rng, x_offset=float(rng.uniform(-0.004, 0.004)))
-    return float(row["m_hat"])
+def _reading(scene_cfg: dict[str, Any], obj: dict[str, Any], episode_seed: int) -> dict[str, Any]:
+    """One measurement per can per episode. Policies share this draw."""
+    rng = np.random.Generator(np.random.PCG64(episode_seed * 16 + _CAN_CODE[obj["name"]]))
+    offset = float(rng.uniform(-0.004, 0.004))
+    row = physx.get_mass(scene_cfg, float(obj["mass"]), rng, x_offset=offset)
+    return {
+        "name": obj["name"],
+        "m_hat": float(row["m_hat"]),
+        "grasped": bool(row["grasped"]),
+    }
+
+
+def _choose(readings: list[dict[str, Any]]) -> tuple[str, bool]:
+    """Lightest successful grasp. Unresolved when every probe failed to grasp."""
+    ok = [rec for rec in readings if rec["grasped"]]
+    if not ok:
+        return "", False
+    return min(ok, key=lambda rec: float(rec["m_hat"]))["name"], True
 
 
 def run_policy(
@@ -43,39 +57,46 @@ def run_policy(
     episode_seed: int,
     policy: str,
 ) -> dict[str, Any]:
-    """Both policies see the same cans. Only the probe order and the stop rule differ."""
+    """Both policies see the same cans and the same per-can noise.
+
+    Only the probe order and the stop rule differ. A failed grasp is not a
+    mass. Appendix B.3 treats a slightly negative reading on a successful
+    grasp as noise, and a large negative value as a failed grasp. The
+    simulator returns that failure as grasped=False and m_hat=-1 kg.
+    """
     scene_rng = np.random.Generator(np.random.PCG64(episode_seed))
     objects = _objects(explore, scene_rng)
-    rng = np.random.Generator(np.random.PCG64(episode_seed + (11 if policy == "selective" else 29)))
     by_name = {obj["name"]: obj for obj in objects}
     threshold = float(explore["light_threshold_kg"])
+    order_rng = np.random.Generator(np.random.PCG64(episode_seed + (11 if policy == "selective" else 29)))
     if policy == "selective":
         order = ["open_a", "open_b"]
-        rng.shuffle(order)
     elif policy == "exhaustive":
         order = ["open_a", "open_b", "sealed_a", "sealed_b"]
-        rng.shuffle(order)
     else:
         raise ValueError(f"unknown policy {policy}")
+    order_rng.shuffle(order)
 
-    readings: list[tuple[str, float]] = []
+    readings: list[dict[str, Any]] = []
     choice = ""
     for name in order:
-        m_hat = _weigh(scene_cfg, by_name[name], rng)
-        readings.append((name, m_hat))
-        if policy == "selective" and 0.0 <= m_hat < threshold:
+        rec = _reading(scene_cfg, by_name[name], episode_seed)
+        readings.append(rec)
+        # A successful grasp below the threshold, including a small negative
+        # caused by torque noise, is light enough to call empty.
+        if policy == "selective" and rec["grasped"] and float(rec["m_hat"]) < threshold:
             choice = name
             break
+    resolved = True
     if not choice:
-        finite = [(name, m_hat) for name, m_hat in readings if m_hat >= 0.0]
-        pool = finite if finite else readings
-        choice = min(pool, key=lambda item: item[1])[0]
+        choice, resolved = _choose(readings)
     truth = next(obj["name"] for obj in objects if obj["empty"])
     return {
         "policy": policy,
         "probes": len(readings),
         "choice": choice,
         "truth": truth,
-        "success": choice == truth,
-        "readings": [{"name": name, "m_hat": m_hat} for name, m_hat in readings],
+        "resolved": resolved,
+        "success": resolved and choice == truth,
+        "readings": readings,
     }

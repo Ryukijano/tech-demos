@@ -13,6 +13,8 @@ import tempfile
 from pathlib import Path
 from typing import Any
 
+import atomic
+
 os.environ.setdefault("MUJOCO_GL", "osmesa")
 
 import matplotlib
@@ -56,9 +58,11 @@ def _status_line() -> str:
     )
 
 
-def _ffmpeg(frame_dir: Path, dest: Path, fps: int) -> None:
+def _ffmpeg(frame_dir: Path, dest: Path, fps: int) -> bool:
+    """Encode the clip. A missing ffmpeg leaves the still and the tables in place."""
     if shutil.which("ffmpeg") is None:
-        raise RuntimeError("ffmpeg not found")
+        return False
+    tmp = dest.with_name(f".{dest.name}.tmp.mp4")
     subprocess.run(
         [
             "ffmpeg",
@@ -75,10 +79,12 @@ def _ffmpeg(frame_dir: Path, dest: Path, fps: int) -> None:
             "yuv420p",
             "-crf",
             "20",
-            str(dest),
+            str(tmp),
         ],
         check=True,
     )
+    atomic.replace_file(tmp, dest)
+    return True
 
 
 def _compose(left: np.ndarray, right: np.ndarray, left_title: str, right_title: str, footer: str, path: Path) -> None:
@@ -215,7 +221,9 @@ def _write(cfg: dict[str, Any], left: list[np.ndarray], right: list[np.ndarray],
     right = _pad(right, n)
     footer = _status_line()
     still = ART / "physcap-mass-stiffness.png"
-    _compose(left[still_i], right[still_i], "get_mass  ·  15 cm lift", "get_stiffness  ·  level 2", footer, still)
+    still_tmp = still.with_name(".physcap-mass-stiffness.png.tmp.png")
+    _compose(left[still_i], right[still_i], "get_mass  ·  15 cm lift", "get_stiffness  ·  level 2", footer, still_tmp)
+    atomic.replace_file(still_tmp, still)
     plot = EXP / "plot.png"
     plot_img = plt.imread(plot) if plot.exists() else None
     with tempfile.TemporaryDirectory() as tmp:
@@ -242,8 +250,10 @@ def _write(cfg: dict[str, Any], left: list[np.ndarray], right: list[np.ndarray],
                 fig.savefig(folder / f"frame_{index:03d}.png", dpi=100)
                 plt.close(fig)
                 index += 1
-        _ffmpeg(folder, ART / "physcap-mass-stiffness.mp4", fps=8)
-    (ART / "media_backend.txt").write_text(backend + "\n")
+        wrote_video = _ffmpeg(folder, ART / "physcap-mass-stiffness.mp4", fps=8)
+    if not wrote_video:
+        backend = f"{backend}; mp4 skipped, ffmpeg not found"
+    atomic.write_text(ART / "media_backend.txt", backend + "\n")
 
 
 def main() -> None:

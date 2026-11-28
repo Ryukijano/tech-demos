@@ -3,9 +3,12 @@
 from __future__ import annotations
 
 import csv
+import io
 import json
 from pathlib import Path
 from typing import Any
+
+import atomic
 
 import matplotlib
 
@@ -184,7 +187,9 @@ def _write_tables(raw: dict[str, Any], summary: dict[str, Any], status: str) -> 
     lines += [
         "",
         f"Pooled median \\|Δm\\| = {summary['mass_median_abs'] * 1000:.2f} g "
-        f"(bar 40 g). Grasp success = {summary['grasp']:.3f}.",
+        f"(bar 40 g, a median, not the paper's mean). "
+        f"Mean \\|Δm\\| = {summary['mass_mean_abs'] * 1000:.2f} g, reported and not gated. "
+        f"Grasp success = {summary['grasp']:.3f}.",
         f"Median relative error = {summary['mass_median_rel']:.3f}. "
         f"On masses ≥ 150 g, median relative error = {summary['mass_median_rel_heavy']:.3f}.",
         f"Stiffness accuracy = {summary['stiffness_accuracy']:.3f}. "
@@ -193,42 +198,43 @@ def _write_tables(raw: dict[str, Any], summary: dict[str, Any], status: str) -> 
         f"Ratio = {summary['oi_ratio']:.3f}. Selective success = {summary['selective_success']:.3f}.",
         "",
     ]
-    (EXP / "results.md").write_text("\n".join(lines))
+    atomic.write_text(EXP / "results.md", "\n".join(lines))
 
-    with (EXP / "results.csv").open("w", newline="") as handle:
-        writer = csv.DictWriter(
-            handle,
-            fieldnames=[
-                "seed",
-                "median_abs_g",
-                "grasp",
-                "stiffness_accuracy",
-                "ripe",
-                "unripe",
-                "selective_oi",
-                "exhaustive_oi",
-                "selective_success",
-            ],
+    buffer = io.StringIO()
+    writer = csv.DictWriter(
+        buffer,
+        fieldnames=[
+            "seed",
+            "median_abs_g",
+            "grasp",
+            "stiffness_accuracy",
+            "ripe",
+            "unripe",
+            "selective_oi",
+            "exhaustive_oi",
+            "selective_success",
+        ],
+    )
+    writer.writeheader()
+    for seed in seeds:
+        mass = summary["per_seed"][seed]["mass"]
+        stiff = summary["per_seed"][seed]["stiffness"]
+        sel = summary["per_seed"][seed]["selective"]
+        exh = summary["per_seed"][seed]["exhaustive"]
+        writer.writerow(
+            {
+                "seed": seed,
+                "median_abs_g": f"{mass['median_abs'] * 1000:.4f}",
+                "grasp": f"{mass['grasp']:.4f}",
+                "stiffness_accuracy": f"{stiff['accuracy']:.4f}",
+                "ripe": f"{stiff['ripe']:.4f}",
+                "unripe": f"{stiff['unripe']:.4f}",
+                "selective_oi": f"{sel['oi']:.4f}",
+                "exhaustive_oi": f"{exh['oi']:.4f}",
+                "selective_success": f"{sel['success']:.4f}",
+            }
         )
-        writer.writeheader()
-        for seed in seeds:
-            mass = summary["per_seed"][seed]["mass"]
-            stiff = summary["per_seed"][seed]["stiffness"]
-            sel = summary["per_seed"][seed]["selective"]
-            exh = summary["per_seed"][seed]["exhaustive"]
-            writer.writerow(
-                {
-                    "seed": seed,
-                    "median_abs_g": f"{mass['median_abs'] * 1000:.4f}",
-                    "grasp": f"{mass['grasp']:.4f}",
-                    "stiffness_accuracy": f"{stiff['accuracy']:.4f}",
-                    "ripe": f"{stiff['ripe']:.4f}",
-                    "unripe": f"{stiff['unripe']:.4f}",
-                    "selective_oi": f"{sel['oi']:.4f}",
-                    "exhaustive_oi": f"{exh['oi']:.4f}",
-                    "selective_success": f"{sel['success']:.4f}",
-                }
-            )
+    atomic.write_text(EXP / "results.csv", buffer.getvalue())
 
 
 def _break_lines(raw: dict[str, Any]) -> list[str]:
@@ -274,9 +280,15 @@ def _break_lines(raw: dict[str, Any]) -> list[str]:
     return lines
 
 
+def _save_fig(fig: plt.Figure, path: Path) -> None:
+    tmp = path.with_name(f".{path.name}.tmp{path.suffix}")
+    fig.savefig(tmp)
+    atomic.replace_file(tmp, path)
+
+
 def _write_breakpoints(raw: dict[str, Any]) -> None:
     lines = _break_lines(raw)
-    (EXP / "breakpoints.md").write_text("\n".join(lines))
+    atomic.write_text(EXP / "breakpoints.md", "\n".join(lines))
     flat: list[dict[str, str]] = []
     for family, rows in raw["breakpoints"].items():
         for row in rows:
@@ -286,10 +298,11 @@ def _write_breakpoints(raw: dict[str, Any]) -> None:
         for key in row:
             if key not in keys:
                 keys.append(key)
-    with (EXP / "breakpoints.csv").open("w", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=keys)
-        writer.writeheader()
-        writer.writerows(flat)
+    buffer = io.StringIO()
+    writer = csv.DictWriter(buffer, fieldnames=keys)
+    writer.writeheader()
+    writer.writerows(flat)
+    atomic.write_text(EXP / "breakpoints.csv", buffer.getvalue())
 
 
 def _plot(raw: dict[str, Any], summary: dict[str, Any], status: str) -> None:
@@ -370,8 +383,8 @@ def _plot(raw: dict[str, Any], summary: dict[str, Any], status: str) -> None:
     )
     fig.suptitle(f"PhysCaP-style probes on CPU  ·  {status}", fontweight="bold", fontsize=13)
     fig.tight_layout()
-    fig.savefig(EXP / "plot.png")
-    fig.savefig(EXP / "plot.pdf")
+    _save_fig(fig, EXP / "plot.png")
+    _save_fig(fig, EXP / "plot.pdf")
     plt.close(fig)
 
 
@@ -401,6 +414,7 @@ def main() -> None:
     summary: dict[str, Any] = {
         "per_seed": per_seed,
         "mass_median_abs": float(np.median(all_err)),
+        "mass_mean_abs": float(np.mean(all_err)),
         "mass_median_rel": float(np.median(all_rel)),
         "mass_median_rel_heavy": float(np.median(heavy_rel)),
         "grasp": float(np.mean([per_seed[seed]["mass"]["grasp"] for seed in seeds])),
@@ -417,6 +431,7 @@ def main() -> None:
         "status": status,
         "checks": checks,
         "mass_median_abs_kg": summary["mass_median_abs"],
+        "mass_mean_abs_kg": summary["mass_mean_abs"],
         "mass_median_rel": summary["mass_median_rel"],
         "mass_median_rel_at_least_150g": summary["mass_median_rel_heavy"],
         "grasp_success": summary["grasp"],
@@ -438,7 +453,7 @@ def main() -> None:
             for seed in seeds
         },
     }
-    (EXP / "status.json").write_text(json.dumps(public, indent=2) + "\n")
+    atomic.write_text(EXP / "status.json", json.dumps(public, indent=2) + "\n")
     _write_tables(raw, summary, status)
     _write_breakpoints(raw)
     _plot(raw, summary, status)

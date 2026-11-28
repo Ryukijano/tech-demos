@@ -119,8 +119,11 @@ metrics:
   reported_not_gated:
     - median_rel_mass_error
     - median_rel_mass_error_at_least_150g
+    - mean_abs_mass_error_kg
 thresholds:
-  # Mass bar is the paper's Section 5.2 MAE, 38.1 g, rounded up to 40 g.
+  # The PASS gate is a median absolute error, not the paper's mean.
+  # 40 g is that median bar, set at the scale of Section 5.2's MAE
+  # (38.1 g, rounded up). The mean absolute error is reported and not gated.
   # A 10% relative bar is not used: 38 g on the 13 g endpoint is not 10%,
   # and the paper reports a stable absolute error, plus an API note of ±30 g.
   mass_median_abs_err_kg: 0.040

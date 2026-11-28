@@ -9,6 +9,7 @@
     "explore_partial": true
   },
   "mass_median_abs_kg": 0.006323029217487542,
+  "mass_mean_abs_kg": 0.006921904760157071,
   "mass_median_rel": 0.030948235614986427,
   "mass_median_rel_at_least_150g": 0.01606509604116784,
   "grasp_success": 1.0,

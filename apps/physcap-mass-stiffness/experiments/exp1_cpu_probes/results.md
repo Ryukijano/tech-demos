@@ -9,7 +9,7 @@ Stiffness and exploration numbers are means of the per-seed rates.
 | 1 | 8.2 | 1.000 | 1.000 | 1.000 | 1.000 | 1.40 | 4.00 | 1.000 |
 | 2 | 6.1 | 1.000 | 1.000 | 1.000 | 1.000 | 1.70 | 4.00 | 1.000 |
 
-Pooled median \|Δm\| = 6.32 g (bar 40 g). Grasp success = 1.000.
+Pooled median \|Δm\| = 6.32 g (bar 40 g, a median, not the paper's mean). Mean \|Δm\| = 6.92 g, reported and not gated. Grasp success = 1.000.
 Median relative error = 0.031. On masses ≥ 150 g, median relative error = 0.016.
 Stiffness accuracy = 1.000. Ripe recall = 1.000. Unripe recall = 1.000.
 Selective OI = 1.467. Exhaustive OI = 4.000. Ratio = 0.367. Selective success = 1.000.

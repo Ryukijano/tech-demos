@@ -4,12 +4,15 @@ from __future__ import annotations
 
 import json
 import multiprocessing as mp
+import os
+import sys
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 import numpy as np
 import yaml
 
+import atomic
 import explore
 import physx
 
@@ -206,21 +209,17 @@ def smoke(cfg: dict[str, Any]) -> dict[str, Any]:
 
 
 def main(argv: list[str] | None = None) -> None:
-    import sys
-
     args = sys.argv[1:] if argv is None else argv
     cfg = load_config()
     EXP.mkdir(parents=True, exist_ok=True)
     if "--smoke" in args:
         payload = smoke(cfg)
-        (EXP / "smoke.json").write_text(json.dumps(payload, indent=2) + "\n")
+        atomic.write_text(EXP / "smoke.json", json.dumps(payload, indent=2) + "\n")
         print(json.dumps(payload, indent=2))
         return
     seeds = [int(s) for s in cfg["seeds"]]
     workers = int(cfg["runtime"]["max_workers"])
-    ctx = mp.get_context("fork")
-    with ctx.Pool(processes=min(workers, len(seeds))) as pool:
-        parts = pool.map(run_seed, [(cfg, seed) for seed in seeds])
+    parts = _map(run_seed, [(cfg, seed) for seed in seeds], workers)
     primary = _merge(parts)
     # Breakpoint families are independent. Run them across the same pool size.
     jobs = {
@@ -231,9 +230,8 @@ def main(argv: list[str] | None = None) -> None:
         "friction_slip": _slip,
         "jaw_friction": _jaw,
     }
-    with ctx.Pool(processes=min(workers, len(jobs))) as pool:
-        names = list(jobs)
-        results = pool.map(_call_break, [(name, cfg) for name in names])
+    names = list(jobs)
+    results = _map(_call_break, [(name, cfg) for name in names], workers)
     breakpoints = dict(zip(names, results, strict=True))
     raw = {
         "exp_id": cfg["exp_id"],
@@ -243,8 +241,24 @@ def main(argv: list[str] | None = None) -> None:
         "explore": primary["explore"],
         "breakpoints": breakpoints,
     }
-    (EXP / "raw.json").write_text(json.dumps(raw) + "\n")
+    atomic.write_text(EXP / "raw.json", json.dumps(raw) + "\n")
     print(f"wrote {EXP / 'raw.json'}  mass={len(raw['mass'])} stiff={len(raw['stiffness'])} explore={len(raw['explore'])}")
+
+
+def _map(fn: Callable[..., Any], items: list[Any], workers: int) -> list[Any]:
+    """Fork on Unix. Spawn on Windows, and only when this module was imported.
+
+    A script entry point is ``__main__``. Spawn workers cannot unpickle
+    callables that live there, so that case runs in process and still writes
+    results.
+    """
+    spawn_only = "fork" not in mp.get_all_start_methods() or os.name == "nt"
+    if spawn_only and __name__ == "__main__":
+        return [fn(item) for item in items]
+    start = "spawn" if spawn_only else "fork"
+    ctx = mp.get_context(start)
+    with ctx.Pool(processes=max(1, min(workers, len(items)))) as pool:
+        return pool.map(fn, items)
 
 
 def _call_break(payload: tuple[str, dict[str, Any]]) -> list[dict[str, Any]]:
@@ -261,4 +275,5 @@ def _call_break(payload: tuple[str, dict[str, Any]]) -> list[dict[str, Any]]:
 
 
 if __name__ == "__main__":
-    main()
+    mp.freeze_support()
+    main(sys.argv[1:])

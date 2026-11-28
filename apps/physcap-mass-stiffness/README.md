@@ -14,7 +14,7 @@ CPU-only clear experiment on the **PhysCaP** mass and stiffness probes (Lin et a
 \hat{m} = \frac{J_z \cdot (\tau_\mathrm{loaded} - \tau_\mathrm{empty})}{g\,\|J_z\|^2}.
 \]
 
-A lift that does not rise 8 cm returns **−1 kg**. Appendix B.3 uses a large negative value for a failed grasp. The API note is about ±30 g of noise. Section 5.2 reports **38.1 ± 26.0 g** MAE on five objects from **13 g to 963 g** (\(n = 250\)).
+A lift that does not rise 8 cm returns **−1 kg** and `grasped=False`. Appendix B.3 uses a large negative value for a failed grasp, and a slightly negative reading on a very light object as noise. A successful grasp keeps that small negative. A failed grasp is not a candidate. If every probe in an episode fails to grasp, the episode is unresolved and counts as a miss. Section 5.2 reports **38.1 ± 26.0 g** MAE on five objects from **13 g to 963 g** (\(n = 250\)).
 
 `get_stiffness` closes the jaw in 0.5 mm steps, backs off to confirm that force drops, then fits
 
@@ -24,7 +24,7 @@ k = \Delta F / \Delta d
 
 by ordinary least squares up to a 6 N target. Five squeezes, majority vote. Levels use four boundaries at multiples of the paper's **420 N/m** calibration spring: 420, 840, 1260, 1680 N/m. The names are the API's: 1 Ultra-Soft, 2 Soft, 3 Semi-Rigid, 4 Stiff, 5 Rigid. A fit shorter than 0.4 mm, or a non-positive slope, returns 0. The paper does not publish the numeric cut points or a classification percentage. It says one squeeze separates a level-2 avocado from levels 4–5.
 
-The empty-can policy is the Appendix D sufficiency rule with no VLM. Sealed cans are not measured. An open can whose estimate is in \([0, 0.10)\) kg is taken to be empty and the search stops. Otherwise both open cans are weighed and the lighter one is chosen. Exhaustive weighing measures all four cans. The 0.10 kg threshold sits between the project page's 15 g empty can and 208 g full can, outside the ±40 g mass bar. The paper's empty-vs-lightest-full gap is **193 g**.
+The empty-can policy is the Appendix D sufficiency rule with no VLM. Sealed cans are not measured. An open can whose successful estimate is below 0.10 kg, including a small negative, is taken to be empty and the search stops. Otherwise the lighter successful reading is chosen. Exhaustive weighing measures all four cans and uses the same per-can noise. The 0.10 kg threshold sits between the project page's 15 g empty can and 208 g full can, outside the ±40 g mass bar. The paper's empty-vs-lightest-full gap is **193 g**.
 
 ## Hypothesis
 
@@ -34,7 +34,7 @@ On this planar arm and jaw, the two probes recover ground-truth mass and the fiv
 
 | Check (fixed in `config.yaml` before the run) | Threshold | Result |
 |---|---|---|
-| Median \(\| \hat{m} - m \|\) on 13, 50, 150, 400, 963 g | ≤ 40 g | **met** (6.32 g) |
+| Median \(\| \hat{m} - m \|\) on 13, 50, 150, 400, 963 g | ≤ 40 g | **met** (6.32 g; mean 6.92 g, not gated) |
 | Primary grasp success | ≥ 0.95 | **met** (1.000) |
 | Five-level majority accuracy | ≥ 0.80 | **met** (1.000) |
 | Level 2 voted in {1, 2} | ≥ 0.90 | **met** (1.000) |
@@ -42,7 +42,7 @@ On this planar arm and jaw, the two probes recover ground-truth mass and the fiv
 | Selective probes | ≤ 2.5 and ≤ 0.70 × exhaustive | **met** (1.467 vs 4.000, ratio 0.367) |
 | Selective empty-can success | ≥ 0.90 | **met** (1.000) |
 
-A 10% relative-error bar was not used. Section 5.2 reports an absolute MAE, and 38 g is not 10% of the 13 g endpoint. The median relative error is reported below and is not a gate. Status rule: **PASS** needs every row. **PARTIAL** if the median absolute error is ≤ 80 g, grasp success ≥ 0.80, stiffness accuracy ≥ 0.60, both separation recalls ≥ 0.75, selective probes are strictly fewer, and selective success ≥ 0.70. **FAIL** otherwise.
+The 40 g bar is a **median** absolute error. It was set at the scale of Section 5.2's 38.1 g MAE and rounded up. It is not that MAE, and the mean is not the gate. A 10% relative-error bar was not used: 38 g is not 10% of the 13 g endpoint. The median relative error is reported below and is not a gate. Status rule: **PASS** needs every row. **PARTIAL** if the median absolute error is ≤ 80 g, grasp success ≥ 0.80, stiffness accuracy ≥ 0.60, both separation recalls ≥ 0.75, selective probes are strictly fewer, and selective success ≥ 0.70. **FAIL** otherwise.
 
 ### Per seed
 
@@ -52,7 +52,7 @@ A 10% relative-error bar was not used. Section 5.2 reports an absolute MAE, and 
 | 1 | 8.2 g | 1.000 | 1.000 | 1.000 | 1.000 | 1.40 | 4.00 | 1.000 |
 | 2 | 6.1 g | 1.000 | 1.000 | 1.000 | 1.000 | 1.70 | 4.00 | 1.000 |
 
-Pooled median relative error is 0.031. On masses ≥ 150 g it is 0.016. The estimates sit a few grams high (the design probe, before noise, was about +5 to +8 g). That bias is inside the paper's ±30 g API note and inside the 40 g bar.
+Pooled mean absolute error is 6.92 g. It is reported so it can be set next to the paper's MAE, and it is not a pass gate. Pooled median relative error is 0.031. On masses ≥ 150 g it is 0.016. The estimates sit a few grams high (the design probe, before noise, was about +5 to +8 g). That bias is inside the paper's ±30 g API note and inside the 40 g median bar.
 
 Real Identify Empty Can in Table 1 is PhysCaP OI **2.00** versus exhaustive CaP+PhysX OI **4.00**. LIBERO Table 2 is success **78%** at OI **1.44** versus 74% at 2.16. Section 5.3 reports **100%** success on the real empty-can task across three VLM backbones. Those numbers are quoted, not re-run. This policy's 1.47 probes are the deterministic rule on four cans, not a VLM.
 
@@ -60,7 +60,7 @@ Real Identify Empty Can in Table 1 is PhysCaP OI **2.00** versus exhaustive CaP+
 
 - **Arm.** Two links (0.25 m, 0.22 m) and a wrist, in the vertical plane, position-controlled. Parallel jaws pinch a free box. Sliding friction on the finger pairs is 1.0. Finger force limit 30 N. Arm torque limit 12 N·m. Torque noise 0.03 N·m on the three arm actuators, six averaged samples.
 - **Jaw.** A slide joint with the object's stiffness as a MuJoCo spring. Force noise 0.05 N. Five votes, six objects per level per seed, centers 210, 630, 1050, 1470, 2100 N/m.
-- **Empty can.** 15 g and 208 g open cans, 350 g and 420 g sealed cans. 20 episodes per seed. Both policies see the same cans.
+- **Empty can.** 15 g and 208 g open cans, 350 g and 420 g sealed cans. 20 episodes per seed. Both policies see the same cans and the same per-can torque noise. Order and the stop rule are the only differences.
 - **Pre-registration.** `config.yaml` holds the hypothesis, the metric, and the thresholds. A disclosed design probe checked the Jacobian sign, that friction 1.0 lifts 0.013–0.963 kg, that friction ≤ 0.15 drops a 0.40 kg can, and that the squeeze slope matches the spring. It did not move a threshold.
 - **Seeds.** 0, 1, 2. Eight mass trials per mass per seed (120 lifts). 
 - **Machine.** `mujoco==4.0.0`, Python 3.12, fork pool of 3. The official seeds plus breakpoints were about 7 seconds. The OSMesa video was about 35 seconds.
@@ -90,7 +90,7 @@ pip install -r requirements.txt
 # python src/run_experiment.py --smoke   # one lift, one squeeze, one decision
 ```
 
-The still and the MP4 use MuJoCo's OSMesa renderer (`MUJOCO_GL=osmesa`, set before import). If that renderer cannot start, `src/make_media.py` writes a matplotlib schematic and says so in `artifacts/media_backend.txt`.
+The still and the MP4 use MuJoCo's OSMesa renderer (`MUJOCO_GL=osmesa`, set before import). If that renderer cannot start, `src/make_media.py` writes a matplotlib schematic and says so in `artifacts/media_backend.txt`. The MP4 needs `ffmpeg` on `PATH`. Without it the script keeps the still and the tables, records `mp4 skipped` in `media_backend.txt`, deletes any MP4 already in `artifacts/` and `docs/assets/`, and exits 0. That older clip is not published beside the new still. `./run_all.sh` takes a lock directory named `.run-lock` inside this app. A second run exits until that directory is gone. Remove it only after a run was killed. The script puts `src` on `sys.path` itself, so the Windows path separator does not matter. On Windows the pool uses `spawn`. Running `python src/run_experiment.py` on Windows measures in process instead. Analysis writes the tables, the plot, and `status.json` into a staging directory and moves them into place together.
 
 ## Caveats
 

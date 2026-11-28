@@ -6,26 +6,32 @@
 #   ./run_all.sh
 set -euo pipefail
 cd "$(dirname "$0")"
-export PYTHONPATH="src:${PYTHONPATH:-}"
 export OMP_NUM_THREADS="${OMP_NUM_THREADS:-1}"
 export MKL_NUM_THREADS="${MKL_NUM_THREADS:-1}"
 export OPENBLAS_NUM_THREADS="${OPENBLAS_NUM_THREADS:-1}"
 export MUJOCO_GL="${MUJOCO_GL:-osmesa}"
-# One run at a time. Workers import this package, so spawn on Windows can
-# unpickle them. A direct `python src/run_experiment.py` on Windows falls
-# back to in-process execution.
-LOCK="${TMPDIR:-/tmp}/physcap-mass-stiffness.lock"
-exec 9>"$LOCK"
-if command -v flock >/dev/null 2>&1; then
-  flock 9
+# mkdir is the lock. It does not follow a symlink planted in /tmp, and it
+# works where flock is missing. A killed run can leave this directory behind.
+LOCK_DIR="$(pwd)/.run-lock"
+if [[ -L "$LOCK_DIR" ]]; then
+  echo "refusing lock through a symlink: $LOCK_DIR" >&2
+  exit 1
 fi
-python3 -c 'from run_experiment import main; import sys; main(sys.argv[1:])' "$@"
+if ! mkdir "$LOCK_DIR" 2>/dev/null; then
+  echo "another run holds $LOCK_DIR ; remove it only if that run has died" >&2
+  exit 1
+fi
+cleanup() { rmdir "$LOCK_DIR" 2>/dev/null || true; }
+trap cleanup EXIT
+# src goes on sys.path inside Python so Windows does not need ':' in PYTHONPATH.
+PY='import sys; sys.path.insert(0, "src"); '
+python3 -c "${PY}from run_experiment import main; main(sys.argv[1:])" "$@"
 if [[ "${1:-}" == "--smoke" ]]; then
   echo "smoke only"
   exit 0
 fi
-python3 -c 'from analyze import main; main()'
-python3 -c 'from make_media import main; main()'
+python3 -c "${PY}from analyze import main; main()"
+python3 -c "${PY}from make_media import main; main()"
 if [[ -d ../../docs/assets ]]; then
   cp -f artifacts/physcap-mass-stiffness.png ../../docs/assets/physcap-mass-stiffness.png
   # Copy the MP4 only when this run encoded it. A skipped encode deletes the

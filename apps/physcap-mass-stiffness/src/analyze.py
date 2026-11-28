@@ -5,6 +5,7 @@ from __future__ import annotations
 import csv
 import io
 import json
+import tempfile
 from pathlib import Path
 from typing import Any
 
@@ -164,7 +165,7 @@ def _fmt(value: float, digits: int = 3) -> str:
     return f"{value:.{digits}f}"
 
 
-def _write_tables(raw: dict[str, Any], summary: dict[str, Any], status: str) -> None:
+def _write_tables(raw: dict[str, Any], summary: dict[str, Any], status: str, out: Path) -> None:
     seeds = [int(s) for s in raw["seeds"]]
     lines = [
         f"# exp1_cpu_probes — {status}",
@@ -198,11 +199,12 @@ def _write_tables(raw: dict[str, Any], summary: dict[str, Any], status: str) -> 
         f"Ratio = {summary['oi_ratio']:.3f}. Selective success = {summary['selective_success']:.3f}.",
         "",
     ]
-    atomic.write_text(EXP / "results.md", "\n".join(lines))
+    atomic.write_text(out / "results.md", "\n".join(lines))
 
-    buffer = io.StringIO()
+    buffer = io.StringIO(newline="\n")
     writer = csv.DictWriter(
         buffer,
+        lineterminator="\n",
         fieldnames=[
             "seed",
             "median_abs_g",
@@ -234,7 +236,7 @@ def _write_tables(raw: dict[str, Any], summary: dict[str, Any], status: str) -> 
                 "selective_success": f"{sel['success']:.4f}",
             }
         )
-    atomic.write_text(EXP / "results.csv", buffer.getvalue())
+    atomic.write_text(out / "results.csv", buffer.getvalue())
 
 
 def _break_lines(raw: dict[str, Any]) -> list[str]:
@@ -286,9 +288,9 @@ def _save_fig(fig: plt.Figure, path: Path) -> None:
     atomic.replace_file(tmp, path)
 
 
-def _write_breakpoints(raw: dict[str, Any]) -> None:
+def _write_breakpoints(raw: dict[str, Any], out: Path) -> None:
     lines = _break_lines(raw)
-    atomic.write_text(EXP / "breakpoints.md", "\n".join(lines))
+    atomic.write_text(out / "breakpoints.md", "\n".join(lines))
     flat: list[dict[str, str]] = []
     for family, rows in raw["breakpoints"].items():
         for row in rows:
@@ -298,14 +300,14 @@ def _write_breakpoints(raw: dict[str, Any]) -> None:
         for key in row:
             if key not in keys:
                 keys.append(key)
-    buffer = io.StringIO()
-    writer = csv.DictWriter(buffer, fieldnames=keys)
+    buffer = io.StringIO(newline="\n")
+    writer = csv.DictWriter(buffer, fieldnames=keys, lineterminator="\n")
     writer.writeheader()
     writer.writerows(flat)
-    atomic.write_text(EXP / "breakpoints.csv", buffer.getvalue())
+    atomic.write_text(out / "breakpoints.csv", buffer.getvalue())
 
 
-def _plot(raw: dict[str, Any], summary: dict[str, Any], status: str) -> None:
+def _plot(raw: dict[str, Any], summary: dict[str, Any], status: str, out: Path) -> None:
     fig, axes = plt.subplots(1, 3, figsize=(10.6, 3.55))
     seeds = [int(s) for s in raw["seeds"]]
     colors = {0: BLUE, 1: VERM, 2: GREEN}
@@ -383,8 +385,8 @@ def _plot(raw: dict[str, Any], summary: dict[str, Any], status: str) -> None:
     )
     fig.suptitle(f"PhysCaP-style probes on CPU  ·  {status}", fontweight="bold", fontsize=13)
     fig.tight_layout()
-    _save_fig(fig, EXP / "plot.png")
-    _save_fig(fig, EXP / "plot.pdf")
+    _save_fig(fig, out / "plot.png")
+    _save_fig(fig, out / "plot.pdf")
     plt.close(fig)
 
 
@@ -453,10 +455,22 @@ def main() -> None:
             for seed in seeds
         },
     }
-    atomic.write_text(EXP / "status.json", json.dumps(public, indent=2) + "\n")
-    _write_tables(raw, summary, status)
-    _write_breakpoints(raw)
-    _plot(raw, summary, status)
+    names = [
+        "status.json",
+        "results.md",
+        "results.csv",
+        "breakpoints.md",
+        "breakpoints.csv",
+        "plot.png",
+        "plot.pdf",
+    ]
+    with tempfile.TemporaryDirectory(prefix=".analyze-", dir=EXP) as folder:
+        staging = Path(folder)
+        atomic.write_text(staging / "status.json", json.dumps(public, indent=2) + "\n")
+        _write_tables(raw, summary, status, staging)
+        _write_breakpoints(raw, staging)
+        _plot(raw, summary, status, staging)
+        atomic.publish(staging, EXP, names)
     print(json.dumps({"status": status, **{k: public[k] for k in public if k != "per_seed"}}, indent=2))
 
 

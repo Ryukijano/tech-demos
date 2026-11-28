@@ -3,3 +3,4 @@ work/
 __pycache__/
 *.pyc
 .pytest_cache/
+MUJOCO_LOG.TXT

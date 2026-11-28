@@ -1,5 +1,12 @@
 [
   {
+    "url": "https://x.com/NVIDIARobotics/status/2125632693719167240",
+    "author": "@NVIDIARobotics",
+    "slug": "physcap-mass-stiffness",
+    "date": "2026-11-28",
+    "source": "https://arxiv.org/abs/2608.21031"
+  },
+  {
     "url": "https://x.com/rosinality/status/2125165189570167284",
     "author": "@rosinality",
     "slug": "alf-feedback-transformer",

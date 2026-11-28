@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Tech Demos · Gyanateet Dutta (@Ryukijano)</title>
-  <meta name="description" content="A monorepo of small, honest kits and UIs for new AI models and runtimes: an Attention Latent Feedback toy, an RL rollout-replay toy, a JEPA content–geometry latent-map toy, a lattice-surgery logical-teleportation experiment, an Energy-Based Reasoner test-time descent experiment, a Willow stability timelike-error toy, a stable-envs state-replay disk and lossless-render experiment, a Déjà View loop-count compute/quality-dial experiment, a RaCo vs ALIKED rotation-repeatability experiment, an e-means vs FAISS k-means CPU experiment, a QMapAnything token-quantization toy, a MuJoCo 4.0 speculative-contacts tunneling experiment, a Value Forcing return-distribution toy, a FlexGlue covisibility-vs-doppelganger CPU experiment, a world2vec continuous-time latent dynamics toy, a Platonic JEPA alignment toy, a MoRE reused-experts char-LM toy, a looped-transformer addition toy, a NanoDreamer MinAtar world-model toy, an auditable SAE text detector, a binary discrete diffusion Sudoku toy, a syndrome-mitigation QEC experiment, a correction-training 2D toy, LoMa matching, chest X-ray bone suppression, active borylation, EmbeddingGemma 2, PixelUMM, JEPA-Anything, and llama.cpp Decision Models.">
+  <meta name="description" content="A monorepo of small, honest kits and UIs for new AI models and runtimes: a PhysCaP mass and stiffness probe on CPU, an Attention Latent Feedback toy, an RL rollout-replay toy, a JEPA content–geometry latent-map toy, a lattice-surgery logical-teleportation experiment, an Energy-Based Reasoner test-time descent experiment, a Willow stability timelike-error toy, a stable-envs state-replay disk and lossless-render experiment, a Déjà View loop-count compute/quality-dial experiment, a RaCo vs ALIKED rotation-repeatability experiment, an e-means vs FAISS k-means CPU experiment, a QMapAnything token-quantization toy, a MuJoCo 4.0 speculative-contacts tunneling experiment, a Value Forcing return-distribution toy, a FlexGlue covisibility-vs-doppelganger CPU experiment, a world2vec continuous-time latent dynamics toy, a Platonic JEPA alignment toy, a MoRE reused-experts char-LM toy, a looped-transformer addition toy, a NanoDreamer MinAtar world-model toy, an auditable SAE text detector, a binary discrete diffusion Sudoku toy, a syndrome-mitigation QEC experiment, a correction-training 2D toy, LoMa matching, chest X-ray bone suppression, active borylation, EmbeddingGemma 2, PixelUMM, JEPA-Anything, and llama.cpp Decision Models.">
   <meta property="og:title" content="Tech Demos">
   <meta property="og:description" content="Small, honest kits and UIs for new AI models and runtimes, by Gyanateet Dutta (@Ryukijano).">
   <meta property="og:image" content="https://ryukijano.github.io/tech-demos/assets/decision-models-ui.png">
@@ -21,7 +21,7 @@
       <p class="subtitle">Small, honest kits and UIs for new AI models and runtimes, kept in one monorepo with one folder per demo.</p>
       <div class="hero-actions">
         <a class="btn primary" href="https://github.com/Ryukijano/tech-demos">View the repo on GitHub</a>
-        <a class="btn" href="#demos">Browse the 30 demos</a>
+        <a class="btn" href="#demos">Browse the 31 demos</a>
       </div>
       <p class="byline">By <a href="https://github.com/Ryukijano">Gyanateet Dutta</a> · <a href="https://github.com/Ryukijano">@Ryukijano</a></p>
     </div>
@@ -31,6 +31,35 @@
     <p class="note">These demos run on your own machine. This page shows recordings and status; follow each README to run them.</p>
 
     <section class="grid">
+
+      <!-- 0. PhysCaP mass and stiffness (CPU MuJoCo, clean-room probes) -->
+      <article class="card">
+        <div class="media">
+          <video src="assets/physcap-mass-stiffness.mp4" poster="assets/physcap-mass-stiffness.png" muted controls playsinline preload="metadata" aria-label="A planar arm lifting a red can and a jaw squeezing a green spring pad"></video>
+        </div>
+        <div class="body">
+          <div class="badges">
+            <span class="badge green">CPU · MuJoCo 4.0.0 · clean-room</span>
+            <span class="badge green">Hypothesis: PASS</span>
+            <span class="badge muted">mass · stiffness · stop-when-confident</span>
+          </div>
+          <h2>PhysCaP mass and stiffness</h2>
+          <p>Clean-room probes from Lin, Chen, Chang, Chen, Chang, Huang, Yang, Chen, Chen, Wang &amp; Sun, <a href="https://arxiv.org/abs/2608.21031">arXiv:2608.21031</a> (found via <a href="https://x.com/NVIDIARobotics/status/2125632693719167240">@NVIDIARobotics</a>; the post was not fetched). A planar arm lifts 15 cm and estimates mass from joint torques. A jaw closes in steps and fits stiffness to five levels. The real-robot measurement code is not in the MIT repo. Seeds 0/1/2.</p>
+          <ul class="facts">
+            <li>PASS: median |Δm| is 6.3 g (bar 40 g, the paper’s 38.1 g MAE). Grasp success 1.00. Five-level accuracy 1.00 (bar 0.80). Level 2 vs levels 4–5 separates on every object</li>
+            <li>Stop-when-confident uses 1.47 mass probes vs 4.00 for weighing every can (ratio 0.37, bar ≤ 0.70) and picks the empty can on every episode. Table 1’s real OI of 2.00 vs 4.00 is quoted, not re-run</li>
+            <li>Breaks below: 1 g reads as 10 g; 1.5 kg and μ ≤ 0.15 never leave the table (−1 kg); a 20 kN/m spring is rejected. A 12 N jaw friction does not move level 3. Not the PiPER and not LIBERO</li>
+          </ul>
+          <pre><code>cd apps/physcap-mass-stiffness
+python3 -m venv .venv &amp;&amp; source .venv/bin/activate
+pip install -r requirements.txt
+./run_all.sh</code></pre>
+          <div class="links">
+            <a href="https://github.com/Ryukijano/tech-demos/tree/main/apps/physcap-mass-stiffness">App folder</a>
+            <a href="https://github.com/Ryukijano/tech-demos/blob/main/apps/physcap-mass-stiffness/README.md">README</a>
+          </div>
+        </div>
+      </article>
 
       <!-- 0. Attention Latent Feedback (CPU toy, official code not vendored) -->
       <article class="card">
